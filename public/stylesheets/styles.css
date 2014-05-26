@@ -1,0 +1,116 @@
+
+.axis {
+      shape-rendering: crispEdges;
+      stroke: black;
+      fill: none;
+      opacity: 0.4;
+}
+
+.chart {border:1px solid rgba(0, 0, 0, .2);}
+.chart .axis {display: none}
+.axis text{ display: none }
+
+.node {
+  stroke: #fff;
+  stroke-width: 1px;
+  opacity: 0.2;
+}
+.node.selected {
+  opacity: 1;
+}
+
+.selection {
+    stroke-width    : 3px;
+    stroke-dasharray: 4px;
+    stroke-opacity  : 0.6;
+    fill            : transparent;
+}
+
+.details {
+  font-size: 12px;
+}
+
+.d3tooltip {
+  font-family: "Arial", sans-serif;
+  position: absolute;
+  z-index: 10;
+  visibility: hidden;
+  background-color: #FFF;
+  border: 1px solid #CCC;
+  padding: 3px 6px;
+}
+
+.background.bar {
+  fill: #ccc;
+}
+
+.foreground.bar {
+  fill: steelblue;
+}
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: 0.7;
+  stroke-width: 0.5;
+}
+.slider {
+  width: 200px;
+  height: 5px;
+  margin: 0 3px 0 0;
+}
+
+
+
+#propList {
+  margin:0 0 30px 0;
+}
+  #propList table {
+    border-collapse:separate;
+    border-spacing:1px;
+    background:#CCC;
+  }
+    #propList table th {
+      background:#EEE;
+      font-weight:600;
+      padding:10px 20px;
+      text-align:center;
+    }
+    #propList table tbody {
+      padding:0; margin:0;
+      border-collapse:collapse;
+      border-spacing:0px;
+    }
+      #propList table td {
+        background:#FFF;
+        padding:5px 10px;
+        text-align:center;
+      }
+
+#propInfo {
+  width:250px;
+  position:absolute;
+  top:0; left:0;
+}
+  #propInfo p {
+    padding:15px;
+    border:1px solid #CCC;
+    background:rgba(80,120,255,0.05);
+  }
+
+fieldset {
+  border:0;
+  padding:0; margin:0;
+}
+
+
+#propList .color-preview {vertical-align:middle; border: 1px solid #ccc;border-radius: 4px; margin:0px;height: 1.429em; width: 1.429em; display: inline-block; background-color:#fff}
