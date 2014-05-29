@@ -56,12 +56,13 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 	var rollCallNodes =[];
 
 	// Deputies Scatterplot ----------------------------------------------------------------
-		var deputiesScatterplot = d3.chart.deputiesScatterplot();
+		var deputiesScatterplot 	= d3.chart.deputiesScatterplot();
 		// set html container
-		var deputiesChartDispatch = deputiesScatterplot(d3.select('#canvasDeputies'));
+		var deputiesChartDispatch 	= deputiesScatterplot(d3.select('#canvasDeputies'));
 
 		deputiesChartDispatch.on('selected', function(phonebookIDs){
 
+			console.log(phonebookIDs)
 			var selectedDeputies;
 			if(phonebookIDs == null){ selectedDeputies = deputyNodes; }
 			else{
@@ -84,11 +85,11 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 		})
 
 	// RollCalls Scatterplot ---------------------------------------------------------------
-		var rollCallsScatterplot = d3.chart.rollCallsScatterplot();
+		var rollCallsScatterplot 	= d3.chart.rollCallsScatterplot();
 		// set html container
-		var rollCallChartDispatch = rollCallsScatterplot(d3.select('#canvasRollCalls'));
+		var rollCallChartDispatch 	= rollCallsScatterplot(d3.select('#canvasRollCalls'));
 
-		rollCallChartDispatch.on('selected', function(ids){
+		rollCallChartDispatch.on('selected', function (ids){
 			//console.log(ids)
 			var idsMap = {};
 			ids.forEach(function(id){ idsMap[id]=true; });
@@ -106,21 +107,11 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			});	
 		})
 
-	// deputados Graph 
+	// deputados Graph   ------------------------------------------------------------------
 		var deputiesGraph = d3.chart.deputiesGraph();
 		deputiesGraph(d3.select('#canvasGraph'));
 
 	// RollCalls timeline ------------------------------------------------------------------
-		// var rollCallsTimeLine = d3.chart.rollCallsTimeLine()
-		// // set html container
-		// rollCallsTimeLine(d3.select('#timeline'))
-
-		// rollCallsTimeLine.on("filter", function(filtered) {
-		//  console.log("filtered", filtered);
-		//  var date = d3.extent(filtered,function(d){return d.datetime})
-		//  console.log(date)
-		//  setNewDateRange(date[0],date[1]);
-		// })
 		var timelineBarChart = d3.chart.timelineBarChart();
 		timelineBarChart(d3.select('#timeline'));
 
@@ -130,6 +121,19 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			setNewDateRange(filtered[0],filtered[1]);
 		})
 
+	// States timeline ------------------------------------------------------------------
+		var brazilianStates 		= d3.chart.brazilianStates();
+		var brazilianStatesDispatch = brazilianStates(d3.select('#infographs'));
+
+		brazilianStatesDispatch
+			.on('selected', function (states) {
+				deputiesScatterplot.selectStates(states);
+				//deputiesGraph.hoverState();
+			})
+			.on('hover', function (state){
+				deputiesScatterplot.hoverState(state);
+				//deputiesGraph.hoverState();
+			})
 
 	setNewDateRange(start,end);
 

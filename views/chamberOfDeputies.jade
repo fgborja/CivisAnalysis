@@ -8,6 +8,7 @@ html
 		link(rel="stylesheet", href="./javascripts/lib/pick-a-color-master/build/1.2.2/css/pick-a-color-1.2.2.min.css")
 
 		link(rel='stylesheet', href="./javascripts/lib/bootstrap/slider/slider.css")
+		link(rel='stylesheet', href="./stylesheets/brazilianStates.css")
 
 	body
 		block content
@@ -37,7 +38,8 @@ html
 				.col-xs-12
 					#timeline
 			.row#infoRow
-					
+			.row#infographs
+
 
 		// THIRD_PARTY_LIBS
 		// script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
@@ -50,8 +52,8 @@ html
 		script(src="./javascripts/lib/crossfilter.v1.min.js")
 		script(src="./javascripts/lib/pick-a-color-master/build//dependencies/tinycolor-0.9.15.min.js")
 		script(src="./javascripts/lib/pick-a-color-master/build/1.2.2/js/pick-a-color-1.2.2.min.js")
-
 		script(src="./javascripts/lib/bootstrap/slider/slider.js")
+		script(src="./javascripts/lib/topojson.min.js")
 
 		// APP_LIBS
 		script(src='./javascripts/globalUtils.js')
@@ -65,5 +67,6 @@ html
 		script(src='./javascripts/deputiesGraph.js')
 		script(src='./javascripts/rollCallsScatterplot.js')
 		script(src='./javascripts/rollCallsTimeLine.js')
+		script(src='./javascripts/brazilianStates.js')
 
 		script(src='./javascripts/chamberOfDeputiesVisualization.js')

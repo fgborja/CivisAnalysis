@@ -7,6 +7,7 @@
 // }
 
 var radius = 4;
+var radiusHover = 8;
 var pxMargin = 30;
 
 if(!d3.chart) d3.chart = {};
@@ -119,8 +120,8 @@ d3.chart.deputiesScatterplot = function() {
 			
 		// mouse OVER circle deputy
 		function mouseoverDeputy(d) {
-			$("#deputy-s-"+d.phonebookID).attr("r",8)
-			$("#deputy-g-"+d.phonebookID).attr("r",8);
+			$("#deputy-s-"+d.phonebookID).attr("r",radiusHover)
+			$("#deputy-g-"+d.phonebookID).attr("r",radiusHover);
 	
 			d3.selectAll(".node.rollCall")
 				//.transition()
@@ -160,7 +161,6 @@ d3.chart.deputiesScatterplot = function() {
 
 	}
 
-
 	chart.data = function(value) {
 		if(!arguments.length) return data;
 		data = value;
@@ -175,6 +175,33 @@ d3.chart.deputiesScatterplot = function() {
 		if(!arguments.length) return height;
 		height = value;
 		return chart;
+	}
+
+	// 'hover' deputies of a single state (or null)
+	chart.hoverState = hoverState;
+	function hoverState(state){
+
+		d3.selectAll('.chart .node.deputy').attr('r', function (d){   
+			if(d.state == state) 
+				 return radiusHover;
+			else return radius;
+		})
+	}
+
+	// select deputies of an array of states 
+	chart.selectStates = selectStates;
+	function selectStates(states){
+		var phonebookIDs = [];
+
+		d3.selectAll('.chart .node.deputy').classed('selected', function (d){   
+			if(states[ d.state ] !== undefined){ 
+				phonebookIDs.push(d.phonebookID);
+				return true;
+			}
+			else return false;
+		})
+
+		dispatch.selected(phonebookIDs)
 	}
 
 	return d3.rebind(chart, dispatch, "on");

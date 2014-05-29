@@ -19,6 +19,8 @@
   opacity: 1;
 }
 
+.node.hover{}
+
 .selection {
     stroke-width    : 3px;
     stroke-dasharray: 4px;

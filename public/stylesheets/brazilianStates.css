@@ -1,0 +1,15 @@
+		.states {
+		  fill: lightgrey ;
+		  stroke: aliceblue  ;
+		  stroke-width: 0.8px;
+		}
+
+		.states.selected {
+		  fill: steelblue !important;
+		}
+
+		
+		.states.mouseover {
+		  fill: orange !important; 
+		}
+		
