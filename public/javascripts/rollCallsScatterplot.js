@@ -4,7 +4,7 @@ d3.chart.rollCallsScatterplot = function() {
 	var pxMargin = 20;
 	var scatterplot, g;
 	var data;
-	var dispatch = d3.dispatch(chart, "hover","selected");
+	var dispatch = d3.dispatch("hover","selected");
 
 	var colWidth = $('.col-xs-4').width();
 
@@ -22,19 +22,19 @@ d3.chart.rollCallsScatterplot = function() {
 			.attr('class', 'main');
 
 		g.append('rect')
-			.attr('class', 'selectorRect rollCall')
+			.attr('class', 'selectorRect')
 
 		g.append("g")
-	    .classed("axis x rollCalls", true)
+	    .classed("axis x", true)
 
 	    g.append("g")
-	    .classed("axis y rollCalls", true)
+	    .classed("axis y", true)
 
 	    selectors('rollCall',dispatch.selected);
-
-	    return dispatch;
-		//update();
 	}
+
+	chart.on = dispatch.on;
+
 	chart.update = update;
 	function update() {
 
@@ -56,7 +56,7 @@ d3.chart.rollCallsScatterplot = function() {
 			.attr('width', width)
 			.attr('height', height);
 
-		g.select(".selectorRect.rollCall")
+		g.select(".selectorRect")
 			.attr('width', width)
 			.attr('height', height)
 			.attr('fill', 'white');
@@ -66,7 +66,7 @@ d3.chart.rollCallsScatterplot = function() {
 		.scale(scaleX)
 		.orient('bottom');
 
-		var xg = g.select(".axis.x.rollCalls")
+		var xg = g.select(".axis.x")
 		.attr('transform', 'translate(0,' + height + ')')
 		.transition()
 		.call(xAxis);
@@ -77,7 +77,7 @@ d3.chart.rollCallsScatterplot = function() {
 		.scale(scaleY)
 		.orient('left');
 
-		var yg = g.select(".axis.y.rollCalls")
+		var yg = g.select(".axis.y")
 		.attr('transform', 'translate(0,0)')
 		.transition()
 		.call(yAxis);
@@ -94,10 +94,10 @@ d3.chart.rollCallsScatterplot = function() {
 			cx: function (d) { return scaleX(d.scatterplot[0]); },
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
 			r: 4,
-			class: "node rollCall selected",
+			class: "node selected",
 			id: function(d,i) { return "rollCall-" + i; },
 			fill: function (d) { return votingColor(d.rate) },
-			rollCall: function (d) { return d._id }
+			rollCall: function (d,i) { return i }
 		})
 		circles.exit().transition().remove();
 
@@ -110,12 +110,8 @@ d3.chart.rollCallsScatterplot = function() {
 		function mouseOverVoting(d,i) {
 			$("#rollCall-"+i).attr("r",8)
 	
-			d3.selectAll(".node.deputy").style("fill", "darkgrey");
+			dispatch.hover(d,true);
 
-				$.map(d.rollCall.votos.Deputado, function(vote){ 
-					d3.selectAll("#deputy-s-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
-					d3.selectAll("#deputy-g-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
-				});
 			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/><em>"+d.rollCall.Resumo+"</em>"+ "<br/><em>Click to highlight</em>");
 			return tooltip.style("visibility", "visible");
 		}	
@@ -125,18 +121,21 @@ d3.chart.rollCallsScatterplot = function() {
 				//if(selected != i || i==0){
 				$("#rollCall-"+i).attr("r",4)
 				//}	
+
+				dispatch.hover(d,false);
+				/*
 				d3.selectAll(".node.deputy").style("fill", function(d) { 
 					if(d.record !== undefined) d = d.record;
 
 					return partyColor(d.party) 
-				});
+				});*/
 				
 			return tooltip.style("visibility", "hidden");
 		}
 
 		// mouse MOVE circle voting
 		function mousemoveVoting() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
-				
+		
 	}
 
 
@@ -155,6 +154,38 @@ d3.chart.rollCallsScatterplot = function() {
 		height = value;
 		return chart;
 	}
+
+	// change the colors of RollCalls acording to the deputy vote
+	chart.highlightDeputyVotes = function( phonebookID, mouseover) {
+
+		if(!mouseover) {
+			chart.setDeputyVotingRate();
+		} else {
+			g.selectAll('.node').attr('fill', function (rollCall){
+				var color = 'grey';
+
+				if(rollCall.rollCall.votos != undefined){
+					for (var i = 0; i < rollCall.rollCall.votos.Deputado.length; i++) {
+						if(rollCall.rollCall.votos.Deputado[i].phonebookID == phonebookID){
+							color = votoStringToColor[rollCall.rollCall.votos.Deputado[i].Voto ]
+						}
+					};
+				}
+				return  color;
+			})
+		}
+	}
+
+	chart.setDeputyVotingRate = function () {
+		var c = g.selectAll('.node').attr('fill', function (rollCall) { 
+			return (rollCall.rate == 'noVotes')? 'darkgrey' : votingColor(rollCall.rate);  
+		});
+	}
+
+	// d3.selectAll(".node.rollCall")
+			// 	//.transition()
+			// 	.style("fill", "darkgrey");
+
 
 	return d3.rebind(chart, dispatch, "on");
 }

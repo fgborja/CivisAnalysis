@@ -1,15 +1,23 @@
+		#statesSVG {
+		  stroke: lightgrey  ;
+		  stroke-width: 1px;
+		}
+
+
 		.states {
-		  fill: lightgrey ;
-		  stroke: aliceblue  ;
-		  stroke-width: 0.8px;
+		  /*fill: lightgrey ;*/
+		  stroke: darkblue  ;
+		  stroke-width: 0.4px;
+		  opacity: 0.5; /*opacity for unselected states*/
 		}
 
 		.states.selected {
-		  fill: steelblue !important;
+		  /*fill: steelblue !important;*/
+		  opacity: 1;
+		  /*stroke: steelblue  ;*/
 		}
-
 		
 		.states.mouseover {
-		  fill: orange !important; 
+		  /*fill: orange !important;*/ 
+		  opacity: 1;
 		}
-		

@@ -475,6 +475,7 @@ d3.chart.timelineBarChart = function() {
 					height:20,
 					cursor : 'pointer' 	
 				}).text('')
+				//
 
 		texts.append("title").text( function (d) { return d.name })
 

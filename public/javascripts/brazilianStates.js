@@ -35,6 +35,7 @@ if(!d3.chart) d3.chart = {};
 
 d3.chart.brazilianStates = function() {
 
+	var svg;
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
@@ -53,7 +54,7 @@ d3.chart.brazilianStates = function() {
 
 	function chart(container) {
 
-		var svg = container.append("svg")
+		svg = container.append("svg")
 			.attr("width", width)
 			.attr("height", height)
 			.attr("id", "statesSVG");
@@ -66,66 +67,163 @@ d3.chart.brazilianStates = function() {
 			.attr("width", width)
 			.attr("height", height)
 			.on("click", function(){ 
-				d3.selectAll('.states').classed('unselected',false);
-				d3.selectAll('.states').classed('selected',true);
-				dispatch.selected( getSelectedStates() ); 			//dispatch!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				resetStatesLayout(); 
+				dispatch.selected( null ); 
 			})
-			.attr("fill","white")
+ 			.attr("fill","white")
 
 		// path of states
 		d3.json("./images/topoBRA_ADM1.json", function(error, BRA_adm1) {
-
+			data = topojson.feature(BRA_adm1, BRA_adm1.objects.BRA_adm1).features;
+			$.each( data, function(state){ state.rate = null })
+			
+		
 		    svg.selectAll(".states")
-				.data(topojson.feature(BRA_adm1, BRA_adm1.objects.BRA_adm1).features)
+				.data(data)
 				.enter().append("path")
 				.attr("d", path)
 				.attr("id", function(d) { return state[ d.properties.NAME_1 ] ; })
 				.attr("class", "states selected")
 				.on("mouseover", function () { 
 					d3.select(this).classed('mouseover',true) ; 
+					setStateStyle(d3.select(this));
 
 					//dispatch event of hovering state.
 					dispatch.hover( d3.select(this).attr('id'))  	
 				})
 				.on("mouseout",  function () {
 					d3.select(this).classed('mouseover',false); 
+					setStateStyle(d3.select(this));
+
 					//dispatch event of end of hover
 					dispatch.hover( null ) 							
 				})
 				.on("click",function (d) {
+					d3.event.preventDefault();
+
 					if (d3.event.shiftKey){
 						// using the shiftKey deselect the state					
 						d3.select(this).classed('selected',false);
+						setStateStyle(d3.select(this));
+
+						//dispatch event of selected states
+						dispatch.selected( state[d.properties.NAME_1],'EXCLUDE')
+
 					} else 
 					if (d3.event.ctrlKey){
 						// using the ctrlKey add state to selection
 						d3.select(this).classed('selected',true);
+						setStateStyle(d3.select(this));
+
+						//dispatch event of selected states
+						dispatch.selected( state[d.properties.NAME_1],'ADD')
+
 					}
 					else {
 						// a left click without any key pressed -> select only the state (deselect others)
-						d3.selectAll('.states').each( function(i){ 
+						svg.selectAll('.states').each( function(i){ 
 							if(i.properties.NAME_1 == d.properties.NAME_1) d3.select(this).classed('selected',true);
 							else d3.select(this).classed('selected',false);
+
+							setStateStyle(d3.select(this));
 						}) 
+
+						//dispatch event of selected states
+						dispatch.selected( state[d.properties.NAME_1],'SET')
 					}
 
-					//dispatch event of selected states
-					dispatch.selected( getSelectedStates() ) 				
+					 				
 				})
 				// html tooltip
-				.append("title").text( function (d) { return d.properties.NAME_1 });			
-					
-		});
+				.append("title").text( function (d) { return d.properties.NAME_1 });	
 
-		return dispatch;
+
+				svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+		});
 	}
+
+	chart.on = dispatch.on;
+
+	// recieve an map with the 
+	chart.setStatesColor = 
+		function setStatesColor (  ) {
+
+			svg.selectAll(".states").each( function(d){ setStateStyle( d3.select(this) ) })
+		}
 
 	// return an object-map of selected states 
-	function getSelectedStates(){
-		var c = {};
-		d3.selectAll(".states.selected").each( function(d){ c[ state[d.properties.NAME_1] ]=true;  })
-		return c;
+	// getSelectedStates = 
+	// 	function getSelectedStates(){
+	// 		var c = {};
+	// 		svg.selectAll(".states.selected").each( function(d){ c[ state[d.properties.NAME_1] ]= d;  })
+	// 		return c;
+	// 	}
+
+	chart.getStates = 
+		function getStates(){
+			var c = {};
+			svg.selectAll(".states").each( function(d){ c[ state[d.properties.NAME_1] ]= d;  })
+			return c;
+		}
+
+	chart.highlightDeputyState = 
+		function highlightDeputyState( state , mouseover ){
+			if(mouseover) 
+				{ svg.select(".states#"+state).classed('mouseover',true)  }
+			else{ svg.select(".states#"+state).classed('mouseover',false) }
+				
+			setStateStyle( svg.select(".states#"+state) );		
+		}
+
+	// STATE STYLES!!  (1) mouseover (2) selected (3) unselected  + (filled by the roll calls outcome - OR NOT)
+	function setStateStyle( element ){
+		// mouseover
+		if (element.classed('mouseover')) element.transition().attr('fill','orange');
+		else { 
+			// selected
+			if(element.classed('selected')){ element.transition().attr('fill', function(d){ 
+					return (d.rate != null)? votingColor(d.rate) : 'steelblue'; 
+				})
+			} 
+			// unselected
+			else { 
+				element.transition()
+					.attr('fill', function(d){ 
+						return (d.rate != null)? votingColor(d.rate) : ((d.selected/d.total) > 0)? 'steelblue':'lightgrey'; 
+					})
+			}   
+		}
 	}
+
+	// TODO? display the distribution of the selected ( state-> unselecting all states)
+	chart.selectedDeputies = function(){
+		//console.log(deputyPerState)
+
+		svg.selectAll('.states').classed('selected', function(d){ return ((d.selected/d.total) == 1) })
+
+		svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+	}
+	
+	chart.highlightRollCall = function(rollCall, mouseover){
+
+	}
+
+	chart.resetRollCallRates = function (){
+		$.each( chart.getStates(), function(){ this.rate = null; })
+		svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+	}
+
+	function resetStatesLayout(){
+
+		svg.selectAll('.states').classed('selected',true);
+
+		// for (var i = 0; i < data.length; i++) {
+		// 	data[i].rate = null;
+		// };
+
+		svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+	}
+
 
 	return d3.rebind(chart, dispatch, "on");
 }

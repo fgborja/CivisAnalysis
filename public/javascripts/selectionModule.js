@@ -44,9 +44,9 @@
 /// selectors TOOLS TO MANAGE THE SELECTION OF NODES
 // '.main' '.selectorRect'
 function selectors( class_selector,dispatchSelected){
-	var main = d3.select('.chart.'+class_selector);
-	var jqSelectorRect = $('.selectorRect.'+class_selector);
-	var d3SelectorRect = d3.select('.selectorRect.'+class_selector);
+	var main = d3.select('.chart'+'.'+class_selector);
+	var jqSelectorRect = $('.'+class_selector+' .selectorRect');
+	var d3SelectorRect = d3.select('.'+class_selector+' .selectorRect');
 
 	var selectingIndex = 0;
 	var selecting = [false,true,true];
@@ -263,8 +263,8 @@ function selectors( class_selector,dispatchSelected){
 		})
 	}
 
-	function selectionNodesInsideElement(selectNodeSubClass,selectionElement){
-		var selectClass = '.main .node.'+selectNodeSubClass;
+	function selectionNodesInsideElement(class_selector,selectionElement){
+		var selectClass = '.'+class_selector+' .node';
 
 		if (d3.event.shiftKey) { // EXCLUDE selected nodes from selection
 			//deselect 
@@ -281,12 +281,16 @@ function selectors( class_selector,dispatchSelected){
 			selectInElement(selectClass,selectionElement,function(){return true},function(){return false})							
 		}
 
-		var selectedCircles = d3.selectAll(selectClass+".selected");
-		if(selectedCircles[0].length == 0) selectedCircles = d3.selectAll( selectClass).classed( "selected", true);
+		var selectedNodes = d3.selectAll(selectClass+".selected");
+		if(selectedNodes[0].length == 0) {
+			d3.selectAll( selectClass).classed( "selected", true);
+			dispatchSelected( null );
+		} else {
 
-		var selectedPh = selectedCircles[0].map( function(circle){ return(d3.select(circle).attr(selectNodeSubClass)) });
-		dispatchSelected( selectedPh );
-		//dispatchSelected(selectedNodes[0]);
+			selectedNodes = selectedNodes[0].map(function(d){ return d3.select(d).attr(class_selector) })
+						
+			dispatchSelected( selectedNodes );
+		}
 	}
 }
 
