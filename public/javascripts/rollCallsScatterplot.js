@@ -182,9 +182,10 @@ d3.chart.rollCallsScatterplot = function() {
 		});
 	}
 
-	// d3.selectAll(".node.rollCall")
-			// 	//.transition()
-			// 	.style("fill", "darkgrey");
+	chart.getSelectedRollCallsIDs = function(){
+		var selectedNodes = g.selectAll('.node.selected');
+		return selectedNodes[0].map(function(d){ return d3.select(d).attr('rollCall') })
+	}
 
 
 	return d3.rebind(chart, dispatch, "on");

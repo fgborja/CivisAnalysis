@@ -70,7 +70,9 @@ d3.chart.brazilianStates = function() {
 				resetStatesLayout(); 
 				dispatch.selected( null ); 
 			})
- 			.attr("fill","white")
+			.attr("fill","white")
+
+		setLabelDefault();
 
 		// path of states
 		d3.json("./images/topoBRA_ADM1.json", function(error, BRA_adm1) {
@@ -78,7 +80,7 @@ d3.chart.brazilianStates = function() {
 			$.each( data, function(state){ state.rate = null })
 			
 		
-		    svg.selectAll(".states")
+			svg.selectAll(".states")
 				.data(data)
 				.enter().append("path")
 				.attr("d", path)
@@ -132,7 +134,7 @@ d3.chart.brazilianStates = function() {
 						dispatch.selected( state[d.properties.NAME_1],'SET')
 					}
 
-					 				
+									
 				})
 				// html tooltip
 				.append("title").text( function (d) { return d.properties.NAME_1 });	
@@ -143,13 +145,6 @@ d3.chart.brazilianStates = function() {
 	}
 
 	chart.on = dispatch.on;
-
-	// recieve an map with the 
-	chart.setStatesColor = 
-		function setStatesColor (  ) {
-
-			svg.selectAll(".states").each( function(d){ setStateStyle( d3.select(this) ) })
-		}
 
 	// return an object-map of selected states 
 	// getSelectedStates = 
@@ -182,14 +177,20 @@ d3.chart.brazilianStates = function() {
 		else { 
 			// selected
 			if(element.classed('selected')){ element.transition().attr('fill', function(d){ 
-					return (d.rate != null)? votingColor(d.rate) : 'steelblue'; 
+					return (d.rate != null)?
+						((d.rate == 'noVotes')? 'lightgrey' : votingColor(d.rate) )
+						:
+						'steelblue'; 
 				})
 			} 
 			// unselected
 			else { 
 				element.transition()
 					.attr('fill', function(d){ 
-						return (d.rate != null)? votingColor(d.rate) : ((d.selected/d.total) > 0)? 'steelblue':'lightgrey'; 
+						return (d.rate != null)?  
+							((d.rate == 'noVotes')? 'lightgrey' : votingColor(d.rate) )
+							: 
+							((d.selected/d.total) > 0)? 'steelblue':'lightgrey'; 
 					})
 			}   
 		}
@@ -205,13 +206,26 @@ d3.chart.brazilianStates = function() {
 	}
 	
 	chart.highlightRollCall = function(rollCall, mouseover){
+		if(data[0].rate == null) setLabelDefault(); else setLabelGradient();
+		
+		svg.selectAll('.states').attr('fill',function(d){/*console.log(d.rate);*/ return 'darkgrey'})
+		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+
 
 	}
 
 	chart.resetRollCallRates = function (){
+		setLabelDefault();
+
 		$.each( chart.getStates(), function(){ this.rate = null; })
-		svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
 	}
+
+	// recieve an map with the 
+	chart.setRollCallRates = function () {
+			setLabelGradient()
+			svg.selectAll('.states').each( function(){ setStateStyle( d3.select(this) ) })
+		}
 
 	function resetStatesLayout(){
 
@@ -221,9 +235,156 @@ d3.chart.brazilianStates = function() {
 		// 	data[i].rate = null;
 		// };
 
-		svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
 	}
 
+	function setLabelDefault(){
+		d3.select('#statesSVG .stateLabel').remove()
+
+		var rectX = 7;
+		var rectY = 200;
+		var g = svg.append('g').attr('class','stateLabel');
+
+		g.append('rect')
+				.attr({
+					width : 115,
+					height: 65,
+					x: rectX,
+					y:  rectY,
+					fill: 'lightgrey',
+					stroke: 'black',
+					'stroke-width': '0.5px'
+				})
+
+		g.append('text').text('Estado:')
+			.attr({
+				x:rectX+5,
+				y:rectY+14,
+				stroke: 'none',
+				'font-size':'14px',
+				color: 'black'
+			})
+
+		g.append('rect')
+				.attr({
+						width : 10,
+						height: 10,
+						x: rectX+5,
+						y:  rectY+20,
+						fill: 'steelblue',
+						stroke: 'black',
+						'stroke-width': '0.5px'
+				})
+		g.append('text').text('Representado')
+			.attr({
+				x:rectX+19,
+				y:rectY+28,
+				stroke: 'none',
+				'font-size':'11px',
+				color: 'black'
+			})
+
+		g.append('rect')
+				.attr({
+						width : 10,
+						height: 10,
+						x: rectX+5,
+						y:  rectY+35,
+						fill: 'steelblue',
+						opacity: 0.5,
+						stroke: 'black',
+						'stroke-width': '0.5px'
+				})
+		g.append('text').text('Parcialmente Rep.')
+			.attr({
+				x:rectX+19,
+				y:rectY+43,
+				stroke: 'none',
+				'font-size':'11px',
+				color: 'black'
+			})
+
+		g.append('rect')
+				.attr({
+						width : 10,
+						height: 10,
+						x: rectX+5,
+						y:  rectY+50,
+						fill: 'lightgrey',
+						stroke: 'black',
+						'stroke-width': '0.5px'
+				})
+		g.append('text').text('Não Representado')
+			.attr({
+				x:rectX+19,
+				y:rectY+58,
+				stroke: 'none',
+				'font-size':'11px',
+				color: 'black'
+			})
+
+	}
+
+	function setLabelGradient(){
+		d3.select('#statesSVG .stateLabel').remove()
+
+		var initX = 7;
+		var initY = 140;
+		var g = svg.append('g').attr('class','stateLabel');
+
+		votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
+			g.append('rect').attr({
+					width : 30,
+					height: 12,
+					x: initX,
+					y:  initY+i*12,
+					fill: color,
+					stroke: 'lighblue',
+					'stroke-width': '0.5px'
+				})
+		})
+
+		g.append('text').text('Não').attr({
+					x: initX+5,
+					y:  initY+10,
+					fill: 'white',
+					stroke: 'none',
+					'font-size':'11px',
+				})
+		g.append('text').text('Sim').attr({
+					x: initX+5,
+					y:  initY-1+votingColorGradient.length*12,
+					fill: 'white',
+					stroke: 'none',
+					'font-size':'11px',
+				})
+
+		g.append('text').text('-   Acordo').attr({
+					x: initX+36,
+					y:  initY+9,
+					fill: 'black',
+					stroke: 'none',
+					'font-size':'11px',
+				})
+
+		g.append('text').text('- Desacordo').attr({
+					x: initX+36,
+					y:  initY+3+(votingColorGradient.length/2)*12,
+					fill: 'black',
+					stroke: 'none',
+					'font-size':'11px',
+				})
+
+		g.append('text').text('-   Acordo').attr({
+					x: initX+36,
+					y:  initY-1+votingColorGradient.length*12,
+					fill: 'black',
+					stroke: 'none',
+					'font-size':'11px',
+				})
+
+	
+	}
 
 	return d3.rebind(chart, dispatch, "on");
 }

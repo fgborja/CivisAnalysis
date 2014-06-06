@@ -243,7 +243,6 @@ d3.chart.deputiesScatterplot = function() {
 		}
 	}
 
-
 	return d3.rebind(chart, dispatch, "on");
 }
 
