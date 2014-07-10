@@ -333,12 +333,12 @@ function updateDataforDateRange(start,end,callback){
 		
 		// Create the arrays to D3 plot (TODO set to var var var); ---------------------------------------------------------------
 			// Deputies array
-			deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies,end);
+			deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
 			// RollCalls array
 			rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
 		//
 
-		//scaleAdjustment.testSampling(deputiesInTheDateRange);
+		scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,end);
 		callback();
 	}) // cahmberOfDeputies.setDateRange
 
@@ -346,7 +346,7 @@ function updateDataforDateRange(start,end,callback){
 //=========================================================================================================================
 //=========================================================================================================================
 
-function createDeputyNodes(data_deputies, selecteddeputies, endDate){
+function createDeputyNodes(data_deputies, selecteddeputies){
 	
 	for (var i = 0; i < selecteddeputies.length; i++) {
 		selecteddeputies[i].scatterplot = data_deputies[i];

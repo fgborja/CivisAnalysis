@@ -8,7 +8,7 @@
 
 var radius = 4;
 var radiusHover = 8;
-var pxMargin = 10;
+var pxMargin = radius+5;
 
 if(!d3.chart) d3.chart = {};
 
@@ -28,17 +28,26 @@ d3.chart.deputiesScatterplot = function() {
 		scatterplot = container.append('svg:svg')
 			.attr('class', 'chart deputy');
 
+		// scatterplot.append('path')
+		// 	.attr('pointer','none')
+		// 	//.attr('stroke-dasharray','5,5,5')
+		// 	.attr('stroke','grey')
+		// 	.attr('stroke-width','2px')
+		// 	.attr('d','M0 '+colWidth+' l'+colWidth+' -'+colWidth)
+
 		g = scatterplot.append('g')
 			.attr('class', 'main')
 
 		g.append('rect')
-			.attr('class', 'selectorRect');
+			.attr('class', 'selectorRect')
+			.attr('opacity', '0');
 
 		g.append("g")
 		.classed("axis x", true)
 
 		g.append("g")
 		.classed("axis y", true)
+
 
 
 		selectors('deputy',dispatch.selected);

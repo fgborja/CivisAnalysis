@@ -175,7 +175,7 @@ d3.chart.timelineBarChart = function() {
 	}
 
 	chart.update = function () {
-			if(!group){
+		if(!group){
 			var datetimeList =[];
 			data.forEach( function(d){ datetimeList.push( d.datetime )});
 			var dateCF = crossfilter(datetimeList);
@@ -189,6 +189,23 @@ d3.chart.timelineBarChart = function() {
 				.timelineFilter([new Date(2012, 0, 1), new Date()]);
 
 			y.domain([0, group.top(1)[0].value]);
+
+			// MAX VALUE LINE --------------------------------------------
+				g.append('path')
+					.attr('pointer','none')
+					.attr('stroke-dasharray','5,5,5')
+					.attr('stroke','grey')
+					.attr('stroke-width','1px')
+					.attr('d','M0 '+y(group.top(1)[0].value)+' l'+(width-margin.right)+' '+y(group.top(1)[0].value))
+
+				g.append('text').attr({
+					x: 0,
+					y: y(group.top(1)[0].value) + 11,
+					'fill':'grey',
+					'font-size': 11
+				}).text('max RollCalls/week:'+group.top(1)[0].value)
+			// MAX VALUE LINE ===========================================
+
 
 			g.selectAll(".bar")
 				.data(["background", "foreground"])

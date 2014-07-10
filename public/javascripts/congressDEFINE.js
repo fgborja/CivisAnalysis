@@ -12,19 +12,21 @@ var legislatures = [
 ]
 
 var presidents = [
-  {name: 'Collor (PRN)'    ,offset:55, start:new Date(1991,0,1),end:new Date(1992,11,29)},
-  {name: 'Itamar (PMDB)'   ,offset:59, start:new Date(1992,11,29),end:new Date(1995,0,1)},
-  {name: 'FHC (PSDB) 1ºMan.',start:new Date(1995,0,1),end:new Date(1999,0,1)},
-  {name: 'FHC (PSDB) 2ºMan.',start:new Date(1999,0,1),end:new Date(2003,0,1)},
-  {name: 'Lula (PT) 1ºMan.' ,start:new Date(2003,0,1),end:new Date(2007,0,1)},
-  {name: 'Lula (PT) 2ºMan.' ,start:new Date(2007,0,1),end:new Date(2011,0,1)},
-  {name: 'Dilma (PT) 1ºMan.',start:new Date(2011,0,1),end:new Date(2015,0,1)}
+  {name: 'Collor (PRN)'     ,party:'PRN', start:new Date(1991,0,1),end:new Date(1992,11,29)},
+  {name: 'Itamar (PMDB)'    ,party:'PMDB', start:new Date(1992,11,29),end:new Date(1995,0,1)},
+  {name: 'FHC (PSDB) 1ºMan.',party:'PSDB', start:new Date(1995,0,1),end:new Date(1999,0,1)},
+  {name: 'FHC (PSDB) 2ºMan.',party:'PSDB', start:new Date(1999,0,1),end:new Date(2003,0,1)},
+  {name: 'Lula (PT) 1ºMan.' ,party:'PT', start:new Date(2003,0,1),end:new Date(2007,0,1)},
+  {name: 'Lula (PT) 2ºMan.' ,party:'PT', start:new Date(2007,0,1),end:new Date(2011,0,1)},
+  {name: 'Dilma (PT) 1ºMan.',party:'PT', start:new Date(2011,0,1),end:new Date(2015,0,1)}
 ]
 
 var startingYear = 1991;
 var years = $.map(Array(24), function(d,i){ return {name:i+startingYear, start: new Date(i+startingYear,0,1), end: new Date(i+startingYear+1,0,1)}   })
 
-
+//- organization:
+// the first alliances[0] is the elected
+// the first party[0] of the alliance is the party of the elected president  
 var elections = {
 	49: {
 		name: "Eleições de 1989",
