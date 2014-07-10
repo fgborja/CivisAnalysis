@@ -2,7 +2,7 @@ doctype html
 html
 	head
 		meta(charset="utf-8")
-		title Analise da Camara dos Deputados
+		title CivisAnalysis
 		link(rel="stylesheet" href="./javascripts/lib/bootstrap/dist/css/bootstrap.min.css")
 		link(rel='stylesheet', href='./stylesheets/styles.css')
 		link(rel="stylesheet", href="./javascripts/lib/pick-a-color-master/build/1.2.2/css/pick-a-color-1.2.2.min.css")
@@ -11,38 +11,42 @@ html
 		link(rel='stylesheet', href="./stylesheets/brazilianStates.css")
 
 	body
-		block content
-
-		// BODY_HTML
-		h2 Análise da Câmara dos Deputados
-
+		#head
+			h2 CivisAnalysis: Brazilian Chamber of Deputies
+		br
 		.container-fluid
-			.row
-				.col-xs-4
-					h4 Arranjo dos deputados de acordo com as votações
-					.canvas#canvasDeputies
-				.col-xs-4
-					h4 Ligações indicam deputados que votaram juntos em até 
-						span.subhead#thresh 70% 
-						text das votações:
-						.slider#slider 
-					.canvas#canvasGraph		
-				.col-xs-4
-					h4 Aranjo das votações de acordo com os votos dos deputados
-					.canvas#canvasRollCalls		
-			.row
-				.col-xs-8
-					.btn-toolbar#labelColorDeputies
-				.col-xs-4#labelColorRollCalls
-			.row
+			.row#main
+				
 				.col-xs-12
-					#timeline
-			.row#infoRow
-			.row#infographs
+					.row
+						.col-xs-5
+							h4.header Political Spectrum of Deputies
+							.canvas#canvasDeputies
+							h4.header Links connects deputies with 
+								span.subhead#thresh 70% 
+								text of vote correlation:
+								.slider#slider 
+							.canvas#canvasGraph
+
+						.col-xs-2
+								h4.header Parties
+								#infoParties
+
+						.col-xs-5
+							h4.header Political Spectrum of Roll Calls
+							.canvas#canvasRollCalls
+							h4.header States
+							.canvas#infoStates		
+							
+		#timeline
+
+
+		
+						
 
 
 		// THIRD_PARTY_LIBS
-		// script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
+		//script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
 		
 		script(src='./javascripts/lib/jquery.min.js')
 		script(src="./javascripts/lib/bootstrap/dist/js/bootstrap.min.js")
@@ -68,5 +72,6 @@ html
 		script(src='./javascripts/rollCallsScatterplot.js')
 		script(src='./javascripts/rollCallsTimeLine.js')
 		script(src='./javascripts/brazilianStates.js')
+		script(src='./javascripts/partiesInfographic.js')
 
 		script(src='./javascripts/chamberOfDeputiesVisualization.js')

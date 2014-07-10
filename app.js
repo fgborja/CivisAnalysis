@@ -47,7 +47,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+//app.get('/', routes.index);
 
 // functions to update DB... HTTP GET from camara.gov ------------------------------------------------------------------
 app.get('/obterDeputados', camara.obterDeputados(requestify,xml2js,db));
@@ -77,7 +77,7 @@ app.get('/listMotions', camaraClient.listMotions);
 // ---------------------------------------------------------------------------------------------------------------------
 
 // APPLICATION  !!!  ---------------------------------------------------------------------------------------------------
-app.get('/chamberOfDeputies', camaraClient.chamberOfDeputies);
+app.get('/', camaraClient.chamberOfDeputies);
 // ---------------------------------------------------------------------------------------------------------------------
 
 

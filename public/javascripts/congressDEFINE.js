@@ -3,12 +3,12 @@
 // PPB ==> PP
 // PL + PRONA ==> PR
 var legislatures = [
-	{name:'49ª Legislatura',start: new Date(1991,1,1) ,end: new Date(1995,0,31)},
-	{name:'50ª Legislatura',start: new Date(1995,1,1) ,end: new Date(1999,0,31)},
-	{name:'51ª Legislatura',start: new Date(1999,1,1) ,end: new Date(2003,0,31)},
-	{name:'52ª Legislatura',start: new Date(2003,1,1) ,end: new Date(2007,0,31)},
-	{name:'53ª Legislatura',start: new Date(2007,1,1) ,end: new Date(2011,0,31)},
-	{name:'54ª Legislatura',start: new Date(2011,1,1), end: new Date(2015,0,31)}
+	{name:'49ª Legislature',start: new Date(1991,1,1) ,end: new Date(1995,0,31)},
+	{name:'50ª Legislature',start: new Date(1995,1,1) ,end: new Date(1999,0,31)},
+	{name:'51ª Legislature',start: new Date(1999,1,1) ,end: new Date(2003,0,31)},
+	{name:'52ª Legislature',start: new Date(2003,1,1) ,end: new Date(2007,0,31)},
+	{name:'53ª Legislature',start: new Date(2007,1,1) ,end: new Date(2011,0,31)},
+	{name:'54ª Legislature',start: new Date(2011,1,1), end: new Date(2015,0,31)}
 ]
 
 var presidents = [
@@ -30,7 +30,7 @@ var elections = {
 		name: "Eleições de 1989",
 		turns:2,
 		dates:[new Date(1989,10,15)],
-		parties: [
+		alliances: [
 			{ 
 				president:"Collor (PRN)", name:"Movimento Brasil Novo", 
 				parties:["PRN", "PSC", "PTR", "PST"],
@@ -57,7 +57,7 @@ var elections = {
 		name: "Eleições de 1994",
 		turns:1,
 		dates:[new Date(1994,9,2)],
-		parties: [
+		alliances: [
 			{ 
 				president:"FHC (PSDB)", name:"União,Trabalho e Progresso", 
 				parties:["PSDB","PFL","DEM","PTB"],
@@ -85,7 +85,7 @@ var elections = {
 		name: "Eleições de 1998",
 		turns:1,
 		dates:[new Date(1998,9,4)],
-		parties: [
+		alliances: [
 			{
 				president:"FHC (PSDB)", name:"Coligação União, trabalho e progresso", 
 				parties:["PSDB","DEM","PFL","PP","PPB","PTB"],
@@ -112,7 +112,7 @@ var elections = {
 		name: "Eleições de 2002",
 		turns:2,
 		dates:[new Date(2002,9,6),new Date(2002,9,27)],
-		parties: [
+		alliances: [
 			{
 				president:"Lula (PT)", name:"Coligação Lula Presidente", 
 				parties:["PT","PL","PR","PV","PCdoB","PMN","PCB"],
@@ -139,7 +139,7 @@ var elections = {
 		name: "Eleições de 2006",
 		turns:2,
 		dates:[new Date(2006,9,1),new Date(2006,9,29)],
-		parties: [
+		alliances: [
 			 {
 			 	president:"Lula (PT)", name:"Coligação A Força do Povo", 
 			 	parties:["PT","PRB","PCdoB"],
@@ -166,7 +166,7 @@ var elections = {
 		name: "Eleições de 2010",
 		turns:2,
 		dates:[new Date(2010,9,3),new Date(2010,9,31)],
-		parties: [
+		alliances: [
 			 { 
 			 	president:"Dilma (PT)", name:"Coligação Para o Brasil Seguir Mudando", 
 			 	parties:["PT", "PMDB", "PDT", "PCdoB", "PSB", "PR","PL", "PRB", "PTN", "PSC", "PTC"],

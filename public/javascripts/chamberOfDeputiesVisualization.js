@@ -4,9 +4,7 @@ var tooltip = d3.select(".row")
 	.style("visibility", "hidden")
 	.attr("class", "d3tooltip");
 
-
-					  // "S.PART.","S.Part.","PRONA","PSDC","PST","PTN","PTdoB","PTC"
-					  // "PMN","PMR","PPL","PEN","PSL","PHS","PRP","PRTB","PAN","PRB"
+var canvasWidthAdjust = 0.8;
 
 var partyColor = function(party){ 
 	if(partiesNamesColor[party] !== undefined ) 
@@ -14,19 +12,19 @@ var partyColor = function(party){
 	else{ /*console.log(party);*/ return "#AAA" }
 } 
 
-// colors representing the vote value
+// ===============================================================================================================
+// colors representing the single vote value
 var votoStringToColor = {"Sim":"green","Não":"red","Abstenção":"purple","Obstrução":"blue","Art. 17":"yellow","null":'grey'}
 
+// ===============================================================================================================
 var votingColorGradient = ["rgb(165,0,38)","rgb(215,48,39)","rgb(244,109,67)","rgb(253,174,97)",
  "rgb(254,224,139)","rgb(255,255,191)","rgb(217,239,139)","rgb(166,217,106)",
  "rgb(102,189,99)","rgb(26,152,80)","rgb(0,104,55)"]
 
-//var votingStdColor = "#1f77b4"
-
 var votingColor = d3.scale.quantize()
     .domain([-1.0, 1.0])
-    .range(d3.range(11).map(function(d) {  /*if(votingColorGradient[d]===undefined)console.log(d);*/ return votingColorGradient[d] ; }));
-
+    .range(d3.range(11).map(function(d) {  return votingColorGradient[d] ; }));
+// ================================================================================================================
 
 
 // = d3.scale.ordinal()
@@ -61,7 +59,8 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 
 		// when a set of deputies is selected
 		deputiesScatterplot.on('selected', function(phonebookIDs){
-			
+			//console.log('deputiesScatterplot.on(selected) ')
+
 			// select the set of deputies in the graph
 			deputiesGraph.setSelectedDeputies(phonebookIDs);
 
@@ -73,12 +72,8 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			// TODO? display the distribution of the selected ( state-> unselecting all states)
 			brazilianStates.selectedDeputies();
 			
-			/*partiesMap = {};
-			selectedDeputies.forEach( function(deputy){ 
-				if(partiesMap[deputy.party]===undefined) partiesMap[deputy.party]=0;
-
-				partiesMap[deputy.party]++;
-			});*/
+			// parties plot!
+			partiesInfographic.setSelectedDeputies( calcDeputyPerParty(phonebookIDs));
 		})
 
 		// when an deputy element is hovered 
@@ -102,6 +97,8 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 		rollCallsScatterplot(d3.select('#canvasRollCalls'));
 
 		rollCallsScatterplot.on('selected', function (rollCallsIds){
+
+			//console.log('rollCallsScatterplot.on(selected')
 						
 			if(rollCallsIds == null) {
 				deputiesScatterplot.resetRollCallRates();
@@ -181,21 +178,49 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			setNewDateRange(filtered[0],filtered[1]);
 		})
 
+		// Set new range of dates!
+		timelineBarChart.on("setAlliances", function(alliances) { 
+
+			//console.log(alliances)
+			partiesInfographic.setAlliance(alliances)
+
+		})
 	// ====================================================================================
 	// States timeline ------------------------------------------------------------------
 		var brazilianStates 		= d3.chart.brazilianStates();
-		brazilianStates(d3.select('#infographs'));
+		brazilianStates(d3.select('#infoStates'));
 
 		brazilianStates
-			.on('selected', function (state,op) {
-				deputiesScatterplot.selectStates(state,op);
+			.on('selected', function (state,operation) {
+				deputiesScatterplot.selectNodesByAttr('state',state,operation);
 				//deputiesGraph.selectStates(states);
 			})
 			.on('hover', function (state){
-				deputiesScatterplot.hoverState(state);
-				deputiesGraph.hoverState(state);
+				deputiesScatterplot.highlightState(state);
+				deputiesGraph.highlightState(state);
 			})
 
+	// ====================================================================================
+	// parties infograph ------------------------------------------------------------------
+		var partiesInfographic = d3.chart.partiesInfographic();
+		partiesInfographic(d3.select('#infoParties'));
+
+		partiesInfographic
+			.on('selected', function (parties, operation) {
+				// console.log('partiesInfographic : selected')
+				// console.log(party +' '+operation)
+				deputiesScatterplot.selectParties( parties, operation );
+
+//				deputiesScatterplot.selectNodesByAttr('party',party,operation);
+			})
+			.on('hover', function (parties){
+				//console.log('partiesInfographic : hover')
+
+				//brazilianStates.highlightParty( party );
+				deputiesGraph.highlightParties( parties );
+				deputiesScatterplot.highlightParties( parties );
+
+			})
 
 	// ====================================================================================
 	// start query date
@@ -210,11 +235,16 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 // ======================================================================================================================
 
 function setNewDateRange(start,end){
+	deputiesGraph.stop();
+
 	deputyNodes =[];
 	rollCallNodes =[];
 
 	updateDataforDateRange(start,end, function(){
 		
+		timelineBarChart.data(datetimeRollCall)
+		timelineBarChart.update();
+
 		// set deputy data
 		deputiesScatterplot.data(deputyNodes);
 		// plot
@@ -232,14 +262,11 @@ function setNewDateRange(start,end){
 		// plot
 		deputiesGraph.update(null);
 
-		//rollCallsTimeLine.data(datetimeRollCall)
-		//rollCallsTimeLine.update();
-
-		timelineBarChart.data(datetimeRollCall)
-		timelineBarChart.update();
+		partiesInfographic.data(deputyNodes);
+		partiesInfographic.update(null);
 
 		deputiesScatterplot.init();
-
+		brazilianStates.resetRollCallRates();
 	})
 }
 
@@ -511,6 +538,24 @@ function calcDeputyPerState(phonebookIDs, states){
 			states[d.state].selected++;
 		}
 	})
+}
+
+function calcDeputyPerParty( phonebookIDs ){
+	if(phonebookIDs==null) return null;
+
+	var parties = {};
+
+	var phonebookIDsMAP = {};
+	phonebookIDs.forEach( function(phonebookID){ phonebookIDsMAP[phonebookID]=true; })
+
+	deputyNodes.forEach(function(deputy){
+		if(parties[deputy.party] === undefined) parties[deputy.party] = 0;
+
+		if(phonebookIDsMAP[deputy.phonebookID]) parties[deputy.party]++;
+
+	})
+
+	return parties;
 }
 
 //var day_month_year = Data.match(/\d+/g);

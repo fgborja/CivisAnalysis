@@ -123,7 +123,7 @@ d3.chart.timelineBarChart = function() {
 	var data,
 		svg,
 		g,
-		colWidth = $('.col-xs-12').width(),
+		colWidth = $('#timeline').width(),
 		margin = {top: 30, right: 30, bottom: 30, left: 30},
 		width = colWidth - margin.left - margin.right,
 		height = 50,
@@ -137,7 +137,7 @@ d3.chart.timelineBarChart = function() {
 		dimension,
 		group,
 		round;
-	var dispatch = d3.dispatch(chart, "timelineFilter");
+	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
 	function chart(div) {
 
@@ -174,8 +174,7 @@ d3.chart.timelineBarChart = function() {
 		
 	}
 
-	chart.update = update;
-	function update() {
+	chart.update = function () {
 			if(!group){
 			var datetimeList =[];
 			data.forEach( function(d){ datetimeList.push( d.datetime )});
@@ -228,13 +227,13 @@ d3.chart.timelineBarChart = function() {
 			}
 
 			// TODO contantes chusmes! wtf ive done here?  height,width(?!!)
-			appendGreyRangeButtons(years,height+2, 10)
-			appendGreyRangeButtons(legislatures,height+17, 70 );
-			appendGreyRangeButtons(presidents,height+32 , 60);
+			appendGreyRangeButtons(years,height+2)
+			appendGreyRangeButtons(legislatures,height+17 );
+			appendGreyRangeButtons(presidents,height+32 );
 
-			appendClipedRangeButtons(years,height+2, 10)
-			appendClipedRangeButtons(legislatures, height+17, 70 );
-			appendClipedRangeButtons(presidents, height+32 , 60);
+			appendClipedRangeButtons(years,height+2)
+			appendClipedRangeButtons(legislatures, height+17 );
+			appendClipedRangeButtons(presidents, height+32 );
 
 			appendElections(height+47);
 		}
@@ -357,7 +356,7 @@ d3.chart.timelineBarChart = function() {
 	//return d3.rebind(chart, brush, "on");
 	return d3.rebind(chart, dispatch, "on");
 
-	function appendRangeButtons(ranges, y, offset, fill){
+	function appendRangeButtons(ranges, y, fill){
 
 		var gb = svg.append('g').attr('transform','translate(30,'+y+')') 
 
@@ -382,19 +381,20 @@ d3.chart.timelineBarChart = function() {
 			.text( function(d){return d.name} )
 			.attr({
 				y:17,
-				x:  function(d){return (d.offset===undefined)? x(d.start) + offset : x(d.start) + offset - d.offset  },//(xAxis(legislatures[legisNum].end) - xAxis(legislatures[legisNum].start))/2,
+				x:  function(d){return  x(d.start)+ (x(d.end) - x(d.start))/2   },//(xAxis(legislatures[legisNum].end) - xAxis(legislatures[legisNum].start))/2,
 				fill:"#fff",
-				'font-size':13,
+				'font-size': function(d) { return Math.log((x(d.end) - x(d.start)) / this.getComputedTextLength()*9 )*5 + "px"; },
+				//'font-size': 13,
 				cursor : 'pointer' 
-			})
+			}).attr("text-anchor", "middle")
 
 		return gRects;
 	}
 
 
-	function appendGreyRangeButtons(ranges, y, offset ){
+	function appendGreyRangeButtons(ranges, y ){
 
-		var gRects = appendRangeButtons(ranges, y, offset,'#ccc');
+		var gRects = appendRangeButtons(ranges, y,'#ccc');
 
 		gRects
 			.on('mouseover', function(){
@@ -404,34 +404,19 @@ d3.chart.timelineBarChart = function() {
 				if(d3.select(this)  )
 				d3.select(this).select('rect').attr('fill','#ccc')
 			})	
-			.on('mousedown', function(d){
-					//console.log(d.start +' '+ d.end)
-					
-					var extent = [d.start, d.end];
-					
-					svg.select(".brush")
-						.call(brush.extent(extent))
-						.selectAll(".resize")
-						  .style("display", null);
-						  
-					g.select("#clip-timeline rect")
-					  .attr("x", x(extent[0]))
-					  .attr("width", x(extent[1]) - x(extent[0]));
-
-					dispatch.timelineFilter([d.start, d.end])
-
-			})
+			.on('mousedown', function(d){ presetDateRangeButtonSelected(d); })
 	
 	}
 
-	function appendClipedRangeButtons(ranges, y, offset ){
+	function appendClipedRangeButtons(ranges, y ){
 
-		var gRects = appendRangeButtons(ranges, y, offset,'steelblue');
+		var gRects = appendRangeButtons(ranges, y,'steelblue');
 
 		gRects.selectAll('rect').attr("clip-path", "url(#clip-timeline)");	
 		gRects.selectAll('text').attr("clip-path", "url(#clip-timeline)");	
 
 		gRects
+			.on('mousedown', function(d){ presetDateRangeButtonSelected(d); })
 			// TODO highlight the grey button => when the mouse is over on a partialy cliped button 
 			// .on('mouseover', function(){
 			// 	d3.select(this).select('rect').attr('fill','steelblue')
@@ -440,23 +425,22 @@ d3.chart.timelineBarChart = function() {
 			// 	if(d3.select(this)  )
 			// 	d3.select(this).select('rect').attr('fill','#ccc')
 			// })	
-			.on('mousedown', function(d){
-						//console.log(d.start +' '+ d.end)
-						
-						var extent = [d.start, d.end];
-						
-						svg.select(".brush")
-							.call(brush.extent(extent))
-							.selectAll(".resize")
-							  .style("display", null);
-							  
-						g.select("#clip-timeline rect")
-						  .attr("x", x(extent[0]))
-						  .attr("width", x(extent[1]) - x(extent[0]));
+			
+	}
 
-						dispatch.timelineFilter([d.start, d.end])
+	function presetDateRangeButtonSelected(d){
+		svg.select('.glyphicon.selected').classed('selected',false);				
+		
+		svg.select(".brush")
+			.call(brush.extent([d.start, d.end]))
+			.selectAll(".resize")
+			  .style("display", null);
+			  
+		g.select("#clip-timeline rect")
+		  .attr("x", x(d.start))
+		  .attr("width", x(d.end) - x(d.start));
 
-				})
+		dispatch.timelineFilter([d.start, d.end])
 	}
 
 	function appendElections( height ){
@@ -474,38 +458,53 @@ d3.chart.timelineBarChart = function() {
 					width:20,
 					height:20,
 					cursor : 'pointer' 	
-				}).text('')
+				}).text('')
 				//
 
 		texts.append("title").text( function (d) { return d.name })
 
 
-		texts
-		.on('mouseover', function(d){
-				$("#infoRow").append('<div id="propList"><table><thead><tr> <th>#</th> <th>1º</th> <th>2º</th><th>Candidato</th><th>Coligação</th> <th>Partidos Coligados</th></tr></thead><tbody></tbody></table></div>')
-			
-				var tableContent = '';
+		texts.on('click', function(d){
+			var element = d3.select(this)
+
+			if( element.classed('selected') ){
+				
+				element.classed('selected',false)
+				dispatch.setAlliances(null);
+
+				//$("#XXX").children().remove();
+
+				d3.selectAll(".deputy .node").style("fill", function(d) { 
+					if(d.record !== undefined) d = d.record;
+					return partyColor(d.party) 
+				});
+
+			}else{
+				gb.selectAll('text').classed('selected',false)
+				dispatch.setAlliances(null);
+
+				element.classed('selected',true)
 				var partiesColigationColor = {};
 
 				// For each item in our JSON, add a table row and cells to the content string
-				$.each(d.parties, function(i){
-					tableContent += '<tr>';
-					tableContent += '<td> <span class="color-preview" style="background-color: '+ partyColor(d.parties[i].parties[0])+';"></span> </td>';
-					tableContent += '<td>'+(d.parties[i].result[0]*100).toFixed(2)+' %</td>';
-					tableContent += '<td>'+ ((d.parties[i].result[1] === undefined)? '-' : (d.parties[i].result[1]*100).toFixed(2) +'%')+ '</td>';
-					tableContent += '<td>'+d.parties[i].president+ '</td>';
-					tableContent += '<td>'+d.parties[i].name+'</td>';
-					tableContent += '<td>'+ $.map(d.parties[i].parties, function(party){ return party}) +'</td>';
-					// tableContent += '<td>' + this.email + '</td>';
-					// tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
-					tableContent += '</tr>';
+				$.each(d.alliances, function(i){
+					// tableContent += '<tr>';
+					// tableContent += '<td> <span class="color-preview" style="background-color: '+ partyColor(d.alliances[i].parties[0])+';"></span> </td>';
+					// tableContent += '<td>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</td>';
+					// tableContent += '<td>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</td>';
+					// tableContent += '<td>'+d.alliances[i].president+ '</td>';
+					// tableContent += '<td>'+d.alliances[i].name+'</td>';
+					// tableContent += '<td>'+ $.map(d.alliances[i].parties, function(party){ return party}) +'</td>';
+					// // tableContent += '<td>' + this.email + '</td>';
+					// // tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
+					// tableContent += '</tr>';
 
-					$.each(d.parties[i].parties, function(party){ return partiesColigationColor[d.parties[i].parties[party]]= partyColor( d.parties[i].parties[0] )  })
+					$.each(d.alliances[i].parties, function(party){ return partiesColigationColor[d.alliances[i].parties[party]]= partyColor( d.alliances[i].parties[0] )  })
 
 				});
 
 				// Inject the whole content string into our existing HTML table
-				$('#propList table tbody').html(tableContent);
+				//$('#propList table tbody').html(tableContent);
 
 				//console.log(partiesColigationColor)
 				var coligationColor = function(party){ 
@@ -514,20 +513,16 @@ d3.chart.timelineBarChart = function() {
 					else{ /*console.log(party);*/ return "#AAA" }
 				} 
 
-				d3.selectAll(".node.deputy").style("fill", function(d) { 
+				d3.selectAll(".deputy .node").style("fill", function(d) { 
 					if(d.record !== undefined) d = d.record;
 					return coligationColor(d.party) 
 				});
 
-		})
-		.on('mouseout', function(){
-			$("#infoRow").children().remove();
-
-			d3.selectAll(".node.deputy").style("fill", function(d) { 
-				if(d.record !== undefined) d = d.record;
-				return partyColor(d.party) 
-			});
-
+				dispatch.setAlliances(d.alliances);
+				//$("#XXX").append('<div id="propList"><table><thead><tr> <th>#</th> <th>1º</th> <th>2º</th><th>Candidato</th><th>Coligação</th> <th>Partidos Coligados</th></tr></thead><tbody></tbody></table></div>')
+			
+				//var tableContent = '';
+			}
 		})
 	}
 

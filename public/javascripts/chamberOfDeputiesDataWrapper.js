@@ -72,9 +72,9 @@
 
 			loadMotion	: 	function(tipo,numero,ano,defer){
 				// GET motion details
-				chamberOfDeputiesClient.getMotionDetails(tipo,numero,ano, function(details){
-						motions[tipo+numero+ano].details = details.proposicao; 
-					})
+				// chamberOfDeputiesClient.getMotionDetails(tipo,numero,ano, function(details){
+				// 		motions[tipo+numero+ano].details = details.proposicao; 
+				// 	})
 
 				// GET motion roll calls
 				chamberOfDeputiesClient.getMotionRollCalls(tipo,numero,ano, function(motionRollCalls){
@@ -89,6 +89,9 @@
 								deputy.UF      = deputy.UF.trim();
 								deputy.Nome    = deputy.Nome.trim().toUpperCase();
 								deputy.Partido = deputy.Partido.trim();
+
+								//TODO party manager
+								if(deputy.Partido == 'Solidaried') deputy.Partido = 'SDD';
 							})
 						}
 
@@ -162,27 +165,27 @@
 
 							// LOAD the deputyDetails with 'ideCadastro' and add it to ideCadastroCollection
 							// some deputies have the same ideCadastro -> so we have to load
-							if (deputy.ideCadastro != ""){
+							// if (deputy.ideCadastro != ""){
 
-								if(ideCadastroCollection[deputy.ideCadastro] == undefined ) {
-									ideCadastroCollection[deputy.ideCadastro] = {};
+							// 	if(ideCadastroCollection[deputy.ideCadastro] == undefined ) {
+							// 		ideCadastroCollection[deputy.ideCadastro] = {};
 
-									laodDeputiesQueue.defer(
-										function(ideCadastro, deferCallback ){
-											chamberOfDeputiesClient.getDeputyDetails(ideCadastro, function(deputyDetails){
+							// 		laodDeputiesQueue.defer(
+							// 			function(ideCadastro, deferCallback ){
+							// 				chamberOfDeputiesClient.getDeputyDetails(ideCadastro, function(deputyDetails){
 
-												if(isArray(deputyDetails.Deputados.Deputado) )
-													 {ideCadastroCollection[deputy.ideCadastro] = deputyDetails.Deputados.Deputado;}
-												else {ideCadastroCollection[deputy.ideCadastro] = [ deputyDetails.Deputados.Deputado ] ;}
+							// 					if(isArray(deputyDetails.Deputados.Deputado) )
+							// 						 {ideCadastroCollection[deputy.ideCadastro] = deputyDetails.Deputados.Deputado;}
+							// 					else {ideCadastroCollection[deputy.ideCadastro] = [ deputyDetails.Deputados.Deputado ] ;}
 
-												deferCallback(null, true);// return to loadDeputies
-											})
-										}
-										,
-										deputy.ideCadastro
-									)
-								}
-							} 
+							// 					deferCallback(null, true);// return to loadDeputies
+							// 				})
+							// 			}
+							// 			,
+							// 			deputy.ideCadastro
+							// 		)
+							// 	}
+							// } 
 
 
 						})

@@ -1,4 +1,34 @@
+html, body {height: 100%;}
 
+h2 {text-align: center;}
+
+#head{
+  height:1%;
+  width:100%;
+}
+
+#main{
+  height:75%;
+  width:100%;
+}
+
+#timeline{
+  height:15%;
+  width:99%;
+  margin-left: auto ;
+  margin-right: auto ;
+}
+
+.header{
+    height:25px;
+}
+
+.canvas{
+    width:70%;
+    margin-left: auto ;
+    margin-right: auto ;
+
+}
 /* turn all elements unselectable*/
 * {
             user-select: none; /* CSS3 (little to no support) */
@@ -15,6 +45,7 @@
 }
 
 .chart {border:1px solid rgba(0, 0, 0, .2);}
+
 .chart .axis {display: none}
 .axis text{ display: none }
 
@@ -78,7 +109,9 @@
   width: 200px;
   height: 5px;
   margin: 0 3px 0 0;
+  opacity: 0.6;
 }
+
 
 
 
@@ -123,5 +156,8 @@ fieldset {
   padding:0; margin:0;
 }
 
+.glyphicon.selected { 
+  fill: steelblue;
+}
 
 #propList .color-preview {vertical-align:middle; border: 1px solid #ccc;border-radius: 4px; margin:0px;height: 1.429em; width: 1.429em; display: inline-block; background-color:#fff}

@@ -1,12 +1,12 @@
 if(!d3.chart) d3.chart = {};
 
 d3.chart.rollCallsScatterplot = function() {
-	var pxMargin = 20;
+	var pxMargin = 10;
 	var scatterplot, g;
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
-	var colWidth = $('.col-xs-4').width();
+	var colWidth = $('.canvas').width() * canvasWidthAdjust;
 
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin-10 /*(-10??!)*/, left: pxMargin}
 	  , width = colWidth - margin.left - margin.right
@@ -37,7 +37,7 @@ d3.chart.rollCallsScatterplot = function() {
 
 	chart.update = update;
 	function update() {
-
+		
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
 			.range([ 0, width ]);

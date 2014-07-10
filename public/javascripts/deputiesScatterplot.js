@@ -8,7 +8,7 @@
 
 var radius = 4;
 var radiusHover = 8;
-var pxMargin = 30;
+var pxMargin = 10;
 
 if(!d3.chart) d3.chart = {};
 
@@ -17,7 +17,7 @@ d3.chart.deputiesScatterplot = function() {
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
-	var colWidth = $('.col-xs-4').width();
+	var colWidth = $('.canvas').width() * canvasWidthAdjust;
 
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
 	  , width = colWidth - margin.left - margin.right
@@ -146,6 +146,7 @@ d3.chart.deputiesScatterplot = function() {
 	chart.data = function(value) {
 		if(!arguments.length) return data;
 		data = value;
+
 		return chart;
 	}
 	chart.width = function(value) {
@@ -160,31 +161,89 @@ d3.chart.deputiesScatterplot = function() {
 	}
 
 	// 'hover' deputies of a single state (or null)
-	chart.hoverState = function (state){
+	chart.highlightState = function (state){
 
 		g.selectAll('.node').attr('r', function (d){   
 			if(d.state == state) 
 				 return radiusHover;
 			else return radius;
 		})
+
+		if(state != null)
+			sortNodesByAtribute('state',state)
+	}
+
+	chart.highlightDeputy = function( phonebookID, mouseover) {
+		if(mouseover){
+			g.selectAll('#deputy-'+phonebookID).attr("r",radiusHover);
+		}else{
+			g.selectAll('#deputy-'+phonebookID).attr("r",radius);
+		}
+		
+	}
+
+	// @param hoverParties : Object
+	chart.highlightParties = function(hoverParties){
+
+		if(hoverParties != null){
+			g.selectAll('.node').attr('r', function (d){   
+				if(hoverParties[ d.party] !== undefined) 
+					 return radiusHover;
+				else return radius;
+			})
+
+			// sort elements 
+			$.each( hoverParties, function(party){
+				sortNodesByAtribute('party',party);	
+			})		
+		}
+		else g.selectAll('.node').attr('r', radius)
+	}
+
+	// @param selectParties : Array
+	chart.selectParties = function(selectParties, operation){
+
+		if(selectParties != null){
+			
+			chart.selectNodesByAttr('party', selectParties[0], operation )
+
+			if(operation == 'SET'){
+				selectParties.forEach( function(party){ chart.selectNodesByAttr('party', party, 'ADD' ) })
+			} else {
+				selectParties.forEach( function(party){ chart.selectNodesByAttr('party', party, operation ) })
+			}
+
+			//$.each(selectParties, function(party){ chart.selectNodesByAttr('party', party, operation ) })
+		}
+		else g.selectAll('.node').attr('r', radius)
 	}
 
 	// select deputies of an array of states // and dispatch the selected
 	// @param operation : 'set','add','exclude';
 	chart.selectStates = function (state, operation ){
 
+		selectNodesByAttr('state', state, operation )
+
+		// DISPATCH SELECTED!
+		var phonebookIDs = [];
+		g.selectAll('.node.selected').each( function(d){ phonebookIDs.push(d.phonebookID) })
+		dispatch.selected(phonebookIDs)
+	}
+
+	chart.selectNodesByAttr = function (attr, value, operation ){
+
 		// SELECT OPERATION
-		if(state == null) g.selectAll('.node').classed('selected',true);
+		if(value == null) g.selectAll('.node').classed('selected',true);
 		else{
 			if(operation == 'SET'){
 				g.selectAll('.node').classed('selected', function (d){   
-					if(state == d.state){ return true; }
+					if(value == d[attr]){ return true; }
 					else return false;
 				})
 			}
 			else{ 
 				g.selectAll('.node').each(function(d){  
-					if(state == d.state){
+					if(value == d[attr]){
 						//var selectedState = d3.select(this).attr('selected');
 						if(operation == 'ADD'){ 
 							d3.select(this).classed('selected',true);
@@ -201,16 +260,8 @@ d3.chart.deputiesScatterplot = function() {
 		dispatch.selected(phonebookIDs)
 	}
 
-	chart.highlightDeputy = function( phonebookID, mouseover) {
-		if(mouseover){
-			g.selectAll('#deputy-'+phonebookID).attr("r",radiusHover);
-		}else{
-			g.selectAll('#deputy-'+phonebookID).attr("r",radius);
-		}
-		
-	}
-
 	chart.init = function(){
+		chart.resetRollCallRates();
 		dispatch.selected(null)
 	}
 
@@ -224,6 +275,7 @@ d3.chart.deputiesScatterplot = function() {
 	}
 
 	chart.setRollCallVotingRate = function(){
+		//console.log('deputiesScatterplot : setRollCallVotingRate')
 		//g.selectAll('.node').style('fill', 'darkgrey');
 		g.selectAll(".node").style("fill", function(d) { return setDeputyFill(d) });	
 	}
@@ -241,6 +293,13 @@ d3.chart.deputiesScatterplot = function() {
 				 return 'darkgrey' 
 			else return votingColor(d.rate)
 		}
+	}
+
+	function sortNodesByAtribute( attr , value){
+			g.selectAll('.node').sort(function (a, b) { // select the parent and sort the path's
+				if (a[attr] != value) return -1;               // a is not the hovered element, send "a" to the back
+				else return 1;                             // a is the hovered element, bring "a" to the front
+			});
 	}
 
 	return d3.rebind(chart, dispatch, "on");

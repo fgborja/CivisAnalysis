@@ -39,14 +39,18 @@ d3.chart.brazilianStates = function() {
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
-	var width = 280,
-		height = 280;
+	var colWidth = $('.canvas').width() * canvasWidthAdjust;
+
+	var pxMargin = 0;
+	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin-10 /*(-10??!)*/, left: pxMargin}
+	  , width = colWidth - margin.left - margin.right
+	  , height = colWidth - margin.top - margin.bottom;
 
 	var projection = d3.geo.albers()
 		.center([-4, -15])
 		.rotate([+50, 0])
 		.parallels([0, -40])
-		.scale(350)
+		.scale(colWidth+100)
 		.translate([width / 2, height / 2]);
 
 	var path = d3.geo.path()
@@ -79,7 +83,8 @@ d3.chart.brazilianStates = function() {
 			data = topojson.feature(BRA_adm1, BRA_adm1.objects.BRA_adm1).features;
 			$.each( data, function(state){ state.rate = null })
 			
-		
+			//setStateInfo(data);
+
 			svg.selectAll(".states")
 				.data(data)
 				.enter().append("path")
@@ -161,15 +166,6 @@ d3.chart.brazilianStates = function() {
 			return c;
 		}
 
-	chart.highlightDeputyState = 
-		function highlightDeputyState( state , mouseover ){
-			if(mouseover) 
-				{ svg.select(".states#"+state).classed('mouseover',true)  }
-			else{ svg.select(".states#"+state).classed('mouseover',false) }
-				
-			setStateStyle( svg.select(".states#"+state) );		
-		}
-
 	// STATE STYLES!!  (1) mouseover (2) selected (3) unselected  + (filled by the roll calls outcome - OR NOT)
 	function setStateStyle( element ){
 		// mouseover
@@ -210,8 +206,14 @@ d3.chart.brazilianStates = function() {
 		
 		svg.selectAll('.states').attr('fill',function(d){/*console.log(d.rate);*/ return 'darkgrey'})
 		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+	}
 
-
+	chart.highlightDeputyState = function( state , mouseover ){
+			if(mouseover) 
+				{ svg.select(".states#"+state).classed('mouseover',true)  }
+			else{ svg.select(".states#"+state).classed('mouseover',false) }
+				
+			setStateStyle( svg.select(".states#"+state) );		
 	}
 
 	chart.resetRollCallRates = function (){
@@ -248,22 +250,22 @@ d3.chart.brazilianStates = function() {
 		g.append('rect')
 				.attr({
 					width : 115,
-					height: 65,
+					height: 46,
 					x: rectX,
-					y:  rectY,
+					y:  rectY +17,
 					fill: 'lightgrey',
 					stroke: 'black',
 					'stroke-width': '0.5px'
 				})
 
-		g.append('text').text('Estado:')
-			.attr({
-				x:rectX+5,
-				y:rectY+14,
-				stroke: 'none',
-				'font-size':'14px',
-				color: 'black'
-			})
+		// g.append('text').text('State:')
+		// 	.attr({
+		// 		x:rectX+5,
+		// 		y:rectY+14,
+		// 		stroke: 'none',
+		// 		'font-size':'14px',
+		// 		color: 'black'
+		// 	})
 
 		g.append('rect')
 				.attr({
@@ -275,7 +277,7 @@ d3.chart.brazilianStates = function() {
 						stroke: 'black',
 						'stroke-width': '0.5px'
 				})
-		g.append('text').text('Representado')
+		g.append('text').text('Represented')
 			.attr({
 				x:rectX+19,
 				y:rectY+28,
@@ -295,7 +297,7 @@ d3.chart.brazilianStates = function() {
 						stroke: 'black',
 						'stroke-width': '0.5px'
 				})
-		g.append('text').text('Parcialmente Rep.')
+		g.append('text').text('Partially Rep.')
 			.attr({
 				x:rectX+19,
 				y:rectY+43,
@@ -314,7 +316,7 @@ d3.chart.brazilianStates = function() {
 						stroke: 'black',
 						'stroke-width': '0.5px'
 				})
-		g.append('text').text('Não Representado')
+		g.append('text').text('Not Represented')
 			.attr({
 				x:rectX+19,
 				y:rectY+58,
@@ -359,7 +361,7 @@ d3.chart.brazilianStates = function() {
 					'font-size':'11px',
 				})
 
-		g.append('text').text('-   Acordo').attr({
+		g.append('text').text('-   Agreed').attr({
 					x: initX+36,
 					y:  initY+9,
 					fill: 'black',
@@ -367,7 +369,7 @@ d3.chart.brazilianStates = function() {
 					'font-size':'11px',
 				})
 
-		g.append('text').text('- Desacordo').attr({
+		g.append('text').text('- Disagreed').attr({
 					x: initX+36,
 					y:  initY+3+(votingColorGradient.length/2)*12,
 					fill: 'black',
@@ -375,7 +377,7 @@ d3.chart.brazilianStates = function() {
 					'font-size':'11px',
 				})
 
-		g.append('text').text('-   Acordo').attr({
+		g.append('text').text('-   Agreed').attr({
 					x: initX+36,
 					y:  initY-1+votingColorGradient.length*12,
 					fill: 'black',
@@ -385,6 +387,25 @@ d3.chart.brazilianStates = function() {
 
 	
 	}
+
+
+	// function setStateInfo(data){
+
+	// 	data.forEach( function(d,i){ d.i = i; })
+
+	// 	svg.selectAll(".statesInfo")
+	// 			.data(data)
+	// 			.enter().append("text")
+	// 			.attr({ 
+	// 				id: function(d) { return state[ d.properties.NAME_1 ] ; },
+	// 				'class' : "statesInfo selected",
+	// 				x: function(d) { return 280 },
+	// 				y: function(d) { return 15+ (d.i*11) },
+	// 				'font-size': 11
+	// 			})
+	// 			.text( function(d) { return state[ d.properties.NAME_1 ] ; } )
+
+	// }
 
 	return d3.rebind(chart, dispatch, "on");
 }
