@@ -8,28 +8,27 @@ h2 {text-align: center;}
 }
 
 #main{
-  height:75%;
+  /*height:400px;*/
   width:100%;
 }
 
 #timeline{
-  height:15%;
+  height:120px;
   width:99%;
   margin-left: auto ;
   margin-right: auto ;
 }
 
 .header{
-    height:25px;
+    height:20px;
      margin-bottom:5px;
-     margin-top:10px;
+     margin-top:5px;
 }
 
 .canvas{
-    width:90%;
+    width:300px;
     margin-left: auto ;
     margin-right: auto ;
-
 }
 /* turn all elements unselectable*/
 * {
@@ -118,7 +117,7 @@ h2 {text-align: center;}
 
 
 #propList {
-  margin:0 0 30px 0;
+  margin:0 0 10px 0;
 }
   #propList table {
     border-collapse:separate;
@@ -160,6 +159,10 @@ fieldset {
 
 .glyphicon.selected { 
   fill: steelblue;
+}
+
+td.highlight{
+  background-color:steelblue;
 }
 
 #propList .color-preview {vertical-align:middle; border: 1px solid #ccc;border-radius: 4px; margin:0px;height: 1.429em; width: 1.429em; display: inline-block; background-color:#fff}

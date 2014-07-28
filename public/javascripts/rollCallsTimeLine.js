@@ -309,6 +309,9 @@ d3.chart.timelineBarChart = function() {
 		div.select("#clip-timeline rect").attr("x", null).attr("width", "100%");
 		//dimension.filterAll();
 	  }
+	  // clear selected alliance
+	  dispatch.setAlliances(null);
+	  svg.select('.glyphicon.selected').classed('selected',false);
 	  //!!!!!!!!!!
 	  dispatch.timelineFilter(brush.extent())
 	  //console.log()
@@ -446,7 +449,10 @@ d3.chart.timelineBarChart = function() {
 	}
 
 	function presetDateRangeButtonSelected(d){
-		svg.select('.glyphicon.selected').classed('selected',false);				
+		// clear selected alliance
+		dispatch.setAlliances(null);
+		svg.select('.glyphicon.selected').classed('selected',false);
+		
 		
 		svg.select(".brush")
 			.call(brush.extent([d.start, d.end]))
@@ -457,14 +463,14 @@ d3.chart.timelineBarChart = function() {
 		  .attr("x", x(d.start))
 		  .attr("width", x(d.end) - x(d.start));
 
-		dispatch.timelineFilter([d.start, d.end])
+		dispatch.timelineFilter([d.start, d.end])		
 	}
 
 	function appendElections( height ){
 		var gb = svg.append('g').attr('transform','translate(30,'+height+')') 
 
 
-		var texts = gb.selectAll('text')
+		var allianceIcons = gb.selectAll('text')
 			.data( $.map(elections,function(d){return d}) )
 			.enter()
 				.append('text')
@@ -478,67 +484,77 @@ d3.chart.timelineBarChart = function() {
 				}).text('')
 				//
 
-		texts.append("title").text( function (d) { return d.name })
+		//allianceIcons.append("title").text( function (d) { return d.name })
 
+		allianceIcons.on('mouseout', function(d){ 
+			var tr = tooltip.transition().duration(200).style("opacity", 0);
+			tr.style('visibility','hidden')
+		})
+		allianceIcons.on('mouseover', function(d){
 
-		texts.on('click', function(d){
+			var partiesColigationColor = {};
+
+			var tableContent = '';
+			// For each item in our JSON, add a table row and cells to the content string
+			$.each(d.alliances, function(i){
+				tableContent += '<tr>';
+				tableContent += '<td> <span class="color-preview" style="background-color: '+ getPartyColor(d.alliances[i].parties[0])+';"></span> </td>';
+				tableContent += '<td>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</td>';
+				tableContent += '<td>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</td>';
+				tableContent += '<td>'+d.alliances[i].president+ '</td>';
+				tableContent += '<td>'+d.alliances[i].name+'</td>';
+				tableContent += '<td>'+ $.map(d.alliances[i].parties, function(party){ return party}) +'</td>';
+				// tableContent += '<td>' + this.email + '</td>';
+				// tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
+				tableContent += '</tr>';			
+			});
+			
+			tooltip.html('<h3> Brazilian Presidential Election of '+d.name+'</h3>' +' <br>'+
+				'<div id="propList">'+
+					'<table>'+
+						'<thead>'+
+							'<tr>'+ 
+								'<th>#</th>'+
+								'<th>1st Round</th>'+
+								'<th>2nd</th>'+
+								'<th>Nominee</th>'+
+								'<th>Electoral Alliance</th>'+
+								'<th>Allied Parties</th>'+
+							'</tr>'+
+						'</thead>'+
+						'<tbody>'+
+							tableContent +
+						'</tbody>'+
+					'</table>'+
+				'</div>'
+				+ '<em>Click to set alliances</em>'
+			);
+
+			tooltip.transition().duration(200).style("opacity", 1);
+
+			return tooltip.style("visibility", "visible")
+							.style("top", (250 )+"px")
+							.style("left",($(window).width()/4 )+"px");
+		})	
+
+		// set on/off alliance
+		allianceIcons.on('click', function(d){
 			var element = d3.select(this)
 
 			if( element.classed('selected') ){
 				
 				element.classed('selected',false)
 				dispatch.setAlliances(null);
-
-				//$("#XXX").children().remove();
-
-				d3.selectAll(".deputy .node").style("fill", function(d) { 
-					if(d.record !== undefined) d = d.record;
-					return partyColor(d.party) 
-				});
-
 			}else{
+				tooltip.style('visibility','hidden')
 				gb.selectAll('text').classed('selected',false)
+
 				dispatch.setAlliances(null);
 
 				element.classed('selected',true)
-				var partiesColigationColor = {};
-
-				// For each item in our JSON, add a table row and cells to the content string
-				$.each(d.alliances, function(i){
-					// tableContent += '<tr>';
-					// tableContent += '<td> <span class="color-preview" style="background-color: '+ partyColor(d.alliances[i].parties[0])+';"></span> </td>';
-					// tableContent += '<td>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</td>';
-					// tableContent += '<td>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</td>';
-					// tableContent += '<td>'+d.alliances[i].president+ '</td>';
-					// tableContent += '<td>'+d.alliances[i].name+'</td>';
-					// tableContent += '<td>'+ $.map(d.alliances[i].parties, function(party){ return party}) +'</td>';
-					// // tableContent += '<td>' + this.email + '</td>';
-					// // tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
-					// tableContent += '</tr>';
-
-					$.each(d.alliances[i].parties, function(party){ return partiesColigationColor[d.alliances[i].parties[party]]= partyColor( d.alliances[i].parties[0] )  })
-
-				});
-
-				// Inject the whole content string into our existing HTML table
-				//$('#propList table tbody').html(tableContent);
-
-				//console.log(partiesColigationColor)
-				var coligationColor = function(party){ 
-					if(partiesColigationColor[party] !== undefined ) 
-						{return partiesColigationColor[party];}
-					else{ /*console.log(party);*/ return "#AAA" }
-				} 
-
-				d3.selectAll(".deputy .node").style("fill", function(d) { 
-					if(d.record !== undefined) d = d.record;
-					return coligationColor(d.party) 
-				});
 
 				dispatch.setAlliances(d.alliances);
-				//$("#XXX").append('<div id="propList"><table><thead><tr> <th>#</th> <th>1º</th> <th>2º</th><th>Candidato</th><th>Coligação</th> <th>Partidos Coligados</th></tr></thead><tbody></tbody></table></div>')
 			
-				//var tableContent = '';
 			}
 		})
 	}

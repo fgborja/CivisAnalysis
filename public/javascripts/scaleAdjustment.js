@@ -91,7 +91,8 @@
 
 			// get party of the president elected in the endDate
 			var governmentParty;
-			presidents.forEach( function(d){if( (d.start < endDate) && (d.end >= endDate ) ) governmentParty = d.party; } )
+			legislatures.forEach( function(d){if( (d.start < endDate) && (d.end >= endDate ) ) governmentParty = d.regimeParty; } )
+			//console.log(governmentParty)
 
 			//console.log(governmentParty)
 			// calc the 3rd quadrant in the 2d plot

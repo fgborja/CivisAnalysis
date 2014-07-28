@@ -117,7 +117,7 @@ d3.chart.deputiesScatterplot = function() {
 			r: radius,
 			class: function() { if(selected==null) return "node selected" } ,
 			id: function(d) { return "deputy-" + d.phonebookID; },
-			fill: function(d) { return partyColor(d.party) },
+			fill: function(d) { return getPartyColor(d.party) },
 			deputy: function(d) { return d.phonebookID}
 		})
 		circles.exit().transition().remove();
@@ -135,7 +135,10 @@ d3.chart.deputiesScatterplot = function() {
 			dispatch.hover(d,true);
 
 			tooltip.html(d.name +' ('+d.party+'-'+d.state+")<br /><em>Click to highlight</em>");
-			return tooltip.style("visibility", "visible");
+			
+			return tooltip
+					.style("visibility", "visible")
+					.style("opacity", 1)
 		}	
 
 		// mouse MOVE circle deputy
@@ -147,7 +150,7 @@ d3.chart.deputiesScatterplot = function() {
 			
 				dispatch.hover(d,false);
 
-				return tooltip.style("visibility", "hidden");
+				return tooltip.style('visibility','hidden')
 		}				
 
 	}
@@ -269,7 +272,7 @@ d3.chart.deputiesScatterplot = function() {
 		dispatch.selected(phonebookIDs)
 	}
 
-	chart.init = function(){
+	chart.resetRollCallRates = function(){
 		chart.resetRollCallRates();
 		dispatch.selected(null)
 	}
@@ -296,7 +299,7 @@ d3.chart.deputiesScatterplot = function() {
 
 	function setDeputyFill( d ){
 		if(d.rate == null){
-			return partyColor(d.party)
+			return getPartyColor(d.party)
 		} else{ 
 			if (d.rate == "noVotes")
 				 return 'darkgrey' 

@@ -5,11 +5,11 @@
 // MODULE to manage the db-camara in MongoDB. 
 // update and insert values in DB from camara.gov 
 (function($) {
-    $.chamberOfDeputiesManager = function() {
-        var chamberOfDeputiesManager = {
+	$.chamberOfDeputiesManager = function() {
+		var chamberOfDeputiesManager = {
 
-        	getObterDetalhesDeputado	: function (idecadastro){
-        		if(idecadastro=="")console.log("should not have null idecadastro :(");
+			getObterDetalhesDeputado	: function (idecadastro){
+				if(idecadastro=="")console.log("should not have null idecadastro :(");
 				$.getJSON( './obterDetalhesDeputado/'+idecadastro, function( data ) {
 					return data;
 				})
@@ -44,28 +44,28 @@
 // module to extract and interact with the chamberOfDeputies information on BD
 
 (function($) {
-    $.chamberOfDeputiesClient = function() {
-        var chamberOfDeputiesClient = {
+	$.chamberOfDeputiesClientDB = function() {
+		var chamberOfDeputiesClient = {
 
-        	// Object to identify the Motion==Proposicao
-        	motionIdObj		: function (tipo,numero,ano){ return {tipo:tipo,numero:numero,ano:ano}  }, 
-        	
-        	//Object to identify the RollCall==Votacao
-        	rollCallIdObj	: function (tipo,numero,ano,votingNum){ 
-        		
-        		var rollCallId = this.motionIdObj(tipo,numero,ano);
-        		rollCallId.votingNum = votingNum;
+			// Object to identify the Motion==Proposicao
+			motionIdObj		: function (tipo,numero,ano){ return {tipo:tipo,numero:numero,ano:ano}  }, 
+			
+			//Object to identify the RollCall==Votacao
+			rollCallIdObj	: function (tipo,numero,ano,votingNum){ 
+				
+				var rollCallId = this.motionIdObj(tipo,numero,ano);
+				rollCallId.votingNum = votingNum;
 
-        		return rollCallId;
-        	}, 
+				return rollCallId;
+			}, 
 
-        	getMotionRollCallInYear	: 	function (year,callback){
+			getMotionRollCallInYear	: 	function (year,callback){
 				$.getJSON( '/getMotionRollCallInYear/'+year, function( motionRollCallInYear ) {
 					callback(motionRollCallInYear);
 				})
 			},
 
-        	getMotionRollCalls	:	function (tipo,numero,ano,callback){
+			getMotionRollCalls	:	function (tipo,numero,ano,callback){
 				$.getJSON( '/getMotionRollCalls/'+tipo+'/'+numero+'/'+ano, function( motionRollCalls ) {
 					if(motionRollCalls === null) console.log('Could not load DB getMotionRollCalls/'+tipo+'/'+numero+'/'+ano);
 					callback(motionRollCalls,tipo,numero,ano);
@@ -98,25 +98,25 @@
 				//var start = new Date(2013, 0, 1,0,0,0,0);
 				//var end   = new Date(2013, 4, 1,0,0,0,0);
 
-			    // Use AJAX to post the object to our adduser service
-			    $.ajax({
-			      type: 'POST',
-			      data: { 'start': startDate.toISOString(), 'end':  endDate.toISOString() },
-			      url: '/getMotionRollCallsDate',
-			      dataType: 'JSON'
-			    }).done(function( motionRollCallsArray ) {
-			      	callback(motionRollCallsArray);
-			    });
+				// Use AJAX to post the object to our adduser service
+				$.ajax({
+				  type: 'POST',
+				  data: { 'start': startDate.toISOString(), 'end':  endDate.toISOString() },
+				  url: '/getMotionRollCallsDate',
+				  dataType: 'JSON'
+				}).done(function( motionRollCallsArray ) {
+					callback(motionRollCallsArray);
+				});
 			},
 
 
-            // get a motionRollCalls list and iterate each roll call calling iterateRollCallVotes()
+			// get a motionRollCalls list and iterate each roll call calling iterateRollCallVotes()
 			iterateMotionRollCallsVotes: function (motionRollCalls,callbackForEachVote){
 				if(motionRollCalls===null) return {};
-			    if(isArray(motionRollCalls.proposicao.Votacoes.Votacao)){
-			    	//(only way to reference 'this' inside .each??)
-			    	var that = this; 
-			    	// this motion have many* roll calls - iterate.each
+				if(isArray(motionRollCalls.proposicao.Votacoes.Votacao)){
+					//(only way to reference 'this' inside .each??)
+					var that = this; 
+					// this motion have many* roll calls - iterate.each
 					$.each(motionRollCalls.proposicao.Votacoes.Votacao, 
 						function(votingNum,rollCall){
 							// create the rollCallID object with the 'votingNum' iterator
@@ -145,22 +145,50 @@
 					}	
 				)	
 			}
-        };
+		};
 
-        return {  // INTERFACE
-        	rollCallIdObj 				:   chamberOfDeputiesClient.rollCallIdObj,
-            motionIdObj					: 	chamberOfDeputiesClient.motionIdObj,
+		return {  // INTERFACE
+			rollCallIdObj 				:   chamberOfDeputiesClient.rollCallIdObj,
+			motionIdObj					: 	chamberOfDeputiesClient.motionIdObj,
 
-            getMotionRollCallInYear		: 	chamberOfDeputiesClient.getMotionRollCallInYear,
-            getMotionRollCalls			: 	chamberOfDeputiesClient.getMotionRollCalls,
-            getMotionDetails			: 	chamberOfDeputiesClient.getMotionDetails,
-            getDeputyDetails			: 	chamberOfDeputiesClient.getDeputyDetails,
+			getMotionRollCallInYear		: 	chamberOfDeputiesClient.getMotionRollCallInYear,
+			getMotionRollCalls			: 	chamberOfDeputiesClient.getMotionRollCalls,
+			getMotionDetails			: 	chamberOfDeputiesClient.getMotionDetails,
+			getDeputyDetails			: 	chamberOfDeputiesClient.getDeputyDetails,
 
-            iterateMotionRollCallsVotes	: 	chamberOfDeputiesClient.iterateMotionRollCallsVotes,
-            iterateRollCallVotes 		: 	chamberOfDeputiesClient.iterateRollCallVotes,
+			iterateMotionRollCallsVotes	: 	chamberOfDeputiesClient.iterateMotionRollCallsVotes,
+			iterateRollCallVotes 		: 	chamberOfDeputiesClient.iterateRollCallVotes,
 
-            getOcurrencesOfRollCalls	:   chamberOfDeputiesClient.getOcurrencesOfRollCalls,
-            getMotionRollCallsDate		:   chamberOfDeputiesClient.getMotionRollCallsDate
-        };
-    };
+			getOcurrencesOfRollCalls	:   chamberOfDeputiesClient.getOcurrencesOfRollCalls,
+			getMotionRollCallsDate		:   chamberOfDeputiesClient.getMotionRollCallsDate
+		};
+	};
+})(jQuery);
+
+
+(function($) {
+	$.chamberOfDeputiesClientHTTP = function() {
+		var chamberOfDeputiesHTTP = {
+
+			getMotionRollCalls	:	function (tipo,numero,ano,callback){
+				d3.json('/data/motionRollCalls/'+tipo+''+numero+''+ano, function(motionRollCalls) {
+					if(motionRollCalls === null) console.log('Could not load DB getMotionRollCalls/'+tipo+'/'+numero+'/'+ano);
+					callback(motionRollCalls,tipo,numero,ano);
+				})
+			},
+
+			getOcurrencesOfRollCalls	: 	function (callback){
+				d3.json('/data/datetimeRollCall.json', function( ocurrencesOfRollCalls ) {
+					callback(ocurrencesOfRollCalls);
+				})
+			}
+		};
+
+		return {  // INTERFACE
+
+			getMotionRollCalls			: 	chamberOfDeputiesHTTP.getMotionRollCalls,
+			getOcurrencesOfRollCalls	:   chamberOfDeputiesHTTP.getOcurrencesOfRollCalls,
+		
+		};
+	};
 })(jQuery);

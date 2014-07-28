@@ -2,15 +2,19 @@
 var tooltip = d3.select(".row")
 	.append("div")
 	.style("visibility", "hidden")
+	.style("opacity", 0)
 	.attr("class", "d3tooltip");
 
 var canvasWidthAdjust = 0.8;
 
-var partyColor = function(party){ 
+// PARTY COLORS =================================================================================================
+var getConstantPartyColor = function(party){ 
 	if(partiesNamesColor[party] !== undefined ) 
 		{return partiesNamesColor[party];}
 	else{ /*console.log(party);*/ return "#AAA" }
 } 
+// there is a case where partyColor will be (a function) according to electoral alliance color
+var getPartyColor = getConstantPartyColor;
 
 // ===============================================================================================================
 // colors representing the single vote value
@@ -22,8 +26,8 @@ var votingColorGradient = ["rgb(165,0,38)","rgb(215,48,39)","rgb(244,109,67)","r
  "rgb(102,189,99)","rgb(26,152,80)","rgb(0,104,55)"]
 
 var votingColor = d3.scale.quantize()
-    .domain([-1.0, 1.0])
-    .range(d3.range(11).map(function(d) {  return votingColorGradient[d] ; }));
+	.domain([-1.0, 1.0])
+	.range(d3.range(11).map(function(d) {  return votingColorGradient[d] ; }));
 // ================================================================================================================
 
 
@@ -53,45 +57,54 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 
 	// =====================================================================================
 	// Deputies Scatterplot ----------------------------------------------------------------
+	//
+	// init
 		var deputiesScatterplot 	= d3.chart.deputiesScatterplot();
 		// set html container
 		deputiesScatterplot(d3.select('#canvasDeputies'));
+	//
+	// interactions
+		deputiesScatterplot
+			// when a set of deputies is selected
+			.on('selected', function(phonebookIDs){
+				//console.log('deputiesScatterplot.on(selected) ')
 
-		// when a set of deputies is selected
-		deputiesScatterplot.on('selected', function(phonebookIDs){
-			//console.log('deputiesScatterplot.on(selected) ')
+				// select the set of deputies in the graph
+				deputiesGraph.setSelectedDeputies(phonebookIDs);
 
-			// select the set of deputies in the graph
-			deputiesGraph.setSelectedDeputies(phonebookIDs);
+				// set the agreement rate for each RollCall
+				calcRollCallAgreement(rollCallInTheDateRange,phonebookIDs);
+				rollCallsScatterplot.setDeputyVotingRate();
 
-			// set the agreement rate for each RollCall
-			calcRollCallAgreement(rollCallInTheDateRange,phonebookIDs);
-			rollCallsScatterplot.setDeputyVotingRate();
+				calcDeputyPerState(phonebookIDs, brazilianStates.getStates())
+				// TODO? display the distribution of the selected ( state-> unselecting all states)
+				brazilianStates.selectedDeputies();
+				
+				// parties plot!
+				partiesInfographic.setSelectedDeputies( calcDeputyPerParty(phonebookIDs));
+			})
 
-			calcDeputyPerState(phonebookIDs, brazilianStates.getStates())
-			// TODO? display the distribution of the selected ( state-> unselecting all states)
-			brazilianStates.selectedDeputies();
-			
-			// parties plot!
-			partiesInfographic.setSelectedDeputies( calcDeputyPerParty(phonebookIDs));
-		})
+			// when an deputy element is hovered 
+			// @param deputy 		: deputy Object  
+			// @param mouseover 	: boolean  => true if mouseover : false if mouseout
+			.on('hover', function(deputy, mouseover){
+				if(deputy!=null){
+					// highlight the state of the deputy
+					brazilianStates.highlightDeputyState( deputy.state , mouseover );
+					// highlight the votes of the deputy in each roll call
+					rollCallsScatterplot.highlightDeputyVotes( deputy.phonebookID , mouseover );
+					// highlight the deputy in the graph
+					deputiesGraph.highlightDeputy( deputy.phonebookID , mouseover );
+				} 
+			})
+	// =====================================================================================
 
-		// when an deputy element is hovered 
-		// @param deputy 		: deputy Object  
-		// @param mouseover 	: boolean  => true if mouseover : false if mouseout
-		deputiesScatterplot.on('hover', function(deputy, mouseover){
-			if(deputy!=null){
-				// highlight the state of the deputy
-				brazilianStates.highlightDeputyState( deputy.state , mouseover );
-				// highlight the votes of the deputy in each roll call
-				rollCallsScatterplot.highlightDeputyVotes( deputy.phonebookID , mouseover );
-				// highlight the deputy in the graph
-				deputiesGraph.highlightDeputy( deputy.phonebookID , mouseover );
-			} 
-		})
+
 
 	// =====================================================================================
 	// RollCalls Scatterplot ---------------------------------------------------------------
+	//
+	//
 		var rollCallsScatterplot 	= d3.chart.rollCallsScatterplot();
 		// set html container
 		rollCallsScatterplot(d3.select('#canvasRollCalls'));
@@ -147,87 +160,133 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 				deputiesScatterplot.highlightRollCall( rollCall , mouseover );
 			} 
 		})
+	// ====================================================================================
+
 
 	// ====================================================================================
-	// deputados Graph   ------------------------------------------------------------------
+	// Deputies Graph   -------------------------------------------------------------------
+	//
+	// init
 		var deputiesGraph = d3.chart.deputiesGraph();
 		deputiesGraph(d3.select('#canvasGraph'));
-
-		// when an deputy element is hovered 
-		// @param deputy 		: deputy Object  
-		// @param mouseover 	: boolean  => true if mouseover : false if mouseout
-		deputiesGraph.on('hover', function(deputy, mouseover){
-			if(deputy!=null){
-				// highlight the state of the deputy
-				brazilianStates.highlightDeputyState( deputy.state , mouseover );
-				// highlight the votes of the deputy in each roll call
-				rollCallsScatterplot.highlightDeputyVotes( deputy.phonebookID , mouseover );
-				// highlight the deputy in the graph
-				deputiesScatterplot.highlightDeputy( deputy.phonebookID , mouseover );
-			} 
-		})
-	
+	//
+	// interactions
+		deputiesGraph
+			// when an deputy element is hovered 
+			// @param deputy 		: deputy Object  
+			// @param mouseover 	: boolean  => true if mouseover : false if mouseout
+			.on('hover', function(deputy, mouseover){
+				if(deputy!=null){
+					// highlight the state of the deputy
+					brazilianStates.highlightDeputyState( deputy.state , mouseover );
+					// highlight the votes of the deputy in each roll call
+					rollCallsScatterplot.highlightDeputyVotes( deputy.phonebookID , mouseover );
+					// highlight the deputy in the graph
+					deputiesScatterplot.highlightDeputy( deputy.phonebookID , mouseover );
+				} 
+			})
 	// ====================================================================================
-	// RollCalls timeline ------------------------------------------------------------------
+
+
+
+	// ====================================================================================
+	// RollCalls timeline -----------------------------------------------------------------
+	//
+	// init
 		var timelineBarChart = d3.chart.timelineBarChart();
 		timelineBarChart(d3.select('#timeline'));
+	//
+	// interactions
+		timelineBarChart
+			// Set new range of dates!
+			.on("timelineFilter", function(filtered) { 
+				console.log("filtered", filtered);
+				setNewDateRange(filtered[0],filtered[1]);
+			})
+			// Set the alliance!
+			.on("setAlliances", function(alliances) { 
 
-		// Set new range of dates!
-		timelineBarChart.on("timelineFilter", function(filtered) { 
-			console.log("filtered", filtered);
-			setNewDateRange(filtered[0],filtered[1]);
-		})
+				// SET THE PARTIES COLORS ACORDING TO EACH ALLIANCE
+					if(alliances==null) getPartyColor = getConstantPartyColor;
+					else {
+						var partiesColigationColor = {};
+						$.each(alliances, function(i){
+							$.each(alliances[i].parties, function(party){ return partiesColigationColor[alliances[i].parties[party]]= getPartyColor( alliances[i].parties[0] )  })
+						});
+						getPartyColor = function(party){ 
+							if(partiesColigationColor[party] !== undefined ) 
+								{return partiesColigationColor[party];}
+							else{ /*console.log(party);*/ return "#AAA" }
+						}
+					}
+					//deputiesScatterplot.setAlliances
+					//deputiesGraph.setAlliances
+						d3.selectAll(".deputy .node").style("fill", function(d) { 
+							if(d.record !== undefined) d = d.record;
+							return getPartyColor(d.party) 
+						});
 
-		// Set new range of dates!
-		timelineBarChart.on("setAlliances", function(alliances) { 
-
-			//console.log(alliances)
-			partiesInfographic.setAlliance(alliances)
-
-		})
+				// Set the alliance to the partiesInfographic - movment
+				partiesInfographic.setAlliance(alliances)
+			})
 	// ====================================================================================
-	// States timeline ------------------------------------------------------------------
+
+
+
+	// ====================================================================================
+	// States -----------------------------------------------------------------------------
+	//
+	// init
 		var brazilianStates 		= d3.chart.brazilianStates();
 		brazilianStates(d3.select('#infoStates'));
-
+	//
+	// interactions
 		brazilianStates
+			// when a state is selected
 			.on('selected', function (state,operation) {
 				deputiesScatterplot.selectNodesByAttr('state',state,operation);
 				//deputiesGraph.selectStates(states);
 			})
+			// when a state is hovered
 			.on('hover', function (state){
 				deputiesScatterplot.highlightState(state);
 				deputiesGraph.highlightState(state);
 			})
+	// ====================================================================================
+
+
 
 	// ====================================================================================
 	// parties infograph ------------------------------------------------------------------
+	//
+	// init
 		var partiesInfographic = d3.chart.partiesInfographic();
 		partiesInfographic(d3.select('#infoParties'));
-
+	//
+	// interactions
 		partiesInfographic
+			// when party or parties(alliance) are selected
 			.on('selected', function (parties, operation) {
-				// console.log('partiesInfographic : selected')
-				// console.log(party +' '+operation)
 				deputiesScatterplot.selectParties( parties, operation );
-
-//				deputiesScatterplot.selectNodesByAttr('party',party,operation);
 			})
+			// when a party or parties(alliance) are hovered
 			.on('hover', function (parties){
-				//console.log('partiesInfographic : hover')
-
-				//brazilianStates.highlightParty( party );
 				deputiesGraph.highlightParties( parties );
 				deputiesScatterplot.highlightParties( parties );
-
 			})
+	// ====================================================================================
+
+	
 
 	// ====================================================================================
-	// start query date
-	var start = new Date(2012, 0, 1);
-	var end   = new Date(); // == "now"
+	//  SET THE START DATE FRAME - LAUNCH APP!!
+	// ====================================================================================
+		var start = new Date(2012, 0, 1);
+		var end   = new Date(); // == "now"
 
-	setNewDateRange(start,end);
+		setNewDateRange(start,end);
+	// ====================================================================================
+	// ====================================================================================
 
 
 
@@ -265,7 +324,7 @@ function setNewDateRange(start,end){
 		partiesInfographic.data(deputyNodes);
 		partiesInfographic.update(null);
 
-		deputiesScatterplot.init();
+		deputiesScatterplot.resetRollCallRates();
 		brazilianStates.resetRollCallRates();
 	})
 }
@@ -288,8 +347,8 @@ function updateDataforDateRange(start,end,callback){
 		//calc Vote Density Histogram  ---------------------------------------------------------------------------------------
 		// 	console.log("calc Vote Density Histogram")
 
-		 	var mean=0,stdev=0;
-		 	var result = calcNumVotesHistogram(deputiesInTheDateRange);
+			var mean=0,stdev=0;
+			var result = calcNumVotesHistogram(deputiesInTheDateRange);
 		// 	var mean  = result.mean;
 		// 	var stdev = result.stdev;
 		// 	$('#averageDeputies').text(mean.toPrecision(Math.log(mean)));
@@ -425,7 +484,7 @@ function calcRollCallAgreement(rollCalls,phonebookIDs){
 			 $.each(votes,function(v){ maxAgree = (votes[v] > maxAgree)? votes[v] : maxAgree })
 
 			 if( ( (votes['Sim'] ===undefined ) && (votes['Não'] ===undefined )) )
-			 	{rollCalls[d].rate = 'noVotes'}
+				{rollCalls[d].rate = 'noVotes'}
 			 else {
 				 if(votes['Sim'] === undefined) votes['Sim']=0;
 				 if(votes['Não'] === undefined) votes['Não']=0;
@@ -653,4 +712,66 @@ function calcSVD(deputies,rollCalls){
 		console.log("CALC SVD- FINISHED!! => PLOT")
 	// ----------------------------------------------------------------------------------------------------------------
 	return {deputies: data_deputies, voting: data_voting};
+}
+
+
+function setDeputyModal(){
+
+	d3.select('.modal-title').text('Deputies - search & select')
+
+	$('.modal-body').children().remove();
+
+	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Name</th><th>Party</th><th>State</th></tr><thead/></table>')
+	
+	$('#table').DataTable( {
+		data 	: deputyNodes,
+		columns : [
+			{ data: 'name' },
+			{ data: 'party'},
+			{ data: 'state'}
+		],
+		createdRow: function ( row, data, index ) {
+			console.log(data)
+            if ( data.party == 'PT' ) {
+            	console.log('PT')
+                 $(row).addClass('selected');
+            }
+        }
+	});
+
+	$('#table tbody').on("click", "tr", function(){
+		$(this).toggleClass('selected');
+		
+		var name = $('td', this).eq(0).text();
+		var party = $('td', this).eq(1).text();
+		var state = $('td', this).eq(2).text();
+		alert( 'You clicked on '+name+'\'s row' );
+	});
+
+}
+
+function setRollCallModal(){
+
+	d3.select('.modal-title').text('Roll Calls - search & select')
+
+	$('.modal-body').children().remove();
+
+	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Type</th><th>Number</th><th>Year</th></tr><thead/></table>')
+
+	$('#table').DataTable({
+		data: rollCallNodes,
+		columns: [
+			{ data: 'tipo', },
+			{ data: 'numero' },
+			{ data: 'ano' }
+		]
+	});
+
+	$('#table tbody').on("click", "tr", function(){
+		var name = $('td', this).eq(0).text();
+		var party = $('td', this).eq(1).text();
+		var state = $('td', this).eq(2).text();
+		alert( 'You clicked on '+name+'\'s row' );
+	});
+
 }

@@ -3,22 +3,22 @@
 // PPB ==> PP
 // PL + PRONA ==> PR
 var legislatures = [
-	{name:'49ª Legislature',start: new Date(1991,1,1) ,end: new Date(1995,0,31)},
-	{name:'50ª Legislature',start: new Date(1995,1,1) ,end: new Date(1999,0,31)},
-	{name:'51ª Legislature',start: new Date(1999,1,1) ,end: new Date(2003,0,31)},
-	{name:'52ª Legislature',start: new Date(2003,1,1) ,end: new Date(2007,0,31)},
-	{name:'53ª Legislature',start: new Date(2007,1,1) ,end: new Date(2011,0,31)},
-	{name:'54ª Legislature',start: new Date(2011,1,1), end: new Date(2015,0,31)}
+	{name:'49ª Legislature', regimeParty:'PFL',  start: new Date(1991,1,1) ,end: new Date(1995,0,31)},
+	{name:'50ª Legislature', regimeParty:'PSDB', start: new Date(1995,1,1) ,end: new Date(1999,0,31)},
+	{name:'51ª Legislature', regimeParty:'PSDB', start: new Date(1999,1,1) ,end: new Date(2003,0,31)},
+	{name:'52ª Legislature', regimeParty:'PT',   start: new Date(2003,1,1) ,end: new Date(2007,0,31)},
+	{name:'53ª Legislature', regimeParty:'PT',   start: new Date(2007,1,1) ,end: new Date(2011,0,31)},
+	{name:'54ª Legislature', regimeParty:'PT',   start: new Date(2011,1,1), end: new Date(2015,0,31)}
 ]
 
 var presidents = [
-  {name: 'Collor (PRN)'     ,party:'PRN', start:new Date(1991,0,1),end:new Date(1992,11,29)},
-  {name: 'Itamar (PMDB)'    ,party:'PMDB', start:new Date(1992,11,29),end:new Date(1995,0,1)},
-  {name: 'FHC (PSDB) 1ºMan.',party:'PSDB', start:new Date(1995,0,1),end:new Date(1999,0,1)},
-  {name: 'FHC (PSDB) 2ºMan.',party:'PSDB', start:new Date(1999,0,1),end:new Date(2003,0,1)},
-  {name: 'Lula (PT) 1ºMan.' ,party:'PT', start:new Date(2003,0,1),end:new Date(2007,0,1)},
-  {name: 'Lula (PT) 2ºMan.' ,party:'PT', start:new Date(2007,0,1),end:new Date(2011,0,1)},
-  {name: 'Dilma (PT) 1ºMan.',party:'PT', start:new Date(2011,0,1),end:new Date(2015,0,1)}
+  {name: 'Collor (PRN)'     , start:new Date(1991,0,1),end:new Date(1992,11,29)},
+  {name: 'Itamar (PMDB)'    , start:new Date(1992,11,29),end:new Date(1995,0,1)},
+  {name: 'FHC (PSDB) 1ºMan.', start:new Date(1995,0,1),end:new Date(1999,0,1)},
+  {name: 'FHC (PSDB) 2ºMan.', start:new Date(1999,0,1),end:new Date(2003,0,1)},
+  {name: 'Lula (PT) 1ºMan.' , start:new Date(2003,0,1),end:new Date(2007,0,1)},
+  {name: 'Lula (PT) 2ºMan.' , start:new Date(2007,0,1),end:new Date(2011,0,1)},
+  {name: 'Dilma (PT) 1ºMan.', start:new Date(2011,0,1),end:new Date(2015,0,1)}
 ]
 
 var startingYear = 1991;
@@ -29,7 +29,7 @@ var years = $.map(Array(24), function(d,i){ return {name:i+startingYear, start: 
 // the first party[0] of the alliance is the party of the elected president  
 var elections = {
 	49: {
-		name: "Eleições de 1989",
+		name: "1989",
 		turns:2,
 		dates:[new Date(1989,10,15)],
 		alliances: [
@@ -44,19 +44,19 @@ var elections = {
 				result:[0.1718,0.4696]
 			},
 			{
-				president:"Brizola (PDT)", name:'-', 
+				president:"Brizola (PDT)", name:'PDT', 
 				parties:["PDT"],
 				result:[0.1651]
 			}, 
 			{
-				president:"Covas (PSDB)", name:"-", 
+				president:"Covas (PSDB)", name:"PSDB", 
 				parties:["PSDB"],
 				result:[0.1151]
 			} 
 		]
 	},
 	50: {
-		name: "Eleições de 1994",
+		name: "1994",
 		turns:1,
 		dates:[new Date(1994,9,2)],
 		alliances: [
@@ -71,7 +71,7 @@ var elections = {
 				result:[0.2704]
 			},
 			{
-				president:"Enéas (PRONA)", name:'-', 
+				president:"Enéas (PRONA)", name:'PRONA', 
 				parties:["PRONA"],
 				result:[0.0738]
 			}, 
@@ -84,7 +84,7 @@ var elections = {
 	},
 	
 	51: {
-		name: "Eleições de 1998",
+		name: "1998",
 		turns:1,
 		dates:[new Date(1998,9,4)],
 		alliances: [
@@ -104,14 +104,14 @@ var elections = {
 				result:[0.1097]
 			}, 
 			{
-				president:"Enéas (PRONA)", name:'-', 
+				president:"Enéas (PRONA)", name:'PRONA', 
 				parties:["PRONA"],
 				result:[0.0214]
 			}
 		]
 	},
 	52: {
-		name: "Eleições de 2002",
+		name: "2002",
 		turns:2,
 		dates:[new Date(2002,9,6),new Date(2002,9,27)],
 		alliances: [
@@ -138,7 +138,7 @@ var elections = {
 		]
 	},
 	53: {
-		name: "Eleições de 2006",
+		name: "2006",
 		turns:2,
 		dates:[new Date(2006,9,1),new Date(2006,9,29)],
 		alliances: [
@@ -158,14 +158,14 @@ var elections = {
 				result:[0.0685]
 			 },
 			 {
-			 	president:"Cristovam Buarque (PDT)", name:"-", 
+			 	president:"Cristovam Buarque (PDT)", name:"PDT", 
 			 	parties:["PDT"],
 				result:[0.0264]
 			 }
 		]
 	},
 	54:{
-		name: "Eleições de 2010",
+		name: "2010",
 		turns:2,
 		dates:[new Date(2010,9,3),new Date(2010,9,31)],
 		alliances: [
@@ -180,14 +180,41 @@ var elections = {
 				result:[0.3261,0.4395]
 			 },  
 			 { 
-			 	president:"Marina Silva (PV)", name:"-", 
+			 	president:"Marina Silva (PV)", name:"PV", 
 				parties:["PV"],
 				result:[0.1933]
 			 },
 			 { 
-			 	president:"Plínio de Arruda (PSOL)", name:"-", 
+			 	president:"Plínio de Arruda (PSOL)", name:"PSOL", 
 				parties:["PSOL"],
 				result:[0.0087]
+			 }
+		]
+	},
+	55:{
+		name: "2014",
+		turns:2,
+		dates:[new Date(2014,10,3)],
+		alliances: [
+			 { 
+			 	president:"Dilma (PT)", name:"Coligação Com a Força do Povo", 
+			 	parties:["PT", "PP", "PROS", "PCdoB", "PMDB", "PSD","PR", "PDT", "PRB"],
+				result:[0] 
+			 },
+			 { 
+			 	president:"Aécio Neves (PSDB)", name:"Coligação Muda Brasil", 
+				parties:["PSDB", "DEM","PFL","PTN","PTC","PTB","SDD", "PEN", "PTdoB"],
+				result:[0]
+			 },  
+			 { 
+			 	president:"Eduardo Campos (PSB)", name:"Coligação Unidos pelo Brasil", 
+				parties:["PSB","PPS","PHS","PRP","PPL","PSL"],
+				result:[0]
+			 },
+			 { 
+			 	president:"Pastor Everaldo (PSC)", name:"PSC", 
+				parties:["PSC"],
+				result:[0]
 			 }
 		]
 	}

@@ -12,7 +12,8 @@
 (function($) {
     $.chamberOfDeputiesDataWrapper = function(motions,ideCadastroCollection,datetimeRollCall,phonebook) {
     	// module to load data from DB 
-		var chamberOfDeputiesClient	= $.chamberOfDeputiesClient();
+		var chamberOfDeputiesClient	= $.chamberOfDeputiesClientDB();
+		//var chamberOfDeputiesClient	= $.chamberOfDeputiesClientHTTP();
 		var rollCallInTheDateRange =[];
 		var deputiesInTheDateRange ={};
         
@@ -131,6 +132,7 @@
 					}		
 				})
 
+				//console.log(motionsToLoad)
 				var loadMotionsQueue = queue(20); 
 
 				$.each(motionsToLoad, function(motion) {

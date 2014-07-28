@@ -113,22 +113,16 @@ d3.chart.rollCallsScatterplot = function() {
 			dispatch.hover(d,true);
 
 			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/><em>"+d.rollCall.Resumo+"</em>"+ "<br/><em>Click to highlight</em>");
-			return tooltip.style("visibility", "visible");
+			return tooltip
+					.style("visibility", "visible")
+					.style("opacity", 1);
 		}	
 
 		// mouse OUT circle voting
 		function mouseOutVoting(d,i){ 
-				//if(selected != i || i==0){
 				$("#rollCall-"+i).attr("r",4)
-				//}	
-
+				
 				dispatch.hover(d,false);
-				/*
-				d3.selectAll(".node.deputy").style("fill", function(d) { 
-					if(d.record !== undefined) d = d.record;
-
-					return partyColor(d.party) 
-				});*/
 				
 			return tooltip.style("visibility", "hidden");
 		}

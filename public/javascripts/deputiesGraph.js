@@ -64,7 +64,7 @@ d3.chart.deputiesGraph = function() {
 		node.transition()
 				.attr("class", "node selected")
 				.attr("r", radius)
-				.style("fill", function(d) { return partyColor(d.record.party); })
+				.style("fill", function(d) { return getPartyColor(d.record.party); })
 				.attr("id", function (d) { return "deputy-"+ d.record.phonebookID; })
 				//.on('click', function(d){ console.log(d.record) })
 				//.call(force.drag);
@@ -93,7 +93,9 @@ d3.chart.deputiesGraph = function() {
 			dispatch.hover(d.record,true);
 
 			tooltip.html(d.record.name +' ('+d.record.party+'-'+d.record.state+')'+"<br /><em>Click to highlight</em>");
-			return tooltip.style("visibility", "visible");
+			return tooltip
+					.style("visibility", "visible")
+					.style("opacity", 1);
 		}	
 
 		// mouse MOVE circle deputy
@@ -309,7 +311,7 @@ d3.chart.deputiesGraph = function() {
 	function setDeputyFill( d ){
 
 		if(d.record.rate == null){
-			return partyColor(d.record.party)
+			return getPartyColor(d.record.party)
 		} else{ 
 			if (d.record.rate == "noVotes")
 				 return 'darkgrey' 

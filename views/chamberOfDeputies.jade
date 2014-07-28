@@ -6,6 +6,7 @@ html
 		link(rel="stylesheet" href="./javascripts/lib/bootstrap/dist/css/bootstrap.min.css")
 		link(rel='stylesheet', href='./stylesheets/styles.css')
 		link(rel="stylesheet", href="./javascripts/lib/pick-a-color-master/build/1.2.2/css/pick-a-color-1.2.2.min.css")
+		link(rel="stylesheet", href="./javascripts/lib/DataTables-1.10.1/media/css/jquery.dataTables.min.css")
 
 		link(rel='stylesheet', href="./javascripts/lib/bootstrap/slider/slider.css")
 		link(rel='stylesheet', href="./stylesheets/brazilianStates.css")
@@ -21,6 +22,8 @@ html
 					.row
 						.col-xs-5
 							h4.header Political Spectrum of Deputies
+								a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal()')
+									span.glyphicon.glyphicon-search
 							.canvas#canvasDeputies
 							h4.header Links connects deputies with 
 								span.subhead#thresh 70% 
@@ -34,19 +37,26 @@ html
 
 						.col-xs-5
 							h4.header Political Spectrum of Roll Calls
+								a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal()')
+									span.glyphicon.glyphicon-search
 							.canvas#canvasRollCalls
 							h4.header States
 							.canvas#infoStates		
 							
 		#timeline
 
-
-		
-						
+		// MODAL (POP-UP)
+		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")
+			.modal-dialog.modal-lg
+				.modal-content
+					.modal-header
+						button.close(type="button", data-dismiss="modal", aria-hidden="true") ×
+						h4.modal-title Modal
+					.modal-body					
 
 
 		// THIRD_PARTY_LIBS
-		//script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
+		// script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
 		
 		script(src='./javascripts/lib/jquery.min.js')
 		script(src="./javascripts/lib/bootstrap/dist/js/bootstrap.min.js")
@@ -58,6 +68,8 @@ html
 		script(src="./javascripts/lib/pick-a-color-master/build/1.2.2/js/pick-a-color-1.2.2.min.js")
 		script(src="./javascripts/lib/bootstrap/slider/slider.js")
 		script(src="./javascripts/lib/topojson.min.js")
+		script(src="./javascripts/lib/DataTables-1.10.1/media/js/jquery.dataTables.min.js")
+
 
 		// APP_LIBS
 		script(src='./javascripts/globalUtils.js')

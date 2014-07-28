@@ -76,7 +76,7 @@ d3.chart.partiesInfographic = function() {
 						width:40,
 						y: function(d){ return /*scaleX(d.y0)*/ margin} ,
 						height: function(d){return scaleX(d.y) - scaleX(d.y0) -margin},
-						fill: function(d){ return /*'lightgrey'*/ partyColor(d.key)},
+						fill: function(d){ return /*'lightgrey'*/ getPartyColor(d.key)},
 						cursor : 'pointer',
 						//stroke: function(d){ return partyColor(d.key)},
 						//'stroke-width': 2,
@@ -392,7 +392,7 @@ d3.chart.partiesInfographic = function() {
 								width:80,
 								y: function(d){ return /*scaleX(d.y0)*/ 1} ,
 								height: function(d){return ( (scaleX(d.y) - scaleX(d.y0) -1) > 1 )? (scaleX(d.y) - scaleX(d.y0) -1): 2 },
-								fill: function(d){ return /*'lightgrey'*/ partyColor(d.parties[0])},
+								fill: function(d){ return /*'lightgrey'*/ getPartyColor(d.parties[0])},
 								cursor : 'pointer',
 								//stroke: function(d){ return partyColor(d.key)},
 								//'stroke-width': 2,
@@ -406,7 +406,7 @@ d3.chart.partiesInfographic = function() {
 						transition.select('.party#'+party.key)
 							.attr("transform", function(d, i) { return "translate(70,"+scaleX(d.y0)+")"; })
 							.selectAll('rect.main')
-								.attr('fill', function(d){ return partyColor(alliance.parties[0])} )
+								.attr('fill', function(d){ return getPartyColor(alliance.parties[0])} )
 								//.attr('hei', function(d){ return 0.5} )
 								.attr('stroke', function(d){ return 'black'} )
 								.attr('stroke-width', function(d){ return 0.5} )

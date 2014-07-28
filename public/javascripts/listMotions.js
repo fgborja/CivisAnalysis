@@ -1,94 +1,4 @@
 
-
-var listMotionsData = [];
-
-// // DOM Ready =============================================================
- $(document).ready(function() {
-
-	// Add User button click
-	$('#btnListProp').on('click', callPropList);
-
-   	// Cod link click
-   	$('#propList table tbody').on('click', 'td a.linkshowProp', showPropInfo);
-
-	// Delete User link click
-	$('#propList table tbody').on('click', 'td a.linkGetRollCall', getRollCall);
-
- });
-
-// Functions =============================================================
-
-//Show User Info
-function showPropInfo(event) {
-
-	// Prevent Link from Firing
-	event.preventDefault();
-
-	$('#jsonProp').text("");
-
-	// Retrieve data from link rel attribute
-	var thisName = $(this).attr('rel');
-
-	var arr = thisName.match(/\w+/g)
-
-	//console.log(thisName);
-	$.getJSON( '/obterProposicao/'+arr[0]+'/'+arr[1]+'/'+arr[2], function( data ) {
-		$('#jsonProp').text( JSON.stringify(data))
-	})
-};
-
-
-// List the propositions voted in the year
-function callPropList(event) {
-	event.preventDefault();
-
-	// Super basic validation - increase errorCount variable if any fields are blank
-	var errorCount = 0;
-	$('#listProp input').each(function(index, val) {
-		if($(this).val() === '') { errorCount++; }
-	});
-
-	// Check and make sure errorCount's still at zero
-	if(errorCount === 0) {
-
-		// If it is, compile all user info into one object
-		var queryYear = $('#listProp fieldset input#inputYear').val();
-
-		// Empty content string
-		var tableContent = '';
-
-		// Use AJAX to get...
-		$.getJSON( './getMotionRollCallInYear/'+queryYear, function( data ) {
-			//console.log(data);
-			// Clear the form inputs
-			$('#listProp fieldset input').val('');
-
-			// Stick our user data array into a userlist variable in the global object
-			listMotionsData = data.data.proposicoes.proposicao;
-
-			// For each item in our JSON, add a table row and cells to the content string
-			$.each(data.data.proposicoes.proposicao, function(){
-				tableContent += '<tr>';
-				tableContent += '<td><a href="#" class="linkshowProp" rel="' + this.nomeProposicao + '" title="Show Details">' + this.codProposicao + '</td>';
-				tableContent += '<td>' + this.nomeProposicao + '</td>';
-				tableContent += '<td><a href="#" class="linkGetRollCall" rel="' + this.nomeProposicao + '">GteRollCall</a></td>'
-			});
-
-			// Inject the whole content string into our existing HTML table
-			$('#propList table tbody').html(tableContent);
-
-		})
-
-	}
-	else {
-		// If errorCount is more than 0, error out
-		alert('Please fill in all fields');
-		return false;
-	}
-};
-
-
-
 // GetRollCall from camara
 function getRollCall(event) {
 	
@@ -110,9 +20,8 @@ function getRollCall(event) {
 
 };
 
-
-//// TESTS ===================================================================================
-//// TESTS ===================================================================================
+////  ===================================================================================
+////  ===================================================================================
 
 
 var chamberOfDeputiesManager= $.chamberOfDeputiesManager();

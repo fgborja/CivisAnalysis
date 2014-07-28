@@ -244,12 +244,12 @@ d3.chart.brazilianStates = function() {
 		d3.select('#statesSVG .stateLabel').remove()
 
 		var rectX = 7;
-		var rectY = 200;
+		var rectY = 130;
 		var g = svg.append('g').attr('class','stateLabel');
 
 		g.append('rect')
 				.attr({
-					width : 115,
+					width : 88,
 					height: 46,
 					x: rectX,
 					y:  rectY +17,
@@ -316,7 +316,7 @@ d3.chart.brazilianStates = function() {
 						stroke: 'black',
 						'stroke-width': '0.5px'
 				})
-		g.append('text').text('Not Represented')
+		g.append('text').text('Not Rep.')
 			.attr({
 				x:rectX+19,
 				y:rectY+58,
@@ -330,8 +330,8 @@ d3.chart.brazilianStates = function() {
 	function setLabelGradient(){
 		d3.select('#statesSVG .stateLabel').remove()
 
-		var initX = 7;
-		var initY = 140;
+		var initX = 20;
+		var initY = 115;
 		var g = svg.append('g').attr('class','stateLabel');
 
 		votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
