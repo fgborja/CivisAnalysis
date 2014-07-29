@@ -82,12 +82,6 @@
 
 					// create Date object AND add the reference to the datetimeRollCall
 					var rollCalls = motionRollCalls.proposicao.Votacoes.Votacao;
-
-					// ========================================================================
-					// chamberOfDeputiesClientHTTP(); =========================================
-					//var rollCalls = motionRollCalls.rollCalls;
-					// ========================================================================
-
 					rollCalls.forEach( function(p){ 
 
 						if(p.votos !== undefined){
@@ -107,11 +101,7 @@
 						//console.log(p.datetime)
 						var parse = p.datetime.match(/\d+/g);
 						p.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
-
-						// ========================================================================
-						// chamberOfDeputiesClientHTTP(); =========================================
-						//p.datetime = new Date(p.datetime);
-						// ========================================================================
+						//console.log(p.datetime)
 
 						// find the datetimeRollCall
 						var dtRollCall = datetimeRollCall.filter(function(d){ return (d.datetime >= p.datetime) && (d.datetime <= p.datetime)} )
