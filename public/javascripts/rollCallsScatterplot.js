@@ -105,24 +105,25 @@ d3.chart.rollCallsScatterplot = function() {
 			.on("mouseover", mouseOverVoting)
 			.on("mousemove", mousemoveVoting)
 			.on("mouseout", mouseOutVoting)
+			.on("click", mouseClickVoting)
 
 		// mouse OVER circle voting
-		function mouseOverVoting(d,i) {
-			$("#rollCall-"+i).attr("r",8)
+		function mouseOverVoting(d) {
+			d3.select(this).attr("r",8)
 	
 			dispatch.hover(d,true);
 
-			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/><em>"+d.rollCall.Resumo+"</em>"+ "<br/><em>Click to highlight</em>");
+			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/><em>"+d.rollCall.Resumo+"</em>"+ "<br/><em>Click to select</em>");
 			return tooltip
 					.style("visibility", "visible")
 					.style("opacity", 1);
 		}	
 
 		// mouse OUT circle voting
-		function mouseOutVoting(d,i){ 
-				$("#rollCall-"+i).attr("r",4)
+		function mouseOutVoting(d){ 
+			d3.select(this).attr("r",4)
 				
-				dispatch.hover(d,false);
+			dispatch.hover(d,false);
 				
 			return tooltip.style("visibility", "hidden");
 		}
@@ -130,8 +131,33 @@ d3.chart.rollCallsScatterplot = function() {
 		// mouse MOVE circle voting
 		function mousemoveVoting() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
 		
-	}
+		function mouseClickVoting(d) { 
+			if (d3.event.shiftKey){	
+				// using the shiftKey deselect the rollCall				
+				d3.select(this).classed('selected',false);
+				
+				//dispatch event of selected rollCalls
+				dispatch.selected( chart.getSelectedRollCallsIDs() )
 
+			} else 
+			if (d3.event.ctrlKey){
+				// using the ctrlKey add rollCalls to selection
+				d3.select(this).classed('selected',true);
+				
+				//dispatch event of selected rollCalls
+				dispatch.selected( chart.getSelectedRollCallsIDs() )
+
+			} 
+			else {
+				// a left click without any key pressed -> select only the state (deselect others)
+				g.selectAll('circle').classed('selected',false)
+				d3.select(this).classed('selected',true);
+
+				//dispatch event of selected states
+				dispatch.selected([ d3.select(this).attr('rollCall') ])
+			}
+		}		
+	}
 
 	chart.data = function(value) {
 		if(!arguments.length) return data;
