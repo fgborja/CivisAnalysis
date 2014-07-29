@@ -125,16 +125,17 @@ d3.chart.deputiesScatterplot = function() {
 		circles
 			.on("mouseover", mouseoverDeputy)
 			.on("mousemove", mousemoveDeputy)
-			.on("mouseout", mouseoutDeputy);
+			.on("mouseout", mouseoutDeputy)
+			.on("click", mouseClickDeputy)
 
 			
 		// mouse OVER circle deputy
 		function mouseoverDeputy(d) {
-			$("#deputy-"+d.phonebookID).attr("r",radiusHover)
+			d3.select(this).attr("r",radiusHover)
 	
 			dispatch.hover(d,true);
 
-			tooltip.html(d.name +' ('+d.party+'-'+d.state+")<br /><em>Click to highlight</em>");
+			tooltip.html(d.name +' ('+d.party+'-'+d.state+")<br /><em>Click to select</em>");
 			
 			return tooltip
 					.style("visibility", "visible")
@@ -146,11 +147,38 @@ d3.chart.deputiesScatterplot = function() {
 
 		// mouse OUT circle deputy
 		function mouseoutDeputy(d){ 
-				$("#deputy-"+d.phonebookID).attr("r",radius);
-			
-				dispatch.hover(d,false);
+			d3.select(this).attr("r",radius);
 
-				return tooltip.style('visibility','hidden')
+			dispatch.hover(d,false);
+
+			return tooltip.style('visibility','hidden')
+		}
+
+		function mouseClickDeputy(d){
+			if (d3.event.shiftKey){	
+				// using the shiftKey deselect the rollCall				
+				d3.select(this).classed('selected',false);
+				
+				//dispatch event of selected rollCalls
+				dispatch.selected( chart.getSelectedDeputiesIDs() )
+
+			} else 
+			if (d3.event.ctrlKey){
+				// using the ctrlKey add rollCalls to selection
+				d3.select(this).classed('selected',true);
+				
+				//dispatch event of selected rollCalls
+				dispatch.selected( chart.getSelectedDeputiesIDs() )
+
+			} 
+			else {
+				// a left click without any key pressed -> select only the state (deselect others)
+				g.selectAll('circle').classed('selected',false)
+				d3.select(this).classed('selected',true);
+
+				//dispatch event of selected states
+				dispatch.selected([ d3.select(this).attr('deputy') ])
+			}		
 		}				
 
 	}
@@ -312,6 +340,11 @@ d3.chart.deputiesScatterplot = function() {
 				if (a[attr] != value) return -1;               // a is not the hovered element, send "a" to the back
 				else return 1;                             // a is the hovered element, bring "a" to the front
 			});
+	}
+
+	chart.getSelectedDeputiesIDs = function(){
+		var selectedNodes = g.selectAll('.node.selected');
+		return selectedNodes[0].map(function(d){ return d3.select(d).attr('deputy') })
 	}
 
 	return d3.rebind(chart, dispatch, "on");
