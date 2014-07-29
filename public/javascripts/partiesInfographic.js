@@ -164,81 +164,9 @@ d3.chart.partiesInfographic = function() {
 				})
 	}
 
-	// chart.updateCircle = function(){
-	// 	//console.log(deputyNodes);
-	// 	var parties = {};
-	// 	var totalDeputies =0;
-
-	// 	data.forEach( function(deputy){ 
-	// 		if(parties[deputy.party]===undefined) 
-	// 			{ 
-	// 				parties[deputy.party]={};
-	// 				parties[deputy.party].party=deputy.party;
-	// 				parties[deputy.party].total=0;
-	// 				parties[deputy.party].selected=0;   
-	// 			};
-
-	// 		parties[deputy.party].total++;
-	// 		totalDeputies++;
-	// 	});
-
-	// 	parties = d3.entries(parties).sort( function(a,b){ return b.value.total - a.value.total;  })
-
-	// 	var y=0;
-	// 	parties.forEach( function(d){ d.y0 = y; y+=d.value.total; d.y=y;  })
-
-	// 	var scaleX = d3.scale.linear()
-	// 		.domain([0,totalDeputies])
-	// 		.range([ 0, height ]);
-
-	// 	svg.selectAll('.party').remove()	
-
-	// 	var g = svg.selectAll('.party')
-	// 		.data( parties, function(d){ console.log(d); return d.value.party})
-
-	// 	var newG = g.enter().append('g').attr({'class':'party'});
-
-	// 	// g.exit().remove();
-	// 	// 	.attr("transform", function(d, i) { return "translate(" + scaleX(d.x0) + ",0)"; })
-
-	// 	var margin = 2;
-	// 	newG.append('circle')
-	// 		.attr({
-	// 			'class':'party',
-	// 			cx:50 ,
-	// 			cy: function(d){ return scaleX(d.y0) + (scaleX(d.y) - scaleX(d.y0)) /2},
-	// 			r: function(d){return (scaleX(d.y) - scaleX(d.y0))/2 },
-	// 			fill: function(d){ return partyColor(d.key)},
-	// 			cursor : 'pointer'
-	// 		})
-
-	// 	// g.append('text')
-	// 	// 	.attr({
-	// 	// 		'class':'party',
-	// 	// 		x:40/2 +15 +1,
-	// 	// 		y: function(d){ return scaleX(d.y0) + (scaleX(d.y) - scaleX(d.y0)) /2},
-	// 	// 		"text-anchor":"middle",
-	// 	// 	})
-	// 	// 	.style('fill','white')
-	// 	// 	.text(function(d) { return ( (scaleX(d.y) - scaleX(d.y0)) > 35 )? d.key : null; })
-
-	// 	var fontSize=12;
-	// 	newG.append('text')
-	// 		.text(function(d) { return ( (scaleX(d.y) - scaleX(d.y0)) > (fontSize+2) )? d.key : null; })
-	// 		.attr({
-	// 			'class':'party',
-	// 			x:40/2 +15,
-	// 			y: function(d){ return scaleX(d.y0) + (scaleX(d.y) - scaleX(d.y0)) /2  +margin*2},
-	// 			'font-size': fontSize+'px',
-	// 			'text-anchor':"middle",
-	// 			cursor : 'pointer' 
-	// 		})
-			
-
-	// }
-
 	chart.setSelectedDeputies = function(deputiesPerParty){
 		if(deputiesPerParty == null){
+			parties.forEach( function(d){ d.selected = d.value.total})
 			wrects.transition(1000)
 				.attr({ height : 0 })
 		} else {
@@ -266,7 +194,7 @@ d3.chart.partiesInfographic = function() {
 			})
 			alliances.push( {name:'Non-Allied', parties:[], partiesObjs:[], total:0} );
 
-
+			// push the parties and calc number of deputies to/of each respective alliance
 			parties.forEach( function (partyObj){
 				var nonAllied = true;
 				alliances.forEach( function (alliance){
@@ -286,6 +214,7 @@ d3.chart.partiesInfographic = function() {
 				}
 			})
 
+			// calc the Y position of each alliance
 			var y=0;
 			alliances.forEach( function(alliance,i){
 				alliance.i = i;
@@ -366,22 +295,15 @@ d3.chart.partiesInfographic = function() {
 				})
 
 			
-			
+			// Parties
 			svg.select('.parties')
 				.selectAll('.party')
 				.data( parties, function(d){ return d.key})
 
-			// var partiesColigationColor = {};
-
-			// alliances.forEach( function(alliance){
-			// 	alliance.partiesObjs.forEach( function(party){
-			// 		partiesColigationColor[party.key]= partyColor( alliance.partiesObjs[0].key)
-			// 	})
-			// })
-
-			// MOVMENTS
+			// MOVMENTS - queue of movments -
 			var transition = svg.transition()
 			
+			// for each alliance make a separate movment
 			alliances.forEach( function(alliance){
 				if(alliance.total > 0){
 
@@ -398,16 +320,15 @@ d3.chart.partiesInfographic = function() {
 								//'stroke-width': 2,
 								opacity:1
 						})
-
 					transition = transition.transition()
 
+					// for each party make a separate movment
 					alliance.partiesObjs.forEach( function(party){
 
 						transition.select('.party#'+party.key)
 							.attr("transform", function(d, i) { return "translate(70,"+scaleX(d.y0)+")"; })
 							.selectAll('rect.main')
 								.attr('fill', function(d){ return getPartyColor(alliance.parties[0])} )
-								//.attr('hei', function(d){ return 0.5} )
 								.attr('stroke', function(d){ return 'black'} )
 								.attr('stroke-width', function(d){ return 0.5} )
 
@@ -419,31 +340,11 @@ d3.chart.partiesInfographic = function() {
 				}
 
 			})
-			
-
-			// svg.select('.parties')
-			// 	.selectAll('.party')
-			// 	.data( parties, function(d){ return d.key})
-			
-			// t0 = svg.transition(1000)
-			// d3.selectAll('.party').each( function(d){
-			// 	t0.select('.party#'+d.key)
-			// 		.attr("transform", function(d, i) { return "translate(70,"+scaleX(d.y0)+")"; })
-			// 		.selectAll('rect')
-			// 			.attr('fill', function(d){ return partyColor(d.key)} )
-			// 	t0 = t0.transition();
-			// })
-
-			// t0.selectAll('.party').attr("transform", function(d, i) { return "translate(20,"+scaleX(d.y0)+")"; })			
-
-			// t1 = t0.transition(1000)
-			// t1.selectAll('.party').attr("transform", function(d, i) { return "translate(70,"+scaleX(d.y0)+")"; })
-			// t1.selectAll('.alliance').attr("transform", function(d, i) { return "translate(15,"+scaleX(d.y0)+")"; })
-
 
 		}
 	}
 
+	// TODO set rollCall rates to parties and alliances
 	chart.setRollCallRate = function(rollCall){
 		console.log(rollCall)
 	}
