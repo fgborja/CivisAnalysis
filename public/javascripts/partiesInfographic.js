@@ -259,7 +259,6 @@ d3.chart.partiesInfographic = function() {
 					.data(alliances)
 
 			gAll.enter().insert('g').attr({'class':function(d){ return 'alliance id-'+d.i }})
-				.append("title").text( function (d) { return d.name /*+' - '+d.value.total+' Deputies'*/ });
 			
 			gAll.attr("transform", function(d, i) { return "translate(15,"+scaleX(d.y0)+")"; })
 
@@ -277,8 +276,19 @@ d3.chart.partiesInfographic = function() {
 					})
 
 					dispatch.hover(hoverParties); 
+
+					tooltip.html(chart.renderAllianceTooltip(d));
+					return tooltip
+						.style("visibility", "visible")
+						.style("opacity", 1);
 				})
-				.on('mouseout', function(d){ dispatch.hover(null); })
+				.on('mousemove', function(){
+					return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 25)+"px");
+				})
+				.on('mouseout', function(d){
+					dispatch.hover(null); 
+					return tooltip.style("visibility", "hidden");
+				})
 				.on('click', function(d){
 
 					var selectedParties = [];
@@ -314,6 +324,8 @@ d3.chart.partiesInfographic = function() {
 							//dispatch event of selected states
 							dispatch.selected( selectedParties,'SET')
 						}
+
+					tooltip.html(chart.renderAllianceTooltip(d));
 				})
 
 			
@@ -379,6 +391,20 @@ d3.chart.partiesInfographic = function() {
 
 	chart.renderPartyTooltip = function(party){
 		return party.key+"<br/><em>"+((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total +")</em><br/><em>Click to select</em>"
+	}
+
+	chart.renderAllianceTooltip = function(alliance){
+		//console.log(alliance)
+		var html = '';
+		var selected = 0;
+
+		alliance.partiesObjs.forEach( function (party){
+			html += "<em>"+party.key+"("+ party.value.selected +'/'+party.value.total +") : </em> "
+			//: "+((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total +")
+			selected += party.value.selected;
+		})
+
+		return  alliance.name+' ('+selected+'/'+alliance.total+")<br/>"+html;
 	}
 
 	return d3.rebind(chart, dispatch, "on");
