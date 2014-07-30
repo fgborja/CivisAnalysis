@@ -4,7 +4,7 @@ d3.chart.partiesInfographic = function() {
 
 	var svg, wrects, scaleX;
 
-	var dispatch = d3.dispatch("hover","selected");
+	var dispatch = d3.dispatch("hover","selected",'tooltip');
 	chart.on = dispatch.on;
 
 	var parties;
@@ -50,27 +50,33 @@ d3.chart.partiesInfographic = function() {
 	}
 
 	function setDefaultParties(){
+		console.log(parties)
 			svg.selectAll('.alliances').remove()
 
 			var y=0;
 			parties.forEach( function(d){ d.y0 = y; y+=d.value.total; d.y=y;  })
 
+			// create an element <g class='party'> for each party  
 			var g = svg.select('.parties')
 					.selectAll('.party')
 					.data( parties, function(d){ return d.key})
 
 			g.enter().append('g').attr({'class':'party', id: function(d){return d.key} })
-				.append("title").text( function (d) { return d.key /*+' - '+d.value.total+' Deputies'*/ });
 			
 			g.transition(1000)
 				.attr("transform", function(d, i) { return "translate(15,"+scaleX(d.y0)+")"; })
 
+			// the <g class='party'> have three children
+				// rect - wrect - text
+
+				// -------------------------------------
+				// rect -> express the size of the party
 				var rects = g.selectAll('rect.main')
 					.data( function(d){ return [d] })
-				
+				// rect enter (new party)
 				rects.enter().append('rect').attr({ opacity:0,'class':'main',});
-				rects
-					.transition(1000)
+				// rect transition 
+				rects.transition(1000)
 					.attr({
 						x:/*15*/0,
 						width:40,
@@ -84,41 +90,47 @@ d3.chart.partiesInfographic = function() {
 						stroke: 'none'
 					})
 
+				// -------------------------------------
+				// wrects to express the of proportion of un/selected deputies
 				wrects = g.selectAll('rect.white')
 					.data( function(d){ return [d] })
-
+				// wrects enter (new party)
 				wrects.enter().append('rect').attr({ opacity:0, 'class':'white'});
+				// wrects transition 
 				wrects
 					.transition(1000)
 					.attr({
 						x:/*15*/0+2,
 						width:40 -4,
 						y: function(d){ return /*scaleX(d.y0)*/ margin +2} ,
-						height : function(d){return scaleX(d.value.total - d.selected ) - 4 -margin},
+						height : function(d){return scaleX(d.value.total - d.value.selected ) - 4 -margin},
 						fill: 'white',
 						cursor : 'pointer',
 						opacity:0.6
 					})
 
-			var fontSize=12;
+				// ----------------------------------
+				// text - party name 
+				var fontSize=12;
+				var texts = g.selectAll('text')
+					.data( function(d){ return [d] })
+				// new part 
+				texts.enter().append('text')
+					.attr({ opacity:0})
+				// already existing party
+				texts.transition()
+					.text(function(d) { return ( (scaleX(d.y) - scaleX(d.y0)) > (fontSize+2) )? d.key : null; })
+					.attr({
+						x:40/2 /*+15*/,
+						y: function(d){ return (scaleX(d.y) - scaleX(d.y0)) /2  +margin*2},
+						'font-size': fontSize+'px',
+						'text-anchor':'middle',
+						cursor : 'pointer',
+						opacity:1
+					})
+				//
 
-			var texts = g.selectAll('text')
-				.data( function(d){ return [d] })
-
-			texts.enter().append('text')
-				.attr({ opacity:0})
-
-			texts.transition()
-				.text(function(d) { return ( (scaleX(d.y) - scaleX(d.y0)) > (fontSize+2) )? d.key : null; })
-				.attr({
-					x:40/2 /*+15*/,
-					y: function(d){ return (scaleX(d.y) - scaleX(d.y0)) /2  +margin*2},
-					'font-size': fontSize+'px',
-					'text-anchor':'middle',
-					cursor : 'pointer',
-					opacity:1
-				})		
-
+			// delete parties without deputies in the viz
 			g.exit().transition().remove();
 
 			g
@@ -126,10 +138,18 @@ d3.chart.partiesInfographic = function() {
 					var hoverParties = {};
 					hoverParties[d.key]=true;
 					dispatch.hover(hoverParties);
-				})
 
+					tooltip.html(chart.renderPartyTooltip(d));
+					return tooltip
+						.style("visibility", "visible")
+						.style("opacity", 1);
+				})
+				.on('mousemove',function(){
+					return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 25)+"px");
+				})
 				.on('mouseout', function(d){ 
 					dispatch.hover(null);
+					return tooltip.style("visibility", "hidden");
 				})
 
 				.on('click', function (d) {
@@ -161,18 +181,20 @@ d3.chart.partiesInfographic = function() {
 							//dispatch event of selected states
 							dispatch.selected( [d.key],'SET')
 						}
+					
+					tooltip.html(chart.renderPartyTooltip(d));
 				})
 	}
 
 	chart.setSelectedDeputies = function(deputiesPerParty){
 		if(deputiesPerParty == null){
-			parties.forEach( function(d){ d.selected = d.value.total})
+			parties.forEach( function(d){ d.value.selected = d.value.total})
 			wrects.transition(1000)
 				.attr({ height : 0 })
 		} else {
-			parties.forEach( function(d){ d.selected = deputiesPerParty[d.key]})
+			parties.forEach( function(d){ d.value.selected = deputiesPerParty[d.key]})
 			wrects.transition(1000)
-				.attr({ height : function(d){return scaleX(d.value.total - d.selected ) - 4 -margin}, opacity: 0.6, fill: 'white'})
+				.attr({ height : function(d){return scaleX(d.value.total - d.value.selected ) - 4 -margin}, opacity: 0.6, fill: 'white'})
 		}
 	}
 
@@ -353,6 +375,10 @@ d3.chart.partiesInfographic = function() {
 		if(!arguments.length) return data;
 		data = value;
 		return chart;
+	}
+
+	chart.renderPartyTooltip = function(party){
+		return party.key+"<br/><em>"+((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total +")</em><br/><em>Click to select</em>"
 	}
 
 	return d3.rebind(chart, dispatch, "on");
