@@ -93,7 +93,7 @@ d3.chart.deputiesGraph = function() {
 	
 			dispatch.hover(d.record,true);
 
-			tooltip.html(d.record.name +' ('+d.record.party+'-'+d.record.state+')'+"<br /><em>Click to highlight</em>");
+			tooltip.html(d.record.name +' ('+d.record.party+'-'+d.record.state+')'+"<br /><em>Click to select</em>");
 			return tooltip
 					.style("visibility", "visible")
 					.style("opacity", 1);

@@ -300,11 +300,6 @@ d3.chart.deputiesScatterplot = function() {
 		dispatch.selected(phonebookIDs)
 	}
 
-	chart.resetRollCallRates = function(){
-		chart.resetRollCallRates();
-		dispatch.selected(null)
-	}
-
 	chart.highlightRollCall = function(rollCall, mouseover){
 		if(mouseover){
 			g.selectAll('.node').style('fill', 'darkgrey');
