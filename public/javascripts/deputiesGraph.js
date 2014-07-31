@@ -17,7 +17,7 @@ d3.chart.deputiesGraph = function() {
 	});
 
 	var nodes,links,every_link; // DATA
-	var dispatch = d3.dispatch(chart, "hover");
+	var dispatch = d3.dispatch(chart, "hover",'select');
 
 	var colWidth = $('.canvas').width() * canvasWidthAdjust;
 
@@ -83,7 +83,8 @@ d3.chart.deputiesGraph = function() {
 		node
 			.on("mouseover", mouseoverDeputy)
 			.on("mousemove", mousemoveDeputy)
-			.on("mouseout", mouseoutDeputy);
+			.on("mouseout", mouseoutDeputy)
+			.on("click", mouseClickDeputy)
 
 			
 		// mouse OVER circle deputy
@@ -108,6 +109,17 @@ d3.chart.deputiesGraph = function() {
 				dispatch.hover(d.record,false);
 				
 				return tooltip.style("visibility", "hidden");
+		}
+		function mouseClickDeputy(d){
+			if (d3.event.shiftKey){	
+				dispatch.select('EXCLUDE', [d.record.phonebookID] )
+			} else 
+			if (d3.event.ctrlKey){		
+				dispatch.select('ADD', [d.record.phonebookID] )
+			} 
+			else {
+				dispatch.select('SET', [d.record.phonebookID] )
+			}		
 		}
 
 
@@ -295,7 +307,7 @@ d3.chart.deputiesGraph = function() {
 		svg.selectAll('.node').style('fill', function(d){ return setDeputyFill(d) })
 	}
 
-	chart.setSelectedDeputies = function (phonebookIDs) {
+	chart.selectDeputies = function (phonebookIDs) {
 		if (phonebookIDs == null) svg.selectAll('.node').classed("selected", true);
 		else {
 			svg.selectAll('.node').classed("selected", false);

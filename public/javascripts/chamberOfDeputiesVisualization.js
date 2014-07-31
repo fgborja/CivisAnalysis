@@ -70,7 +70,7 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 				//console.log('deputiesScatterplot.on(selected) ')
 
 				// select the set of deputies in the graph
-				deputiesGraph.setSelectedDeputies(phonebookIDs);
+				deputiesGraph.selectDeputies(phonebookIDs);
 
 				// set the agreement rate for each RollCall
 				calcRollCallAgreement(rollCallInTheDateRange,phonebookIDs);
@@ -184,6 +184,9 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 					// highlight the deputy in the graph
 					deputiesScatterplot.highlightDeputy( deputy.phonebookID , mouseover );
 				} 
+			})
+			.on('select', function(operation,deputiesIDs){
+				deputiesScatterplot.selectDeputies(operation,deputiesIDs);
 			})
 	// ====================================================================================
 

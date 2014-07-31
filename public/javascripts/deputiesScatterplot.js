@@ -347,6 +347,24 @@ d3.chart.deputiesScatterplot = function() {
 		return selectedNodes[0].map(function(d){ return d3.select(d).attr('deputy') })
 	}
 
+	chart.selectDeputies = function (operation, phonebookIDs) {
+		if (phonebookIDs == null) g.selectAll('.node').classed("selected", true);
+		else {
+			if(operation == 'SET'){
+				g.selectAll('.node').classed("selected", false);
+				phonebookIDs.forEach( function(phonebookID){ g.select(".node#deputy-"+phonebookID).classed("selected", true); } )
+			} else 
+			if(operation == 'EXCLUDE') {
+				phonebookIDs.forEach( function(phonebookID){ g.select(".node#deputy-"+phonebookID).classed("selected", false); } )
+			} else 
+			if(operation == 'ADD'){
+				phonebookIDs.forEach( function(phonebookID){ g.select(".node#deputy-"+phonebookID).classed("selected", true); } )
+			}
+		}
+
+		dispatch.selected(chart.getSelectedDeputiesIDs())
+	}
+
 	return d3.rebind(chart, dispatch, "on");
 }
 
