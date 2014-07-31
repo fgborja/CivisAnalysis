@@ -731,9 +731,9 @@ function setDeputyModal(){
 			{ data: 'state'}
 		],
 		createdRow: function ( row, data, index ) {
-			console.log(data)
+			//console.log(data)
             if ( data.party == 'PT' ) {
-            	console.log('PT')
+            	//console.log('PT')
                  $(row).addClass('selected');
             }
         }
