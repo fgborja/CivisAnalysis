@@ -71,7 +71,7 @@ d3.chart.brazilianStates = function() {
 			.attr("width", width)
 			.attr("height", height)
 			.on("click", function(){ 
-				resetStatesLayout(); 
+				chart.resetStatesLayout(); 
 				dispatch.selected( null ); 
 			})
 			.attr("fill","white")
@@ -91,19 +91,28 @@ d3.chart.brazilianStates = function() {
 				.attr("d", path)
 				.attr("id", function(d) { return state[ d.properties.NAME_1 ] ; })
 				.attr("class", "states selected")
-				.on("mouseover", function () { 
+				.on("mouseover", function (d) { 
 					d3.select(this).classed('mouseover',true) ; 
 					setStateStyle(d3.select(this));
 
 					//dispatch event of hovering state.
-					dispatch.hover( d3.select(this).attr('id'))  	
+					dispatch.hover( d3.select(this).attr('id'))  
+
+					tooltip.html(chart.renderStateTooltip(d));
+					return tooltip
+						.style("visibility", "visible")
+						.style("opacity", 1);
+				})
+				.on('mousemove',function(){
+					return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 25)+"px");
 				})
 				.on("mouseout",  function () {
 					d3.select(this).classed('mouseover',false); 
 					setStateStyle(d3.select(this));
 
 					//dispatch event of end of hover
-					dispatch.hover( null ) 							
+					dispatch.hover( null ) 				
+					return tooltip.style("visibility", "hidden");			
 				})
 				.on("click",function (d) {
 					d3.event.preventDefault();
@@ -139,11 +148,10 @@ d3.chart.brazilianStates = function() {
 						dispatch.selected( state[d.properties.NAME_1],'SET')
 					}
 
-									
+					tooltip.html(chart.renderStateTooltip(d));				
 				})
 				// html tooltip
-				.append("title").text( function (d) { return d.properties.NAME_1 });	
-
+				//.append("title").text( function (d) { return d.properties.NAME_1 });	
 
 				svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
 		});
@@ -223,20 +231,14 @@ d3.chart.brazilianStates = function() {
 		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
 	}
 
-	// recieve an map with the 
+	// 
 	chart.setRollCallRates = function () {
 			setLabelGradient()
 			svg.selectAll('.states').each( function(){ setStateStyle( d3.select(this) ) })
-		}
+	}
 
-	function resetStatesLayout(){
-
+	chart.resetStatesLayout = function(){
 		svg.selectAll('.states').classed('selected',true);
-
-		// for (var i = 0; i < data.length; i++) {
-		// 	data[i].rate = null;
-		// };
-
 		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
 	}
 
@@ -406,6 +408,14 @@ d3.chart.brazilianStates = function() {
 	// 			.text( function(d) { return state[ d.properties.NAME_1 ] ; } )
 
 	// }
+
+	chart.renderStateTooltip = function(state){
+		console.log(state)
+		return state.properties.NAME_1 + '<br/>'
+			+'<em>'+ ((state.selected/state.total)*100).toFixed(1) +"% selected ("+ state.selected +'/'+state.total +')</em>'
+			+'<br/><em>'+ 'Click to select' +'</em>';
+			
+	}
 
 	return d3.rebind(chart, dispatch, "on");
 }

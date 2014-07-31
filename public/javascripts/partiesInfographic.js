@@ -4,7 +4,7 @@ d3.chart.partiesInfographic = function() {
 
 	var svg, wrects, scaleX;
 
-	var dispatch = d3.dispatch("hover","selected",'tooltip');
+	var dispatch = d3.dispatch("hover","selected");
 	chart.on = dispatch.on;
 
 	var parties;
