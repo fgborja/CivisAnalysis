@@ -71,7 +71,7 @@ d3.chart.brazilianStates = function() {
 			.attr("width", width)
 			.attr("height", height)
 			.on("click", function(){ 
-				selectAllStates(); 
+				chart.selectAllStates(); 
 				dispatch.selected( null ); 
 			})
 			.attr("fill","white")
@@ -225,7 +225,7 @@ d3.chart.brazilianStates = function() {
 			setStatesStyle();
 		}
 
-	function selectAllStates(){
+	chart.selectAllStates = function(){
 		svg.selectAll('.states').classed('selected',true);
 		setStatesStyle();
 	}

@@ -204,6 +204,10 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
 				console.log("filtered", filtered);
+
+				brazilianStates.resetRollCallRates();
+				brazilianStates.selectAllStates();
+
 				setNewDateRange(filtered[0],filtered[1]);
 			})
 			// Set the alliance!
