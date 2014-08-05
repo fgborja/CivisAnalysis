@@ -204,11 +204,17 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
 				console.log("filtered", filtered);
+				console.log('chusme')
+				$('#loading').css('visibility','visible');
 
 				brazilianStates.resetRollCallRates();
 				brazilianStates.selectAllStates();
 
-				setNewDateRange(filtered[0],filtered[1]);
+				setNewDateRange(filtered[0],filtered[1], 
+					function(){
+						d3.select('#loading').style('visibility','hidden');
+					}
+				);
 			})
 			// Set the alliance!
 			.on("setAlliances", function(alliances) { 
@@ -300,7 +306,7 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 // ======================================================================================================================
 // ======================================================================================================================
 
-function setNewDateRange(start,end){
+function setNewDateRange(start,end,callback){
 	deputiesGraph.stop();
 
 	deputyNodes =[];
@@ -330,6 +336,8 @@ function setNewDateRange(start,end){
 
 		partiesInfographic.data(deputyNodes);
 		partiesInfographic.update(null);
+
+		callback();
 	})
 }
 

@@ -12,8 +12,7 @@ html
 		link(rel='stylesheet', href="./stylesheets/brazilianStates.css")
 
 	body
-		#head
-			h2 CivisAnalysis: Brazilian Chamber of Deputies
+		h2#head CivisAnalysis: Brazilian Chamber of Deputies
 		br
 		.container-fluid
 			.row#main
@@ -61,6 +60,8 @@ html
 								.canvas#infoStates		
 							
 		#timeline
+			#loading
+				img#loadingGIF(src='./images/ajax_loader.gif')
 
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")
