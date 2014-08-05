@@ -71,7 +71,7 @@ d3.chart.brazilianStates = function() {
 			.attr("width", width)
 			.attr("height", height)
 			.on("click", function(){ 
-				resetStatesLayout(); 
+				selectAllStates(); 
 				dispatch.selected( null ); 
 			})
 			.attr("fill","white")
@@ -145,7 +145,7 @@ d3.chart.brazilianStates = function() {
 				.append("title").text( function (d) { return d.properties.NAME_1 });	
 
 
-				svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+				setStatesStyle()
 		});
 	}
 
@@ -194,18 +194,15 @@ d3.chart.brazilianStates = function() {
 
 	// TODO? display the distribution of the selected ( state-> unselecting all states)
 	chart.selectedDeputies = function(){
-		//console.log(deputyPerState)
-
 		svg.selectAll('.states').classed('selected', function(d){ return ((d.selected/d.total) == 1) })
-
-		svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+		setStatesStyle();
 	}
 	
 	chart.highlightRollCall = function(rollCall, mouseover){
 		if(data[0].rate == null) setLabelDefault(); else setLabelGradient();
 		
 		svg.selectAll('.states').attr('fill',function(d){/*console.log(d.rate);*/ return 'darkgrey'})
-		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+		setStatesStyle();
 	}
 
 	chart.highlightDeputyState = function( state , mouseover ){
@@ -218,26 +215,23 @@ d3.chart.brazilianStates = function() {
 
 	chart.resetRollCallRates = function (){
 		setLabelDefault();
-
 		$.each( chart.getStates(), function(){ this.rate = null; })
-		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+		setStatesStyle();
 	}
 
 	// recieve an map with the 
 	chart.setRollCallRates = function () {
 			setLabelGradient()
-			svg.selectAll('.states').each( function(){ setStateStyle( d3.select(this) ) })
+			setStatesStyle();
 		}
 
-	function resetStatesLayout(){
-
+	function selectAllStates(){
 		svg.selectAll('.states').classed('selected',true);
+		setStatesStyle();
+	}
 
-		// for (var i = 0; i < data.length; i++) {
-		// 	data[i].rate = null;
-		// };
-
-		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+	function setStatesStyle(){
+		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)) })
 	}
 
 	function setLabelDefault(){

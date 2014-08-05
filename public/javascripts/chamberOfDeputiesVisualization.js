@@ -326,9 +326,6 @@ function setNewDateRange(start,end){
 
 		partiesInfographic.data(deputyNodes);
 		partiesInfographic.update(null);
-
-		deputiesScatterplot.resetRollCallRates();
-		brazilianStates.resetRollCallRates();
 	})
 }
 
