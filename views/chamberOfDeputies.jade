@@ -13,12 +13,9 @@ html
 
 	body
 		h2#head CivisAnalysis: Brazilian Chamber of Deputies
-		br
 		.container-fluid
 			.row#main
-				
 				.col-xs-12
-					.row
 						.col-xs-5
 							.col-xs-12
 								br
@@ -31,7 +28,7 @@ html
 							.col-xs-12
 								br
 							.col-xs-4
-								h4.header Links connects deputies with 
+								h5.header Links connects deputies with 
 									span.subhead#thresh 70% 
 									text of vote correlation:
 									.slider#slider
@@ -39,7 +36,6 @@ html
 								.canvas#canvasGraph
 
 						.col-xs-2
-							br
 							h4.header Parties
 							#infoParties
 
@@ -58,10 +54,9 @@ html
 								h4.header States
 							.col-xs-8
 								.canvas#infoStates		
-							
-		#timeline
-			#loading
-				img#loadingGIF(src='./images/ajax_loader.gif')
+				.col-xs-12#timeline
+					#loading
+						img#loadingGIF(src='./images/ajax_loader.gif')
 
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")

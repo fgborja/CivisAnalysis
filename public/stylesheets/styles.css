@@ -25,11 +25,14 @@ h2 {text-align: center;}
 
 #head{
   margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 #main{
   /*height:400px;*/
-  width:100%;
+  width:1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #timeline{
@@ -46,7 +49,7 @@ h2 {text-align: center;}
 }
 
 .canvas{
-    width:300px;
+    width:260px;
     margin-left: auto ;
     margin-right: auto ;
 }
