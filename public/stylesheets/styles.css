@@ -2,6 +2,37 @@ html, body {height: 100%;width: 100%}
 
 h2 {text-align: center;}
 
+#head{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#main{
+  /*height:400px;*/
+  width:1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header{
+    height:20px;
+     margin-bottom:5px;
+     margin-top:5px;
+}
+
+.canvas{
+    width:260px;
+    margin-left: auto ;
+    margin-right: auto ;
+}
+
+#timeline{
+  height:120px;
+  width:99%;
+  margin-left: auto ;
+  margin-right: auto ;
+}
+
 #loading {
   background-color: #333;
   width: 99%;
@@ -23,35 +54,9 @@ h2 {text-align: center;}
     width: 100px;
 }
 
-#head{
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-
-#main{
-  /*height:400px;*/
-  width:1000px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#timeline{
-  height:120px;
-  width:99%;
-  margin-left: auto ;
-  margin-right: auto ;
-}
-
-.header{
-    height:20px;
-     margin-bottom:5px;
-     margin-top:5px;
-}
-
-.canvas{
-    width:260px;
-    margin-left: auto ;
-    margin-right: auto ;
+.reset{
+  color: grey;
+  opacity: 0.6;
 }
 /* turn all elements unselectable*/
 * {

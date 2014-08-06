@@ -324,16 +324,17 @@ d3.chart.brazilianStates = function() {
 	function setLabelGradient(){
 		d3.select('#statesSVG .stateLabel').remove()
 
-		var initX = 20;
+		var initX = 8;
 		var initY = 115;
+		var heightS = 8;
 		var g = svg.append('g').attr('class','stateLabel');
 
 		votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
 			g.append('rect').attr({
 					width : 30,
-					height: 12,
+					height: heightS,
 					x: initX,
-					y:  initY+i*12,
+					y:  initY+i*heightS,
 					fill: color,
 					stroke: 'lighblue',
 					'stroke-width': '0.5px'
@@ -349,7 +350,7 @@ d3.chart.brazilianStates = function() {
 				})
 		g.append('text').text('Sim').attr({
 					x: initX+5,
-					y:  initY-1+votingColorGradient.length*12,
+					y:  initY-1+votingColorGradient.length*heightS,
 					fill: 'white',
 					stroke: 'none',
 					'font-size':'11px',
@@ -365,7 +366,7 @@ d3.chart.brazilianStates = function() {
 
 		g.append('text').text('- Disagreed').attr({
 					x: initX+36,
-					y:  initY+3+(votingColorGradient.length/2)*12,
+					y:  initY+3+(votingColorGradient.length/2)*heightS,
 					fill: 'black',
 					stroke: 'none',
 					'font-size':'11px',
@@ -373,7 +374,7 @@ d3.chart.brazilianStates = function() {
 
 		g.append('text').text('-   Agreed').attr({
 					x: initX+36,
-					y:  initY-1+votingColorGradient.length*12,
+					y:  initY-1+votingColorGradient.length*heightS,
 					fill: 'black',
 					stroke: 'none',
 					'font-size':'11px',

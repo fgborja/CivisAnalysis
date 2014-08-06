@@ -291,15 +291,11 @@ d3.chart.deputiesGraph = function() {
 
 	
 
-	chart.highlightRollCall = function(rollCall, mouseover){
-		
-		if(mouseover){
-			svg.selectAll('.node').style('fill', 'darkgrey');
-
-			$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
-				svg.selectAll(".node#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
-			});
-		}else svg.selectAll('.node').style('fill', function(d){ return setDeputyFill(d) })
+	chart.highlightRollCall = function(rollCall){
+		svg.selectAll('.node').style('fill', 'darkgrey');
+		$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
+			svg.selectAll(".node#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
+		});
 	}
 
 
@@ -307,11 +303,11 @@ d3.chart.deputiesGraph = function() {
 		svg.selectAll('.node').style('fill', function(d){ return setDeputyFill(d) })
 	}
 
-	chart.selectDeputies = function (phonebookIDs) {
-		if (phonebookIDs == null) svg.selectAll('.node').classed("selected", true);
+	chart.selectDeputies = function (deputies) {
+		if (deputies == null) svg.selectAll('.node').classed("selected", true);
 		else {
 			svg.selectAll('.node').classed("selected", false);
-			phonebookIDs.forEach( function(phonebookID){ svg.select(".node#deputy-"+phonebookID).classed("selected", true); } )
+			deputies.forEach( function(deputy){ svg.select(".node#deputy-"+deputy.phonebookID).classed("selected", true); } )
 		}
 	}
 

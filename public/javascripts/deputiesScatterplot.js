@@ -50,7 +50,7 @@ d3.chart.deputiesScatterplot = function() {
 
 
 
-		selectors('deputy',dispatch.selected);
+		selectors('deputy', chart.dispatchSelected );
 		
 		//update();
 	}
@@ -160,7 +160,7 @@ d3.chart.deputiesScatterplot = function() {
 				d3.select(this).classed('selected',false);
 				
 				//dispatch event of selected rollCalls
-				dispatch.selected( chart.getSelectedDeputiesIDs() )
+				chart.dispatchSelected()
 
 			} else 
 			if (d3.event.ctrlKey){
@@ -168,7 +168,7 @@ d3.chart.deputiesScatterplot = function() {
 				d3.select(this).classed('selected',true);
 				
 				//dispatch event of selected rollCalls
-				dispatch.selected( chart.getSelectedDeputiesIDs() )
+				chart.dispatchSelected()
 
 			} 
 			else {
@@ -177,7 +177,7 @@ d3.chart.deputiesScatterplot = function() {
 				d3.select(this).classed('selected',true);
 
 				//dispatch event of selected states
-				dispatch.selected([ d3.select(this).attr('deputy') ])
+				chart.dispatchSelected()
 			}		
 		}				
 
@@ -265,9 +265,7 @@ d3.chart.deputiesScatterplot = function() {
 		selectNodesByAttr('state', state, operation )
 
 		// DISPATCH SELECTED!
-		var phonebookIDs = [];
-		g.selectAll('.node.selected').each( function(d){ phonebookIDs.push(d.phonebookID) })
-		dispatch.selected(phonebookIDs)
+		dispatch.selected(chart.getSelected())
 	}
 
 	chart.selectNodesByAttr = function (attr, value, operation ){
@@ -295,18 +293,14 @@ d3.chart.deputiesScatterplot = function() {
 		}
 
 		// DISPATCH SELECTED!
-		var phonebookIDs = [];
-		g.selectAll('.node.selected').each( function(d){ phonebookIDs.push(d.phonebookID) })
-		dispatch.selected(phonebookIDs)
+		dispatch.selected(chart.getSelected())
 	}
 
-	chart.highlightRollCall = function(rollCall, mouseover){
-		if(mouseover){
-			g.selectAll('.node').style('fill', 'darkgrey');
-			$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
-				g.selectAll("#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
-			});
-		}else g.selectAll(".node").style("fill", function(d) { return setDeputyFill(d) });
+	chart.highlightRollCall = function(rollCall){
+		g.selectAll('.node').style('fill', 'darkgrey');
+		$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
+			g.selectAll("#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
+		});
 	}
 
 	chart.setRollCallVotingRate = function(){
@@ -342,6 +336,21 @@ d3.chart.deputiesScatterplot = function() {
 		return selectedNodes[0].map(function(d){ return d3.select(d).attr('deputy') })
 	}
 
+	chart.getSelected = function(){
+		var selected = [];
+		g.selectAll('.node.selected').each( function(d){ selected.push(d) })
+		return selected;
+	}
+
+	chart.dispatchSelected = function(){
+		dispatch.selected( chart.getSelected());
+	}
+
+	chart.reset = function(){
+		g.selectAll('.node').classed("selected", true);
+		chart.dispatchSelected();
+	}
+
 	chart.selectDeputies = function (operation, phonebookIDs) {
 		if (phonebookIDs == null) g.selectAll('.node').classed("selected", true);
 		else {
@@ -357,7 +366,11 @@ d3.chart.deputiesScatterplot = function() {
 			}
 		}
 
-		dispatch.selected(chart.getSelectedDeputiesIDs())
+		dispatch.selected(chart.getSelected())
+	}
+
+	chart.isSelected = function( phonebookID ){
+		return g.select('.node#deputy-'+phonebookID).classed('selected')
 	}
 
 	return d3.rebind(chart, dispatch, "on");

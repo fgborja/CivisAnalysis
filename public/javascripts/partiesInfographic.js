@@ -237,12 +237,17 @@ d3.chart.partiesInfographic = function() {
 
 	// }
 
-	chart.setSelectedDeputies = function(deputiesPerParty){
-		if(deputiesPerParty == null){
+	chart.setSelectedDeputies = function(selectedDeputiesPerParty){
+		if(selectedDeputiesPerParty == null){
 			wrects.transition(1000)
 				.attr({ height : 0 })
 		} else {
-			parties.forEach( function(d){ d.selected = deputiesPerParty[d.key]})
+			parties.forEach( function(d){ 
+				if(selectedDeputiesPerParty[d.key] === undefined)
+				{	 d.selected=0;}
+				else d.selected = selectedDeputiesPerParty[d.key]
+			})
+			
 			wrects.transition(1000)
 				.attr({ height : function(d){return scaleX(d.value.total - d.selected ) - 4 -margin}, opacity: 0.6, fill: 'white'})
 		}
