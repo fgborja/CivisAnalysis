@@ -71,7 +71,7 @@ d3.chart.brazilianStates = function() {
 			.attr("width", width)
 			.attr("height", height)
 			.on("click", function(){ 
-				chart.resetStatesLayout(); 
+				chart.selectAllStates(); 
 				dispatch.selected( null ); 
 			})
 			.attr("fill","white")
@@ -153,7 +153,7 @@ d3.chart.brazilianStates = function() {
 				// html tooltip
 				//.append("title").text( function (d) { return d.properties.NAME_1 });	
 
-				svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+				setStatesStyle()
 		});
 	}
 
@@ -202,18 +202,15 @@ d3.chart.brazilianStates = function() {
 
 	// TODO? display the distribution of the selected ( state-> unselecting all states)
 	chart.selectedDeputies = function(){
-		//console.log(deputyPerState)
-
 		svg.selectAll('.states').classed('selected', function(d){ return ((d.selected/d.total) == 1) })
-
-		svg.selectAll('.states').each( function(i){ setStateStyle(d3.select(this)); } )
+		setStatesStyle();
 	}
 	
 	chart.highlightRollCall = function(rollCall, mouseover){
 		if(data[0].rate == null) setLabelDefault(); else setLabelGradient();
 		
 		svg.selectAll('.states').attr('fill',function(d){/*console.log(d.rate);*/ return 'darkgrey'})
-		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+		setStatesStyle();
 	}
 
 	chart.highlightDeputyState = function( state , mouseover ){
@@ -226,20 +223,23 @@ d3.chart.brazilianStates = function() {
 
 	chart.resetRollCallRates = function (){
 		setLabelDefault();
-
 		$.each( chart.getStates(), function(){ this.rate = null; })
-		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+		setStatesStyle();
 	}
 
 	// 
 	chart.setRollCallRates = function () {
 			setLabelGradient()
-			svg.selectAll('.states').each( function(){ setStateStyle( d3.select(this) ) })
+			setStatesStyle();
+		}
+
+	chart.selectAllStates = function(){
+		svg.selectAll('.states').classed('selected',true);
+		setStatesStyle();
 	}
 
-	chart.resetStatesLayout = function(){
-		svg.selectAll('.states').classed('selected',true);
-		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)); } )
+	function setStatesStyle(){
+		svg.selectAll('.states').each( function(){ setStateStyle(d3.select(this)) })
 	}
 
 	function setLabelDefault(){
@@ -332,16 +332,17 @@ d3.chart.brazilianStates = function() {
 	function setLabelGradient(){
 		d3.select('#statesSVG .stateLabel').remove()
 
-		var initX = 20;
+		var initX = 8;
 		var initY = 115;
+		var heightS = 8;
 		var g = svg.append('g').attr('class','stateLabel');
 
 		votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
 			g.append('rect').attr({
 					width : 30,
-					height: 12,
+					height: heightS,
 					x: initX,
-					y:  initY+i*12,
+					y:  initY+i*heightS,
 					fill: color,
 					stroke: 'lighblue',
 					'stroke-width': '0.5px'
@@ -357,7 +358,7 @@ d3.chart.brazilianStates = function() {
 				})
 		g.append('text').text('Sim').attr({
 					x: initX+5,
-					y:  initY-1+votingColorGradient.length*12,
+					y:  initY-1+votingColorGradient.length*heightS,
 					fill: 'white',
 					stroke: 'none',
 					'font-size':'11px',
@@ -373,7 +374,7 @@ d3.chart.brazilianStates = function() {
 
 		g.append('text').text('- Disagreed').attr({
 					x: initX+36,
-					y:  initY+3+(votingColorGradient.length/2)*12,
+					y:  initY+3+(votingColorGradient.length/2)*heightS,
 					fill: 'black',
 					stroke: 'none',
 					'font-size':'11px',
@@ -381,7 +382,7 @@ d3.chart.brazilianStates = function() {
 
 		g.append('text').text('-   Agreed').attr({
 					x: initX+36,
-					y:  initY-1+votingColorGradient.length*12,
+					y:  initY-1+votingColorGradient.length*heightS,
 					fill: 'black',
 					stroke: 'none',
 					'font-size':'11px',
@@ -410,7 +411,6 @@ d3.chart.brazilianStates = function() {
 	// }
 
 	chart.renderStateTooltip = function(state){
-		console.log(state)
 		return state.properties.NAME_1 + '<br/>'
 			+'<em>'+ ((state.selected/state.total)*100).toFixed(1) +"% selected ("+ state.selected +'/'+state.total +')</em>'
 			+'<br/><em>'+ 'Click to select' +'</em>';

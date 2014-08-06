@@ -30,7 +30,7 @@ d3.chart.rollCallsScatterplot = function() {
 	    g.append("g")
 	    .classed("axis y", true)
 
-	    selectors('rollCall',dispatch.selected);
+	    selectors('rollCall',chart.dispatchSelected);
 	}
 
 	chart.on = dispatch.on;
@@ -95,9 +95,8 @@ d3.chart.rollCallsScatterplot = function() {
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
 			r: 4,
 			class: "node selected",
-			id: function(d,i) { return "rollCall-" + i; },
 			fill: function (d) { return votingColor(d.rate) },
-			rollCall: function (d,i) { return i }
+			id: function (d) { return 'rollCall-'+d.i }
 		})
 		circles.exit().transition().remove();
 
@@ -111,7 +110,7 @@ d3.chart.rollCallsScatterplot = function() {
 		function mouseOverVoting(d) {
 			d3.select(this).attr("r",8)
 	
-			dispatch.hover(d,true);
+			dispatch.hover(d);
 
 			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/><em>"+d.rollCall.Resumo+"</em>"+ "<br/><em>Click to select</em>");
 			return tooltip
@@ -123,7 +122,7 @@ d3.chart.rollCallsScatterplot = function() {
 		function mouseOutVoting(d){ 
 			d3.select(this).attr("r",4)
 				
-			dispatch.hover(d,false);
+			dispatch.hover(null);
 				
 			return tooltip.style("visibility", "hidden");
 		}
@@ -137,7 +136,7 @@ d3.chart.rollCallsScatterplot = function() {
 				d3.select(this).classed('selected',false);
 				
 				//dispatch event of selected rollCalls
-				dispatch.selected( chart.getSelectedRollCallsIDs() )
+				chart.dispatchSelected();
 
 			} else 
 			if (d3.event.ctrlKey){
@@ -145,7 +144,7 @@ d3.chart.rollCallsScatterplot = function() {
 				d3.select(this).classed('selected',true);
 				
 				//dispatch event of selected rollCalls
-				dispatch.selected( chart.getSelectedRollCallsIDs() )
+				chart.dispatchSelected();
 
 			} 
 			else {
@@ -154,7 +153,7 @@ d3.chart.rollCallsScatterplot = function() {
 				d3.select(this).classed('selected',true);
 
 				//dispatch event of selected states
-				dispatch.selected([ d3.select(this).attr('rollCall') ])
+				chart.dispatchSelected();
 			}
 		}		
 	}
@@ -202,9 +201,23 @@ d3.chart.rollCallsScatterplot = function() {
 		});
 	}
 
-	chart.getSelectedRollCallsIDs = function(){
-		var selectedNodes = g.selectAll('.node.selected');
-		return selectedNodes[0].map(function(d){ return d3.select(d).attr('rollCall') })
+	chart.getSelected = function(){
+		var selected = [];
+		g.selectAll('.node.selected').each( function(d){ selected.push(d) })
+		return selected;
+	}
+
+	chart.dispatchSelected = function(){
+		dispatch.selected( chart.getSelected());
+	}
+
+	chart.isSelected = function(rollCallID){
+		return g.select('.node#rollCall-'+rollCallID).classed('selected')
+	}
+
+	chart.reset = function(){
+		g.selectAll('circle').classed('selected',true);
+		chart.dispatchSelected()
 	}
 
 

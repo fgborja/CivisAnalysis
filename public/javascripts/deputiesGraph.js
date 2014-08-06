@@ -17,7 +17,7 @@ d3.chart.deputiesGraph = function() {
 	});
 
 	var nodes,links,every_link; // DATA
-	var dispatch = d3.dispatch(chart, "hover");
+	var dispatch = d3.dispatch(chart, "hover",'select');
 
 	var colWidth = $('.canvas').width() * canvasWidthAdjust;
 
@@ -45,7 +45,7 @@ d3.chart.deputiesGraph = function() {
 		.size([colWidth, colWidth])
 		.nodes(nodes)
 		.charge(-20)
-		.gravity(0.4)
+		.gravity(0.6)
 		.links(links)
 		.on("tick", tick)
 
@@ -83,7 +83,8 @@ d3.chart.deputiesGraph = function() {
 		node
 			.on("mouseover", mouseoverDeputy)
 			.on("mousemove", mousemoveDeputy)
-			.on("mouseout", mouseoutDeputy);
+			.on("mouseout", mouseoutDeputy)
+			.on("click", mouseClickDeputy)
 
 			
 		// mouse OVER circle deputy
@@ -92,7 +93,7 @@ d3.chart.deputiesGraph = function() {
 	
 			dispatch.hover(d.record,true);
 
-			tooltip.html(d.record.name +' ('+d.record.party+'-'+d.record.state+')'+"<br /><em>Click to highlight</em>");
+			tooltip.html(d.record.name +' ('+d.record.party+'-'+d.record.state+')'+"<br /><em>Click to select</em>");
 			return tooltip
 					.style("visibility", "visible")
 					.style("opacity", 1);
@@ -108,6 +109,17 @@ d3.chart.deputiesGraph = function() {
 				dispatch.hover(d.record,false);
 				
 				return tooltip.style("visibility", "hidden");
+		}
+		function mouseClickDeputy(d){
+			if (d3.event.shiftKey){	
+				dispatch.select('EXCLUDE', [d.record.phonebookID] )
+			} else 
+			if (d3.event.ctrlKey){		
+				dispatch.select('ADD', [d.record.phonebookID] )
+			} 
+			else {
+				dispatch.select('SET', [d.record.phonebookID] )
+			}		
 		}
 
 
@@ -279,15 +291,11 @@ d3.chart.deputiesGraph = function() {
 
 	
 
-	chart.highlightRollCall = function(rollCall, mouseover){
-		
-		if(mouseover){
-			svg.selectAll('.node').style('fill', 'darkgrey');
-
-			$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
-				svg.selectAll(".node#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
-			});
-		}else svg.selectAll('.node').style('fill', function(d){ return setDeputyFill(d) })
+	chart.highlightRollCall = function(rollCall){
+		svg.selectAll('.node').style('fill', 'darkgrey');
+		$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
+			svg.selectAll(".node#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
+		});
 	}
 
 
@@ -295,11 +303,11 @@ d3.chart.deputiesGraph = function() {
 		svg.selectAll('.node').style('fill', function(d){ return setDeputyFill(d) })
 	}
 
-	chart.setSelectedDeputies = function (phonebookIDs) {
-		if (phonebookIDs == null) svg.selectAll('.node').classed("selected", true);
+	chart.selectDeputies = function (deputies) {
+		if (deputies == null) svg.selectAll('.node').classed("selected", true);
 		else {
 			svg.selectAll('.node').classed("selected", false);
-			phonebookIDs.forEach( function(phonebookID){ svg.select(".node#deputy-"+phonebookID).classed("selected", true); } )
+			deputies.forEach( function(deputy){ svg.select(".node#deputy-"+deputy.phonebookID).classed("selected", true); } )
 		}
 	}
 

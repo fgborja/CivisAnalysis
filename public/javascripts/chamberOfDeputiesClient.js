@@ -171,14 +171,14 @@
 		var chamberOfDeputiesHTTP = {
 
 			getMotionRollCalls	:	function (tipo,numero,ano,callback){
-				d3.json('/data/motionRollCalls/'+tipo+''+numero+''+ano, function(motionRollCalls) {
+				d3.json('./data/motionRollCalls/'+tipo+''+numero+''+ano, function(motionRollCalls) {
 					if(motionRollCalls === null) console.log('Could not load DB getMotionRollCalls/'+tipo+'/'+numero+'/'+ano);
 					callback(motionRollCalls,tipo,numero,ano);
 				})
 			},
 
 			getOcurrencesOfRollCalls	: 	function (callback){
-				d3.json('/data/datetimeRollCall.json', function( ocurrencesOfRollCalls ) {
+				d3.json('./data/datetimeRollCall.json', function( ocurrencesOfRollCalls ) {
 					callback(ocurrencesOfRollCalls);
 				})
 			}

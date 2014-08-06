@@ -284,13 +284,9 @@ function selectors( class_selector,dispatchSelected){
 		var selectedNodes = d3.selectAll(selectClass+".selected");
 		if(selectedNodes[0].length == 0) {
 			d3.selectAll( selectClass).classed( "selected", true);
-			dispatchSelected( null );
-		} else {
-
-			selectedNodes = selectedNodes[0].map(function(d){ return d3.select(d).attr(class_selector) })
-						
-			dispatchSelected( selectedNodes );
 		}
+
+		dispatchSelected()
 	}
 }
 

@@ -1,3 +1,6 @@
+//===============================================================================================================
+//===============================================================================================================
+// TIMELINE CHART
 if(!d3.chart) d3.chart = {};
 
 d3.chart.timelineBarChart = function() {
@@ -415,8 +418,8 @@ d3.chart.timelineBarChart = function() {
 			tooltip.transition().duration(200).style("opacity", 1);
 
 			return tooltip.style("visibility", "visible")
-							.style("top", (250 )+"px")
-							.style("left",($(window).width()/4 )+"px");
+							.style("top", (100)+"px")
+							.style("left",(50)+"px");
 		})	
 
 		// set on/off alliance
