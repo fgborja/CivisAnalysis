@@ -45,7 +45,7 @@ d3.chart.deputiesGraph = function() {
 		.size([colWidth, colWidth])
 		.nodes(nodes)
 		.charge(-20)
-		.gravity(0.4)
+		.gravity(0.6)
 		.links(links)
 		.on("tick", tick)
 

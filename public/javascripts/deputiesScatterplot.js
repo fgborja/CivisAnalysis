@@ -6,8 +6,8 @@
 
 // }
 
-var radius = 4;
-var radiusHover = 8;
+var radius = 3.7;
+var radiusHover = radius*1.5;
 var pxMargin = radius+5;
 
 if(!d3.chart) d3.chart = {};
