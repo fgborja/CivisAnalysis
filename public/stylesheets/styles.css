@@ -57,6 +57,7 @@ h2 {text-align: center;}
 .reset{
   color: grey;
   opacity: 0.6;
+  font-size: 12px;
 }
 /* turn all elements unselectable*/
 * {

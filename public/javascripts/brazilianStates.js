@@ -411,8 +411,14 @@ d3.chart.brazilianStates = function() {
 	// }
 
 	chart.renderStateTooltip = function(state){
+		var selectedRate =  
+			(state.selected==state.total)?
+				state.total + ' Deputies'
+				:
+				((state.selected/state.total)*100).toFixed(1) +"% selected ("+ state.selected +'/'+state.total +')';
+
 		return state.properties.NAME_1 + '<br/>'
-			+'<em>'+ ((state.selected/state.total)*100).toFixed(1) +"% selected ("+ state.selected +'/'+state.total +')</em>'
+			+'<em>'+selectedRate+'</em>'
 			+'<br/><em>'+ 'Click to select' +'</em>';
 			
 	}

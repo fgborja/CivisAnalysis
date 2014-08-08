@@ -5,6 +5,9 @@ var tooltip = d3.select(".row")
 	.style("opacity", 0)
 	.attr("class", "d3tooltip");
 
+// div of selection
+$('div.selected').css('visibility','hidden');
+
 var canvasWidthAdjust = 0.8;
 
 // PARTY COLORS =================================================================================================
@@ -68,6 +71,9 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			// when a set of deputies is selected
 			.on('selected', function(deputies){
 				//console.log('deputiesScatterplot.on(selected) ')
+				if(deputies.length == deputyNodes.length)
+					$('div.deputies.selected').css('visibility','hidden');
+					else $('div.deputies.selected').css('visibility','visible');
 
 				// select the set of deputies in the graph
 				deputiesGraph.selectDeputies(deputies);
@@ -114,11 +120,13 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			//console.log('rollCallsScatterplot.on(selected')
 						
 			if(selectedRollCalls.length == rollCallNodes.length) {
+				$('div.rollCalls.selected').css('visibility','hidden');
 				deputiesScatterplot.resetRollCallRates();
 				deputiesGraph.resetRollCallRates();
 				brazilianStates.resetRollCallRates();
 			}
 			else {			
+				$('div.rollCalls.selected').css('visibility','visible');
 				calcDeputyNodesHistogram(selectedRollCalls)
 
 				deputiesScatterplot.setRollCallVotingRate();
@@ -192,6 +200,7 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 				console.log("filtered", filtered);
 
 				$('#loading').css('visibility','visible');
+				$('div.selected').css('visibility','hidden');
 
 				setNewDateRange(filtered[0],filtered[1], 
 					function(){

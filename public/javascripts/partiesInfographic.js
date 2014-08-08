@@ -393,21 +393,33 @@ d3.chart.partiesInfographic = function() {
 	}
 
 	chart.renderPartyTooltip = function(party){
-		return party.key+"<br/><em>"+((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total +")</em><br/><em>Click to select</em>"
+		var selectedRate =
+			(party.value.selected == party.value.total)?
+				party.value.total+' Deputies'
+				:
+				(((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total)+')';
+
+		return party.key+"<br/><em>"+ selectedRate +"</em><br/><em>Click to select</em>"
 	}
 
 	chart.renderAllianceTooltip = function(alliance){
-		//console.log(alliance)
 		var html = '';
 		var selected = 0;
 
 		alliance.partiesObjs.forEach( function (party){
-			html += "<em>"+party.key+"("+ party.value.selected +'/'+party.value.total +") : </em> "
+			var selectedRate = 
+				(party.value.selected == party.value.total)?
+					party.value.total
+					:
+					party.value.selected +'/'+party.value.total;
+
+			html += "<em>"+party.key+"("+ selectedRate +") : </em> "
 			//: "+((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total +")
 			selected += party.value.selected;
 		})
 
-		return  alliance.name+' ('+selected+'/'+alliance.total+")<br/>"+html;
+		var selectedRate = (selected==alliance.total)? (alliance.total+' Deputies') :selected+'/'+alliance.total;
+		return  alliance.name+' ('+selectedRate+")<br/>"+html;
 	}
 
 	return d3.rebind(chart, dispatch, "on");
