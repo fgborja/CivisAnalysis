@@ -419,7 +419,7 @@ d3.chart.partiesInfographic = function() {
 		})
 
 		var selectedRate = (selected==alliance.total)? (alliance.total+' Deputies') :selected+'/'+alliance.total;
-		return  alliance.name+' ('+selectedRate+")<br/>"+html;
+		return  alliance.name+' ('+selectedRate+")<br/>"+html+'<br/><em>'+ 'Click to select</em>';
 	}
 
 	return d3.rebind(chart, dispatch, "on");
