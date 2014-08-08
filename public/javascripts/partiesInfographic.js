@@ -50,7 +50,6 @@ d3.chart.partiesInfographic = function() {
 	}
 
 	function setDefaultParties(){
-		console.log(parties)
 			svg.selectAll('.alliances').remove()
 
 			var y=0;
@@ -193,8 +192,8 @@ d3.chart.partiesInfographic = function() {
 		} else {
 			parties.forEach( function(d){ 
 				if(selectedDeputiesPerParty[d.key] === undefined)
-				{	 d.selected=0;}
-				else d.selected = selectedDeputiesPerParty[d.key]
+				{	 d.value.selected=0;}
+				else d.value.selected = selectedDeputiesPerParty[d.key]
 			})
 
 			wrects.transition(1000)
