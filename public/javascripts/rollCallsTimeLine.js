@@ -383,7 +383,7 @@ d3.chart.timelineBarChart = function() {
 			// For each item in our JSON, add a table row and cells to the content string
 			$.each(d.alliances, function(i){
 				tableContent += '<tr>';
-				tableContent += '<td> <span class="color-preview" style="background-color: '+ getPartyColor(d.alliances[i].parties[0])+';"></span> </td>';
+				tableContent += '<td> <span class="color-preview" style="background-color: '+ getConstantPartyColor(d.alliances[i].parties[0])+';"></span> </td>';
 				tableContent += '<td>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</td>';
 				tableContent += '<td>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</td>';
 				tableContent += '<td>'+d.alliances[i].president+ '</td>';
