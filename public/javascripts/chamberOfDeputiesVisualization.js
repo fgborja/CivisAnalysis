@@ -193,9 +193,6 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 
 				$('#loading').css('visibility','visible');
 
-				brazilianStates.resetRollCallRates();
-				brazilianStates.selectAllStates();
-
 				setNewDateRange(filtered[0],filtered[1], 
 					function(){
 						d3.select('#loading').style('visibility','hidden');
@@ -322,6 +319,11 @@ function setNewDateRange(start,end,callback){
 
 		partiesInfographic.data(deputyNodes);
 		partiesInfographic.update(null);
+
+		
+		calcDeputyPerState(null, brazilianStates.getStates())
+		brazilianStates.resetRollCallRates();
+		brazilianStates.selectAllStates();
 
 		callback();
 	})
