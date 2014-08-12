@@ -45,20 +45,23 @@
 // '.main' '.selectorRect'
 function selectors( class_selector,dispatchSelected){
 	var main = d3.select('.chart'+'.'+class_selector);
-	var jqSelectorRect = $('.'+class_selector+' .selectorRect');
-	var d3SelectorRect = d3.select('.'+class_selector+' .selectorRect');
+	//var jqSelectorRect = $('.'+class_selector+' .selectorRect');
+	var selectorRect = d3.select('.'+class_selector+' .selectorRect');
 
 	var selectingIndex = 0;
 	var selecting = [false,true,true];
-	var selectingType	  = [null,'rect','circle']
+	var selectingType	  = [null,'rect'/*,'circle'*/]
 
 	var selectorElement,
-		selectorScreen,
-		selectorScreenJQ;
+		selectorScreen;
 
-	jqSelectorRect.on("contextmenu", rightClickSelectionMode);
+	//jqSelectorRect.on("mousedown", rightClickSelectionMode);
+	selectorRect.on("mousedown", function(){
+		setSelectionMode();
+		setSelectionElement( d3.mouse(this) ); 
+	});
 			
-	function setSelectionMode(){
+	function setSelectionMode(mouse){
 		//hidde the tooltip
 		selectorScreen =  main.append('rect')
 			.attr({
@@ -72,183 +75,219 @@ function selectors( class_selector,dispatchSelected){
 			})
 			
 		d3.select('body').on("keydown", function() { 
-			if (d3.event.shiftKey) selectorElement.attr('stroke','red') 
-			if (d3.event.ctrlKey) selectorElement.attr('stroke','green')  
+			if (d3.event.shiftKey) selectorElement.classed('shiftKey',true)  
+			if (d3.event.ctrlKey) selectorElement.classed('ctrlKey',true)   
 		})
 		.on("keyup", function() {  
-			if (!d3.event.shiftKey) selectorElement.attr('stroke','grey')  
-			if (!d3.event.ctr) selectorElement.attr('stroke','grey')  
+			console.log('chusme')
+			if (!d3.event.shiftKey) selectorElement.classed('shiftKey',false)  
+			if (!d3.event.ctrlKey) selectorElement.classed('ctrlKey',false)  
 		})
 
-		selectorScreenJQ = $('#selectorScreen')
-		selectorScreenJQ.on("contextmenu", rightClickSelectionMode)
-
 		main.on('mouseleave', function(){selectingIndex=0; setDefaultMode() })
+	
 	}
 
 	function setDefaultMode(){
 		if(selectorScreen !== undefined) selectorScreen.remove();
-
 		if(selectorElement !== undefined) selectorElement.remove();
 	}
 
-	function rightClickSelectionMode(event) {
-		
-		selectingIndex = (selectingIndex>=2)? 0 : selectingIndex+1; 
-		
-		//handle right click
+	function setSelectionElement(mouse){
 
-		if(selectingType[selectingIndex] =='circle'){ //-------------------------------------------------------------------
-			setDefaultMode(false); // reset
+		selectorElement = main.insert("circle",'#selectorScreen')
+			.attr({
+				r:10,
+				cx:mouse[0]+10,
+				cy:mouse[1]+10,
+				'class' : "selection"
+			})	
 
-			selectorElement = main.append("circle")
-				.attr({
-					r:0,
-					x:0,
-					y:0,
-					visibility : 'hidden',
-					'class' : "selection"
-				})
+		selectorScreen
+			.on('mousemove', function(){  
+				var p = d3.mouse( this),
 
-			setSelectionMode();
-			selectorScreen
-			.on( "mousedown", function() { 
-
-				var p = d3.mouse( this);
-				 
-					selectorElement.attr({
-							class   : "selection",
-							cx       : p[0],
-							cy       : p[1],
-							r: 10,
-							visibility : 'visible',
-							stroke     : 'gray'
-						})
-			})
-			.on('mousemove', function(event){  
-				if( !(selectorElement.attr('visibility') == 'hidden') ) {
-					var p = d3.mouse( this),
-			 
-						d = {
-							cx       : parseInt( selectorElement.attr( "cx"), 10),
-							cy       : parseInt( selectorElement.attr( "cy"), 10),
-							r 		 : 0
-						};
-						// calc new R
-					
-					d.r = Math.sqrt(Math.pow(p[0]-d.cx,2)+Math.pow(p[1]-d.cy,2)) +10;	
-
-					selectorElement.attr( d);			 
-
-				}
+				cx = parseInt( selectorElement.attr( "cx"));
+				cy = parseInt( selectorElement.attr( "cy"));
 				
+				r = Math.sqrt(Math.pow(p[0]-cx,2)+Math.pow(p[1]-cy,2)) +10;	
+
+				selectorElement.attr('r',r);			 
+
 			})
 			.on('mouseup', function(){
-				if(selectorElement.attr('visibility') == 'visible'){
-
-					var circle = {
-						x       : parseInt( selectorElement.attr( "cx"), 10),
-						y       : parseInt( selectorElement.attr( "cy"), 10),
-						r   	: parseInt( selectorElement.attr( "r"), 10),
-						isPointInside  : function(cx,cy){
-							return ( ( Math.pow( this.x-30-cx ,2) + Math.pow( this.y-30-cy ,2) ) <= Math.pow(this.r,2) ) 
-						}
-					};
-					
-					var selectedNodes = selectionNodesInsideElement(class_selector,circle);
-					
-					
-				}	
-				selectorElement.attr('visibility','hidden');
-			})
-
-		} else if (selectingType[selectingIndex] =='rect'){ //--------------------------------------------------------------
-			setDefaultMode(false);
-			selectorElement = main.append("rect")
-					.attr({
-						'width':0,
-						'height':0,
-						'class' : "selection",
-						'visibility' : 'hidden'
-					})	
-	
-			setSelectionMode();
-			selectorScreen
-				.on( "mousedown", function() {
-					var p = d3.mouse( this);
-				 
-					selectorElement.attr({
-							rx      : 6,
-							ry      : 6,
-							class   : "selection",
-							x       : p[0],
-							y       : p[1],
-							width   : 0,
-							height  : 0,
-							visibility : 'visible',
-							stroke     : 'gray'
-						})
-				})
-				.on( "mousemove", function() {
-					if( !(selectorElement.attr('visibility') == 'hidden') ) {
-						var p = d3.mouse( this),
-				 
-							d = {
-								x       : parseInt( selectorElement.attr( "x"), 10),
-								y       : parseInt( selectorElement.attr( "y"), 10),
-								width   : parseInt( selectorElement.attr( "width"), 10),
-								height  : parseInt( selectorElement.attr( "height"), 10)
-							},
-							move = {
-								x : Math.floor(p[0]) - d.x,   //why? - works O.o
-								y : p[1] - d.y
-							}
-						;	
-		 
-						if( move.x < 1 || (move.x*2<d.width)) {
-							d.x = p[0];
-							d.width -= move.x;
-						} else {
-							d.width = move.x;       
-						}
-				 
-						if( move.y < 1 || (move.y*2<d.height)) {
-							d.y = p[1];
-							d.height -= move.y;
-						} else {
-							d.height = move.y;       
-						}
-					   
-						selectorElement.attr( d);
+				var circle = {
+					x       : parseInt( selectorElement.attr( "cx")),
+					y       : parseInt( selectorElement.attr( "cy")),
+					r   	: parseInt( selectorElement.attr( "r")),
+					isPointInside  : function(cx,cy){
+						return ( ( Math.pow( this.x-10-cx ,2) + Math.pow( this.y-10-cy ,2) ) <= Math.pow(this.r,2) ) 
 					}
-				})
-				.on( "mouseup", function(event) {
-					
-					if(selectorElement.attr('visibility') == 'visible'){
-
-						var rect = {
-								x       : parseInt( selectorElement.attr( "x"), 10),
-								y       : parseInt( selectorElement.attr( "y"), 10),
-								width   : parseInt( selectorElement.attr( "width"), 10),
-								height  : parseInt( selectorElement.attr( "height"), 10),
-								isPointInside  : function(cx,cy){
-									return ( ((cx)>=(this.x-pxMargin)) && cx<=this.x+this.width-pxMargin && 
-									((cy)>=(this.y-pxMargin)) && cy<=this.y+this.height-pxMargin );
-								}
-						};
-						selectionNodesInsideElement(class_selector,rect);
-
-					}	
-					selectorElement.attr('visibility','hidden');
-				});
-						
-		} else{ // do not select! //-----------------------------------------------------------------------------------------
-			setDefaultMode(true);
-		}
-
-		//stop showing browser menu
-		event.preventDefault();
+				};
+				
+				selectionNodesInsideElement(class_selector,circle);
+				setDefaultMode()
+			})
+		
 	}
+
+	// function rightClickSelectionMode(event) {
+		
+	// 	selectingIndex = (selectingIndex>=2)? 0 : selectingIndex+1; 
+		
+	// 	//handle right click
+
+	// 	if(selectingType[selectingIndex] =='circle'){ //-------------------------------------------------------------------
+	// 		setDefaultMode(false); // reset
+
+	// 		selectorElement = main.append("circle")
+	// 			.attr({
+	// 				r:0,
+	// 				x:0,
+	// 				y:0,
+	// 				visibility : 'hidden',
+	// 				'class' : "selection"
+	// 			})
+
+	// 		setSelectionMode();
+	// 		selectorScreen
+	// 		.on( "mousedown", function() { 
+
+	// 			var p = d3.mouse( this);
+				 
+	// 				selectorElement.attr({
+	// 						class   : "selection",
+	// 						cx       : p[0],
+	// 						cy       : p[1],
+	// 						r: 10,
+	// 						visibility : 'visible',
+	// 						stroke     : 'gray'
+	// 					})
+	// 		})
+	// 		.on('mousemove', function(event){  
+	// 			if( !(selectorElement.attr('visibility') == 'hidden') ) {
+	// 				var p = d3.mouse( this),
+			 
+	// 					d = {
+	// 						cx       : parseInt( selectorElement.attr( "cx"), 10),
+	// 						cy       : parseInt( selectorElement.attr( "cy"), 10),
+	// 						r 		 : 0
+	// 					};
+	// 					// calc new R
+					
+	// 				d.r = Math.sqrt(Math.pow(p[0]-d.cx,2)+Math.pow(p[1]-d.cy,2)) +10;	
+
+	// 				selectorElement.attr( d);			 
+
+	// 			}
+				
+	// 		})
+	// 		.on('mouseup', function(){
+	// 			if(selectorElement.attr('visibility') == 'visible'){
+
+	// 				var circle = {
+	// 					x       : parseInt( selectorElement.attr( "cx"), 10),
+	// 					y       : parseInt( selectorElement.attr( "cy"), 10),
+	// 					r   	: parseInt( selectorElement.attr( "r"), 10),
+	// 					isPointInside  : function(cx,cy){
+	// 						return ( ( Math.pow( this.x-30-cx ,2) + Math.pow( this.y-30-cy ,2) ) <= Math.pow(this.r,2) ) 
+	// 					}
+	// 				};
+					
+	// 				var selectedNodes = selectionNodesInsideElement(class_selector,circle);
+					
+					
+	// 			}	
+	// 			selectorElement.attr('visibility','hidden');
+	// 		})
+
+	// 	} else if (selectingType[selectingIndex] =='rect'){ //--------------------------------------------------------------
+	// 		setDefaultMode(false);
+	// 		selectorElement = main.append("rect")
+	// 				.attr({
+	// 					'width':0,
+	// 					'height':0,
+	// 					'class' : "selection",
+	// 					'visibility' : 'hidden'
+	// 				})	
+	
+	// 		setSelectionMode();
+	// 		selectorScreen
+	// 			.on( "mousedown", function() {
+	// 				var p = d3.mouse( this);
+				 
+	// 				selectorElement.attr({
+	// 						rx      : 6,
+	// 						ry      : 6,
+	// 						class   : "selection",
+	// 						x       : p[0],
+	// 						y       : p[1],
+	// 						width   : 0,
+	// 						height  : 0,
+	// 						visibility : 'visible',
+	// 						stroke     : 'gray'
+	// 					})
+	// 			})
+	// 			.on( "mousemove", function() {
+	// 				if( !(selectorElement.attr('visibility') == 'hidden') ) {
+	// 					var p = d3.mouse( this),
+				 
+	// 						d = {
+	// 							x       : parseInt( selectorElement.attr( "x"), 10),
+	// 							y       : parseInt( selectorElement.attr( "y"), 10),
+	// 							width   : parseInt( selectorElement.attr( "width"), 10),
+	// 							height  : parseInt( selectorElement.attr( "height"), 10)
+	// 						},
+	// 						move = {
+	// 							x : Math.floor(p[0]) - d.x,   //why? - works O.o
+	// 							y : p[1] - d.y
+	// 						}
+	// 					;	
+		 
+	// 					if( move.x < 1 || (move.x*2<d.width)) {
+	// 						d.x = p[0];
+	// 						d.width -= move.x;
+	// 					} else {
+	// 						d.width = move.x;       
+	// 					}
+				 
+	// 					if( move.y < 1 || (move.y*2<d.height)) {
+	// 						d.y = p[1];
+	// 						d.height -= move.y;
+	// 					} else {
+	// 						d.height = move.y;       
+	// 					}
+					   
+	// 					selectorElement.attr( d);
+	// 				}
+	// 			})
+	// 			.on( "mouseup", function(event) {
+					
+	// 				if(selectorElement.attr('visibility') == 'visible'){
+
+	// 					var rect = {
+	// 							x       : parseInt( selectorElement.attr( "x"), 10),
+	// 							y       : parseInt( selectorElement.attr( "y"), 10),
+	// 							width   : parseInt( selectorElement.attr( "width"), 10),
+	// 							height  : parseInt( selectorElement.attr( "height"), 10),
+	// 							isPointInside  : function(cx,cy){
+	// 								return ( ((cx)>=(this.x-pxMargin)) && cx<=this.x+this.width-pxMargin && 
+	// 								((cy)>=(this.y-pxMargin)) && cy<=this.y+this.height-pxMargin );
+	// 							}
+	// 					};
+	// 					selectionNodesInsideElement(class_selector,rect);
+
+	// 				}	
+	// 				selectorElement.attr('visibility','hidden');
+	// 			});
+						
+	// 	} else{ // do not select! //-----------------------------------------------------------------------------------------
+	// 		setDefaultMode(true);
+	// 	}
+
+	// 	//stop showing browser menu
+	// 	event.preventDefault();
+	// }
 
 
 	// function to check if the nodes are in the SelectorElement => selectorElement.isPointInside(cx,cy)
@@ -281,7 +320,7 @@ function selectors( class_selector,dispatchSelected){
 			selectInElement(selectClass,selectionElement,function(){return true},function(){return false})							
 		}
 
-		var selectedNodes = d3.selectAll(selectClass+".selected");
+		var selectedNodes = d3.selectAll('.chart'+selectClass+".selected");
 		if(selectedNodes[0].length == 0) {
 			d3.selectAll( selectClass).classed( "selected", true);
 		}
