@@ -7,7 +7,7 @@ d3.chart.partiesInfographic = function() {
 	var dispatch = d3.dispatch("hover","selected");
 	chart.on = dispatch.on;
 
-	var parties;
+	var partiesMap,parties, alliances;
 
 	var width = $('#infoParties').width();
 	var height =   $('.canvas').width() * canvasWidthAdjust * 2.2;
@@ -23,24 +23,25 @@ d3.chart.partiesInfographic = function() {
 
 	chart.update = function(){
 		parties={};
+		partiesMap={};
 		//console.log(deputyNodes);
 		var totalDeputies =0;
 
 		data.forEach( function(deputy){ 
-			if(parties[deputy.party]===undefined) 
+			if(partiesMap[deputy.party]===undefined) 
 				{ 
-					parties[deputy.party]={};
-					parties[deputy.party].party=deputy.party;
-					parties[deputy.party].total=0;
-					parties[deputy.party].selected=0;   
+					partiesMap[deputy.party]={};
+					partiesMap[deputy.party].party=deputy.party;
+					partiesMap[deputy.party].total=0;
+					partiesMap[deputy.party].selected=0;   
 				};
 
-			parties[deputy.party].total++;
-			parties[deputy.party].selected++;
+			partiesMap[deputy.party].total++;
+			partiesMap[deputy.party].selected++;
 			totalDeputies++;
 		});
 
-		parties = d3.entries(parties).sort( function(a,b){ return b.value.total - a.value.total;  })
+		parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.total - a.value.total;  })
 
 		scaleX = d3.scale.linear()
 				.domain([0,totalDeputies])
@@ -209,7 +210,7 @@ d3.chart.partiesInfographic = function() {
 			setDefaultParties();
 		}
 		else{
-			var alliances = [];
+			alliances = [];
 			// set argument to new alliances array
 			a_alliances.forEach( function (alliance){ alliances.push(alliance)})
 
@@ -346,7 +347,6 @@ d3.chart.partiesInfographic = function() {
 
 					var rect = transition.select('.alliance.id-'+alliance.i+' rect')
 						.attr({
-								'class': 'alliance',
 								x:/*15*/50,
 								width:80,
 								y: function(d){ return /*scaleX(d.y0)*/ 1} ,
@@ -365,7 +365,7 @@ d3.chart.partiesInfographic = function() {
 						transition.select('.party#'+party.key)
 							.attr("transform", function(d, i) { return "translate(70,"+scaleX(d.y0)+")"; })
 							.selectAll('rect.main')
-								.attr('fill', function(d){ return getPartyColor(alliance.parties[0])} )
+								.attr('fill', function(d){ return getPartyColor(party.key)} )
 								.attr('stroke', function(d){ return 'black'} )
 								.attr('stroke-width', function(d){ return 0.5} )
 
@@ -381,9 +381,86 @@ d3.chart.partiesInfographic = function() {
 		}
 	}
 
-	// TODO set rollCall rates to parties and alliances
-	chart.setRollCallRate = function(rollCall){
-		console.log(rollCall)
+	chart.setRollCallRates = function(rollCalls){
+
+		parties.forEach( function(d){
+			d.value.votes = {"Sim":0,"Não":0,"Abstenção":0,"Obstrução":0,"Art. 17":0,"null":0}
+		})
+
+		rollCalls.forEach(function(d){
+			if(d.rollCall.votos == undefined){}
+			else{
+				d.rollCall.votos.Deputado.forEach( function (vote){
+					if(partiesMap[vote.Partido] != undefined)
+						partiesMap[vote.Partido].votes[vote.Voto]++
+				})
+			}
+		})
+
+		parties.forEach( function(d){
+			if( (d.value.votes['Sim']==0) && (d.value.votes['Não']==0) ) {d.rate = 'noVotes'}
+			else{
+				var total = d.value.votes['Não'] + d.value.votes['Sim'];
+				d.rate = (d.value.votes['Sim']-d.value.votes['Não'])/total;
+			}
+		})
+
+		svg.selectAll('.party rect.main')
+			.transition()
+			.attr('fill', function(party){ 	
+				return (party.rate == 'noVotes')? 'lightgrey' : votingColor(party.rate);
+			})
+
+
+		// alliances
+		if( ! svg.selectAll('.alliances').empty() ){
+			alliances.forEach(function(alliance){
+
+				alliance.votes = {"Sim":0,"Não":0,"Abstenção":0,"Obstrução":0,"Art. 17":0,"null":0};
+
+				alliance.partiesObjs.forEach(function(party){
+
+					$.each(party.value.votes, function(vote,count){
+						alliance.votes[vote] += count;
+					})
+
+				})
+
+				if( (alliance.votes['Sim']==0) && (alliance.votes['Não']==0) ) 
+					{d.rate = 'noVotes'}
+				else{
+					var total = alliance.votes['Não'] + alliance.votes['Sim'];
+					alliance.rate = (alliance.votes['Sim']-alliance.votes['Não'])/total;
+				}
+
+				svg.selectAll('.alliance rect')
+					.attr('fill', function(alliance){ 	
+						return (alliance.rate == 'noVotes')? 'lightgrey' : votingColor(alliance.rate);
+					})
+			})
+
+
+		}
+		
+		
+	}
+
+	chart.resetRollCallRates = function(){
+		parties.forEach( function(d){
+			parties.rate = null;
+		})
+
+		if( ! svg.selectAll('.alliances').empty() ){
+			svg.selectAll('.alliance rect')
+				.attr('fill', function(alliance){ 	
+					return getPartyColor(alliance.parties[0])
+				})
+		} 
+
+		svg.selectAll('.party rect.main')
+			.attr('fill', function(party){ 	
+				return getPartyColor(party.key)
+		})
 	}
 
 	chart.data = function(value){

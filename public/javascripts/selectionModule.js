@@ -79,7 +79,6 @@ function selectors( class_selector,dispatchSelected){
 			if (d3.event.ctrlKey) selectorElement.classed('ctrlKey',true)   
 		})
 		.on("keyup", function() {  
-			console.log('chusme')
 			if (!d3.event.shiftKey) selectorElement.classed('shiftKey',false)  
 			if (!d3.event.ctrlKey) selectorElement.classed('ctrlKey',false)  
 		})

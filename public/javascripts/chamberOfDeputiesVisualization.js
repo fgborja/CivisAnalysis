@@ -124,6 +124,7 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 				deputiesScatterplot.resetRollCallRates();
 				deputiesGraph.resetRollCallRates();
 				brazilianStates.resetRollCallRates();
+				partiesInfographic.resetRollCallRates();
 			}
 			else {			
 				$('div.rollCalls.selected').css('visibility','visible');
@@ -135,6 +136,7 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 				calcStatesHistogram(selectedRollCalls, brazilianStates.getStates() )
 				//calcStatesHistogram(selectedRollCalls, deputiesScatterplot.getSelectedDeputies() )
 				brazilianStates.setRollCallRates();
+				partiesInfographic.setRollCallRates(selectedRollCalls);
 			}
 		})
 
@@ -144,12 +146,14 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			if(rollCall!=null){
 					 calcStatesHistogram([rollCall], brazilianStates.getStates() ); 
 
-					// highlight the state of the deputy
+					// highlight the rates of the rollCall in the states
 					brazilianStates.highlightRollCall( rollCall );
-					// highlight the votes of the deputy in each roll call
+					// highlight the votes of deputies
 					deputiesGraph.highlightRollCall( rollCall );
-					// highlight the deputy in the graph
+					// highlight the votes of deputies
 					deputiesScatterplot.highlightRollCall( rollCall );
+					// highlight the votes of parties
+					partiesInfographic.setRollCallRates([rollCall]);
 			} else {
 				rollCallsScatterplot.dispatchSelected();
 			}
@@ -616,6 +620,8 @@ function calcDeputyPerParty( deputies ){
 
 	return parties;
 }
+
+
 
 //var day_month_year = Data.match(/\d+/g);
 // function getPartyAtDate(deputyDetails, endDate){
