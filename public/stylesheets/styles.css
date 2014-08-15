@@ -147,7 +147,9 @@ h2 {text-align: center;}
 }
 
 
-
+div.selected{
+  border-left: thick double lightgrey;
+}
 
 #propList {
   margin:0 0 10px 0;
