@@ -6,7 +6,7 @@ d3.chart.rollCallsScatterplot = function() {
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
-	var colWidth = $('.canvas').width() * canvasWidthAdjust;
+	var colWidth = $('.canvas').width();
 
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin-10 /*(-10??!)*/, left: pxMargin}
 	  , width = colWidth - margin.left - margin.right

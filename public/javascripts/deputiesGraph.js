@@ -19,7 +19,7 @@ d3.chart.deputiesGraph = function() {
 	var nodes,links,every_link; // DATA
 	var dispatch = d3.dispatch(chart, "hover",'select');
 
-	var colWidth = $('.canvas').width() * canvasWidthAdjust;
+	var colWidth = $('.canvas').width();
 
 	function chart(container) {
 		svg = container.append("svg").attr("class",'graph deputy');

@@ -17,7 +17,7 @@ d3.chart.deputiesScatterplot = function() {
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
-	var colWidth = $('.canvas').width() * canvasWidthAdjust;
+	var colWidth = $('.canvas').width();
 
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
 	  , width = colWidth - margin.left - margin.right

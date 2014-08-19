@@ -10,7 +10,7 @@ d3.chart.partiesInfographic = function() {
 	var parties;
 
 	var width = $('#infoParties').width();
-	var height =   $('.canvas').width() * canvasWidthAdjust * 2.2;
+	var height =   $('.canvas').width() * 2;
 
 	var margin = 4;
 

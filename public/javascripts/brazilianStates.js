@@ -39,7 +39,7 @@ d3.chart.brazilianStates = function() {
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
-	var colWidth = $('.canvas').width() * canvasWidthAdjust;
+	var colWidth = $('.canvas').width();
 
 	var pxMargin = 0;
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin-10 /*(-10??!)*/, left: pxMargin}
