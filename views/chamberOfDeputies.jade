@@ -13,71 +13,68 @@ html
 
 	body
 		h2#head CivisAnalysis: Brazilian Chamber of Deputies
-		.container-fluid
-			.row#main
-				.col-xs-12
-						.col-xs-5
-							.col-xs-12
-								br
-							.col-xs-4
-								h5.header Political Spectrum of Deputies
-								br 
-								br
-								a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
-									span.glyphicon.glyphicon-search 
-									text  Search All
-								.deputies.selected
-									a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
-										span.glyphicon.glyphicon-list 
-										text  List Selected
-									a.btn.reset( onclick='javascript:deputiesScatterplot.reset()')
-										span.glyphicon.glyphicon-remove
-										em  Reset Selection
+		#main
+			.col-xs-12
+				.col-xs-2
+					h5.header Parties
+					#infoParties
+				.col-xs-5
+					.col-xs-4
+						h5.header.content Political Spectrum of Deputies
+						br 
+						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
+							span.glyphicon.glyphicon-search 
+							text  Search All
+						br
+						br
+						.deputies.selected
+							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
+								span.glyphicon.glyphicon-list 
+								text  List Selected
+							a.btn( onclick='javascript:deputiesScatterplot.reset()')
+								span.glyphicon.glyphicon-remove
+								text  Reset Selection
 
-							.col-xs-8
-								.canvas#canvasDeputies
-							.col-xs-12
-								br
-							.col-xs-4
-								h5.header Links connects deputies with 
-									span.subhead#thresh 70% 
-									text of vote correlation:
-									.slider#slider
-							.col-xs-8
-								.canvas#canvasGraph
+					.col-xs-8
+						.canvas#canvasDeputies
+					.col-xs-12
+						br
+					.col-xs-4
+						h5.header.content Links connects deputies with 
+							span.subhead#thresh 70% 
+							text of vote correlation:
+							.slider#slider
+					.col-xs-8
+						.canvas#canvasGraph
 
-						.col-xs-2
-							h4.header Parties
-							#infoParties
+				.col-xs-5
+					.col-xs-4
+						h5.header.content Political Spectrum of Roll Calls
+						br 
+						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
+							span.glyphicon.glyphicon-search
+							text  Search All
+						br
+						br
+						.rollCalls.selected
+							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
+								span.glyphicon.glyphicon-list 
+								text  List Selected
+							a.btn( onclick='javascript:rollCallsScatterplot.reset()')
+								span.glyphicon.glyphicon-remove
+								text  Reset Selection
+					.col-xs-8
+						.canvas#canvasRollCalls
+					.col-xs-12
+						br
+					.col-xs-4
+						h5.header.content States
+					.col-xs-8
+						.canvas#infoStates
 
-						.col-xs-5
-							.col-xs-12
-								br
-							.col-xs-4
-								h5.header Political Spectrum of Roll Calls
-								br 
-								br
-								a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
-									span.glyphicon.glyphicon-search
-									text  Search All
-								.rollCalls.selected
-									a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
-										span.glyphicon.glyphicon-list 
-										text  List Selected
-									a.btn.reset( onclick='javascript:rollCallsScatterplot.reset()')
-										span.glyphicon.glyphicon-remove
-										em  Reset Selection
-							.col-xs-8
-								.canvas#canvasRollCalls
-							.col-xs-12
-								br
-							.col-xs-4
-								h5.header States
-							.col-xs-8
-								.canvas#infoStates		
-				.col-xs-12#timeline
-					#loading
-						img#loadingGIF(src='./images/ajax_loader.gif')
+			.col-xs-12#timeline
+				#loading
+					img#loadingGIF(src='./images/ajax_loader.gif')
 
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")

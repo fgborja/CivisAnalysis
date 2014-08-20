@@ -1,5 +1,5 @@
 /*global d3 tooltip*/
-var tooltip = d3.select(".row")
+var tooltip = d3.select("#main")
 	.append("div")
 	.style("visibility", "hidden")
 	.style("opacity", 0)
@@ -7,8 +7,6 @@ var tooltip = d3.select(".row")
 
 // div of selection
 $('div.selected').css('visibility','hidden');
-
-var canvasWidthAdjust = 0.8;
 
 // PARTY COLORS =================================================================================================
 var getConstantPartyColor = function(party){ 

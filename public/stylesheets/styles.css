@@ -4,7 +4,7 @@ h2 {text-align: center;}
 
 #head{
   margin-top: 0px;
-  margin-bottom: 0px;
+  margin-bottom: 15px;
 }
 
 #main{
@@ -15,13 +15,15 @@ h2 {text-align: center;}
 }
 
 .header{
-    height:20px;
-     margin-bottom:5px;
-     margin-top:5px;
+     margin-bottom:0px;
+     margin-top:0px;
 }
+  .header.content{
+      text-align: right;
+  }
 
 .canvas{
-    width:260px;
+    width:215px;
     margin-left: auto ;
     margin-right: auto ;
 }
@@ -54,11 +56,6 @@ h2 {text-align: center;}
     width: 100px;
 }
 
-.reset{
-  color: grey;
-  opacity: 0.6;
-  font-size: 12px;
-}
 /* turn all elements unselectable*/
 * {
             user-select: none; /* CSS3 (little to no support) */
@@ -147,7 +144,12 @@ h2 {text-align: center;}
 }
 
 
-
+div.selected{
+  border-left: thick double lightgrey;
+}
+  div.selected text{
+    font-size: 12px;
+  }
 
 #propList {
   margin:0 0 10px 0;
