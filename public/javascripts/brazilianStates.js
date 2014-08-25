@@ -350,18 +350,18 @@ d3.chart.brazilianStates = function() {
 		})
 
 		g.append('text').text('Não').attr({
-					x: initX+5,
-					y:  initY+10,
+					x: initX+6,
+					y:  initY+7,
 					fill: 'white',
 					stroke: 'none',
-					'font-size':'11px',
+					'font-size':'9px',
 				})
 		g.append('text').text('Sim').attr({
-					x: initX+5,
+					x: initX+6,
 					y:  initY-1+votingColorGradient.length*heightS,
 					fill: 'white',
 					stroke: 'none',
-					'font-size':'11px',
+					'font-size':'9px',
 				})
 
 		g.append('text').text('-   Agreed').attr({

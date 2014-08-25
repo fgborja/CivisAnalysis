@@ -24,7 +24,7 @@ html
 						br 
 						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
 							span.glyphicon.glyphicon-search 
-							text  Search All
+							text  Search
 						br
 						br
 						.deputies.selected
@@ -53,7 +53,7 @@ html
 						br 
 						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
 							span.glyphicon.glyphicon-search
-							text  Search All
+							text  Search
 						br
 						br
 						.rollCalls.selected
@@ -72,9 +72,9 @@ html
 					.col-xs-8
 						.canvas#infoStates
 
-			.col-xs-12#timeline
-				#loading
-					img#loadingGIF(src='./images/ajax_loader.gif')
+		.col-xs-12#timeline
+			#loading
+				img#loadingGIF(src='./images/ajax_loader.gif')
 
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")

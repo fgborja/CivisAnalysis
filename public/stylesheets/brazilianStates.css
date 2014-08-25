@@ -9,6 +9,7 @@
 		  stroke: darkblue  ;
 		  stroke-width: 0.4px;
 		  opacity: 0.5; /*opacity for unselected states*/
+		  cursor: pointer;
 		}
 
 		.states.selected {

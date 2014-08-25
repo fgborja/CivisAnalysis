@@ -80,6 +80,7 @@ h2 {text-align: center;}
   stroke: #fff;
   stroke-width: 1px;
   opacity: 0.2;
+  cursor: pointer;
 }
 
 .node.selected {
@@ -87,6 +88,10 @@ h2 {text-align: center;}
 }
 
 .node.hover{ stroke: #ddd; }
+
+.selectorRect {
+    cursor: crosshair;
+}
 
 .selection {
     stroke          : grey;
