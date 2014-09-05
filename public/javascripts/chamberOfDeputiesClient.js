@@ -185,9 +185,46 @@
 		};
 
 		return {  // INTERFACE
-
 			getMotionRollCalls			: 	chamberOfDeputiesHTTP.getMotionRollCalls,
 			getOcurrencesOfRollCalls	:   chamberOfDeputiesHTTP.getOcurrencesOfRollCalls,
+		
+		};
+	};
+})(jQuery);
+
+
+(function($) {
+	$.chamberOfDeputiesClientHTTPMin = function() {
+		var chamberOfDeputiesClientHTTPMin = {
+
+			// get the object of motion and roll calls
+			getMotion	:	function (type,number,year,callback){
+				d3.json('./data/motions.min/'+type+''+number+''+year, function(motion) {
+					if(motion === null) console.log('Could not load DB getMotion/'+type+'/'+number+'/'+year);
+					callback(motion);
+				})
+			},
+
+			// return a list of rollCalls sorted by date
+			getDatetimeRollCall	: 	function (callback){
+				d3.json('./data/datetimeRollCall.json', function( datetimeRollCall ) {
+					callback(datetimeRollCall);
+				})
+			},
+
+			// return a list of all deputies
+			getDeputiesArray	: 	function (callback){
+				d3.json('./data/deputies.json', function( deputiesArray ) {
+					callback(deputiesArray);
+				})
+			}
+		};
+
+		return {  // INTERFACE
+
+			getMotion					: 	chamberOfDeputiesClientHTTPMin.getMotion,
+			getDatetimeRollCall			:   chamberOfDeputiesClientHTTPMin.getDatetimeRollCall,
+			getDeputiesArray			:   chamberOfDeputiesClientHTTPMin.getDeputiesArray,
 		
 		};
 	};

@@ -246,3 +246,152 @@
     };
 })(jQuery);
 
+
+
+
+(function($) {
+    $.chamberOfDeputiesDataWrapperMin = function(motions,datetimeRollCall,phonebook) {
+    	// module to load data
+		var chamberOfDeputiesClient	= $.chamberOfDeputiesClientHTTPMin();
+
+		datetimeRollCall = [];
+		motions 		 = {};
+		var deputiesArray = [];
+
+        function init(defer){
+    		// get the occurance of rollCalls
+    		chamberOfDeputiesClient.getDatetimeRollCall( function(a_datetimeRollCall){
+    			datetimeRollCall = 
+    				$.map(a_datetimeRollCall, function(dtRollCall){ 
+    					var parse = dtRollCall.datetime.match(/\d+/g)
+						dtRollCall.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
+    					return dtRollCall 
+    				});
+
+
+    			// get the array of deputies
+    			chamberOfDeputiesClient.getDeputiesArray( function(a_deputiesArray){
+    				deputiesArray = a_deputiesArray;
+
+    				//console.log(datetimeRollCall,deputiesArray)
+    				defer(null, true)
+    			})
+    		})
+        }
+
+        function loadMotion(type,number,year,defer){
+        	chamberOfDeputiesClient.getMotion(type,number,year, function(motion){
+        		motions[type+number+year] = motion;
+
+        		motion.rollCalls.forEach( function(rollCall){ 
+
+					if(rollCall.votes !== undefined){
+						rollCall.votes.forEach( function(vote){
+							vote.name = deputiesArray[vote.deputyID].name;
+							vote.district = deputiesArray[vote.deputyID].district;
+							if(vote.party == 'Solidaried') vote.party = 'SDD';
+						})
+					}
+
+					// create the Date obj
+					var parse = rollCall.datetime.match(/\d+/g);
+					rollCall.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
+
+					// find the datetimeRollCall
+					var dtRollCall = datetimeRollCall.filter(function(d){ return (d.datetime >= rollCall.datetime) && (d.datetime <= rollCall.datetime)} )
+					
+					// set rollCall to the datetimeRollCall entry
+					dtRollCall[0].rollCall = rollCall;
+				})
+
+				defer(null, true)
+        	})
+        }
+
+        function loadMotionsInDateRange(start,end,defer){
+        	// get the motions with roll calls in the date range
+			rollCallsInTheDateRange = datetimeRollCall.filter( function(rollCall){  
+				return (start <= rollCall.datetime) && (rollCall.datetime <= end)
+			})
+			//console.log("rollCallsInTheDateRange",rollCallsInTheDateRange)
+
+			// check if the motion is already loaded AND reduce repeated motions(with the map{})
+			var motionsToLoad = {};
+			rollCallsInTheDateRange.forEach( function(d){ 
+				if(motions[d.tipo+d.numero+d.ano] == undefined){
+					motionsToLoad[d.tipo+d.numero+d.ano] = d;
+				}		
+			})
+
+			//console.log("motionsToLoad",motionsToLoad)
+			var loadMotionsQueue = queue(20); 
+
+			$.each(motionsToLoad, function(motion) {
+				motions[motion]={}
+				loadMotionsQueue.defer(
+					loadMotion,
+					motionsToLoad[motion].tipo,
+					motionsToLoad[motion].numero,
+					motionsToLoad[motion].ano
+				)
+				
+			})
+
+			loadMotionsQueue.awaitAll(function(){ defer(null, true);} ) // return to setDateRange()
+        }
+
+        function assertDateRangeObjects(defer){
+
+			rollCallsInTheDateRange.sort(function(a,b){
+			  return new Date(a.datetime) - new Date(b.datetime);
+			});
+
+			rollCallsInTheDateRange.forEach( function( rollCall ){
+				if(rollCall.rollCall.votes == undefined){}// console.log("NO VOTES!('secret') -"+entry.rollCall.ObjVotacao)
+				else {
+					rollCall.rollCall.votes.forEach( function(vote){
+
+						//var phonebookID = phonebook.getPhonebookID( nameUP );
+						deputiesInTheDateRange[vote.deputyID] = deputiesArray[vote.deputyID];
+						deputiesInTheDateRange[vote.deputyID].party 		= vote.party; // refresh party
+					})
+				}
+			})
+
+			defer(null, true);
+		} 
+
+    	// LOAD from DB all data we need to reproduce the date range
+		function setDateRange(start,end, callback){
+
+			rollCallsInTheDateRange =[];
+			deputiesInTheDateRange ={};
+
+			var q = queue(1)
+			q.defer(init)
+			 .defer(loadMotionsInDateRange,start,end) // new queue(20) of load motions
+			 .defer(assertDateRangeObjects) // new queue(20) of load motions
+
+			// wait for all loading and call the app function
+			q.awaitAll(function(){  
+			
+				// console.log(rollCallInTheDateRange);
+				 // console.log(deputiesInTheDateRange);
+				 //console.log("motions",motions);
+				 //console.log('datetimeRollCall',datetimeRollCall)
+
+
+				// console.log(Object.size(deputies));
+				//console.log(Object.size(motions) );
+				// console.log(datetimeRollCall.length)
+
+				callback(rollCallsInTheDateRange,deputiesInTheDateRange)  
+
+			});
+		}
+
+        return {
+        	setDateRange : setDateRange,
+        };
+    };
+})(jQuery);
