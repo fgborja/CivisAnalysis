@@ -74,6 +74,8 @@ app.post('/getMotionRollCallsDate', camaraClient.getMotionRollCallsDate(db));
 
 // INTERFACE to query DB  ----------------------------------------------------------------------------------------------
 app.get('/listMotions', camaraClient.listMotions);
+app.get('/getAllMotionsDetails', camaraClient.getAllMotionsDetails(db))
+app.get('/getAllMotionsRollCalls', camaraClient.getAllMotionsRollCalls(db))
 // ---------------------------------------------------------------------------------------------------------------------
 
 // APPLICATION  !!!  ---------------------------------------------------------------------------------------------------

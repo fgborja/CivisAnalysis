@@ -43,14 +43,59 @@ console.save = function(data, filename){
 
 //console.save( ,"dateTimeRollCall")
 
-function saveEachMotion(){
+function saveArray(array, getName){
     var q = queue(1)
 
-    $.each(motions,function(d){ 
+    array.forEach(function(d){ 
         q.defer(
             function(value,key,defer){ console.save(value,key); defer(null, true); },
-            this,
-            d
+            d,
+            getName(d)
         )
     })
 }
+
+function sleep(millis, callback){
+    setTimeout(
+        function (){ callback() }
+        , millis
+    );
+}
+
+// function saveArrayWithDelay( array, getName, index){
+//     console.log(index)
+
+//     saveArray( array.slice(index,index+100), getName, index)
+
+//     if(index<array.length){
+//         sleep( 20000, function(){ 
+//             saveArrayWithDelay(array, getName, index+100)
+//         });  
+//     }
+    
+// }
+
+function saveEntriesOfArray( array, getName, index){
+    console.log(index)
+    console.save(array[index],getName(array[index]))
+    if(index<array.length){
+        sleep( 1000, function(){ 
+            saveEntriesOfArray(array, getName, index+1)
+        });  
+    }
+    
+}
+
+// function saveMotionsWithDelay(){
+//     saveArrayWithDelay(arrayMotions,function(motion){ return motion.type + motion.number + motion.year; },0)
+// }
+function saveMotionsWithDelay(){
+    saveEntriesOfArray(arrayMotions,function(motion){ return motion.type + motion.number + motion.year; },0)
+}
+function saveDeputiesToFILE(){
+    JSON.stringify(arrayDeputies)
+}
+
+// function saveRollCallsWithDelay(){
+//     saveArrayWithDelay(arrayRollCalls,function(rollCall){ return rollCall.type + rollCall.number + rollCall.year + rollCall.datetime; },0)
+// }

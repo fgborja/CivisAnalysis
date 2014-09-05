@@ -11,6 +11,22 @@ exports.listMotions = function(req, res){
 	res.render('listMotions');
 };
 
+exports.getAllMotionsDetails = function(db){
+	return function(req, res){
+		db.collection('obterProposicao').find().toArray(function(err,d){
+	    		res.json(d)
+		})
+	}
+}
+exports.getAllMotionsRollCalls = function(db){
+	return function(req, res){
+		db.collection('obterVotacaoProposicao').find().toArray(function(err,d){
+	    		res.json(d)
+		})
+	}
+}
+
+
 // View to check the chamberOfDeputies... chamberOfDeputies.jade
 exports.chamberOfDeputies = function(req, res){
 	res.render('chamberOfDeputies');
