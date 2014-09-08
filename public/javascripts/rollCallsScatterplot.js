@@ -195,9 +195,13 @@ d3.chart.rollCallsScatterplot = function() {
 	}
 
 	chart.setDeputyVotingRate = function () {
-		var c = g.selectAll('.node').attr('fill', function (rollCall) { 
-			return (rollCall.rate == 'noVotes')? 'darkgrey' : votingColor(rollCall.rate);  
-		});
+		function distance(a,b){ return Math.sqrt( Math.pow(b - a, 2) )}
+
+		g.selectAll('.node')
+			.attr('fill', function (rollCall) { 
+				return (rollCall.rate == 'noVotes')? 'darkgrey' : votingColor(rollCall.rate);  
+			})
+			//.attr('r', function(rollCall){ return radius + (radius)*distance(rollCall.rate,rollCall.periodRate);})
 	}
 
 	chart.getSelected = function(){

@@ -444,14 +444,14 @@ function calcRollCallAgreement(rollCalls,deputies){
 	//console.log(rollCalls)
 	var mapSelectedDeputies = {}; 
 
-	if(deputies != null) 
+	if(deputies != null)
 		 deputies.forEach(function(deputy){ mapSelectedDeputies[deputy.deputyID]=true; })
 	else deputyNodes.forEach( function(d){ mapSelectedDeputies[d.deputyID]=true; })
 
 
 	$.each(rollCalls, function(d){
 		rollCalls[d].rate='noVotes'
-		rollCalls[d].agreement = 0;
+		//rollCalls[d].agreement = 0;
 		
 		var totalVotes=0, // total of votes
 			votes = {};   // sum of each type
@@ -467,29 +467,33 @@ function calcRollCallAgreement(rollCalls,deputies){
 			}
 		})
 
-		 var maxAgree=0;
-		 $.each(votes,function(v){ maxAgree = (votes[v] > maxAgree)? votes[v] : maxAgree })
+		// var maxAgree=0;
+		// $.each(votes,function(v){ maxAgree = (votes[v] > maxAgree)? votes[v] : maxAgree })
 
-		 if( ( (votes['Sim'] ===undefined ) && (votes['Não'] ===undefined )) )
+		if( ( (votes['Sim'] ===undefined ) && (votes['Não'] ===undefined )) )
 			{rollCalls[d].rate = 'noVotes'}
-		 else {
-			 if(votes['Sim'] === undefined) votes['Sim']=0;
-			 if(votes['Não'] === undefined) votes['Não']=0;
+		else {
+			if(votes['Sim'] === undefined) votes['Sim']=0;
+			if(votes['Não'] === undefined) votes['Não']=0;
 			// agreement(%) is the number of votes in the major vote decision('Sim','Não',...) by the total of votes 
-			rollCalls[d].agreement = maxAgree/totalVotes;
+			//rollCalls[d].agreement = maxAgree/totalVotes;
 			rollCalls[d].rate = (votes['Sim']-votes['Não'])/totalVotes;
 		}
+	
+		//if(deputies == null){ rollCalls[d].periodRate = rollCalls[d].rate; }
 	})
 
+
+
 	// average - stddev
-	var sum =0, sqrSum=0;
-	$.each(rollCalls, function(d){ 
-		sum += rollCalls[d].agreement; 
-		sqrSum += Math.pow(rollCalls[d].agreement,2);  
-	})
-	var mean = sum/rollCalls.length;
-	var stdev = Math.sqrt((sqrSum/rollCalls.length) - ( Math.pow(sum/rollCalls.length,2) ));
-	return {mean:mean,stdev:stdev};
+	// var sum =0, sqrSum=0;
+	// $.each(rollCalls, function(d){ 
+	// 	sum += rollCalls[d].agreement; 
+	// 	sqrSum += Math.pow(rollCalls[d].agreement,2);  
+	// })
+	// var mean = sum/rollCalls.length;
+	// var stdev = Math.sqrt((sqrSum/rollCalls.length) - ( Math.pow(sum/rollCalls.length,2) ));
+	// return {mean:mean,stdev:stdev};
 }
 
 // given a set of roll calls calc the rate of votes of each deputy  ([Sim]-[Não])/([Sim]+[Não])
