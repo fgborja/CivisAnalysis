@@ -57,7 +57,7 @@ d3.chart.deputiesGraph = function() {
 			.attr("class", "link")
 
 		node = svg.selectAll(".node")
-			.data(force.nodes(), function(d){ return d.record.phonebookID })
+			.data(force.nodes(), function(d){ return d.record.deputyID })
 
 		node.enter().append("circle");
 
@@ -65,7 +65,7 @@ d3.chart.deputiesGraph = function() {
 				.attr("class", "node selected")
 				.attr("r", radius)
 				.style("fill", function(d) { return getPartyColor(d.record.party); })
-				.attr("id", function (d) { return "deputy-"+ d.record.phonebookID; })
+				.attr("id", function (d) { return "deputy-"+ d.record.deputyID; })
 				//.on('click', function(d){ console.log(d.record) })
 				//.call(force.drag);
 
@@ -89,11 +89,11 @@ d3.chart.deputiesGraph = function() {
 			
 		// mouse OVER circle deputy
 		function mouseoverDeputy(d) {
-			svg.select('#deputy-'+d.record.phonebookID).attr("r",radiusHover)
+			svg.select('#deputy-'+d.record.deputyID).attr("r",radiusHover)
 	
 			dispatch.hover(d.record,true);
 
-			tooltip.html(d.record.name +' ('+d.record.party+'-'+d.record.state+')'+"<br /><em>Click to select</em>");
+			tooltip.html(d.record.name +' ('+d.record.party+'-'+d.record.district+')'+"<br /><em>Click to select</em>");
 			return tooltip
 					.style("visibility", "visible")
 					.style("opacity", 1);
@@ -104,7 +104,7 @@ d3.chart.deputiesGraph = function() {
 
 		// mouse OUT circle deputy
 		function mouseoutDeputy(d){ 
-				svg.select('#deputy-'+d.record.phonebookID).attr("r",radius);
+				svg.select('#deputy-'+d.record.deputyID).attr("r",radius);
 				
 				dispatch.hover(d.record,false);
 				
@@ -112,13 +112,13 @@ d3.chart.deputiesGraph = function() {
 		}
 		function mouseClickDeputy(d){
 			if (d3.event.shiftKey){	
-				dispatch.select('EXCLUDE', [d.record.phonebookID] )
+				dispatch.select('EXCLUDE', [d.record.deputyID] )
 			} else 
 			if (d3.event.ctrlKey){		
-				dispatch.select('ADD', [d.record.phonebookID] )
+				dispatch.select('ADD', [d.record.deputyID] )
 			} 
 			else {
-				dispatch.select('SET', [d.record.phonebookID] )
+				dispatch.select('SET', [d.record.deputyID] )
 			}		
 		}
 
@@ -133,7 +133,7 @@ d3.chart.deputiesGraph = function() {
 					.data(force.links());
 
 				node = svg.selectAll(".node")
-					.data(force.nodes(), function(d){ return d.record.phonebookID});
+					.data(force.nodes(), function(d){ return d.record.deputyID});
 
 				//console.log(link.enter())
 
@@ -239,16 +239,16 @@ d3.chart.deputiesGraph = function() {
 		return g
 	}
 
-	// 'hover' deputies of a single state (or null)
-	chart.highlightState = function (state){
+	// 'hover' deputies of a single district (or null)
+	chart.highlightDistrict = function (district){
 		svg.selectAll('.graph .node').attr('r', function (d){ 
-			if(d.record.state == state) 
+			if(d.record.district == district) 
 				 return radiusHover;
 			else return radius;
 		})
 
-		if(state != null)
-			sortNodesByAtribute('state',state);
+		if(district != null)
+			sortNodesByAtribute('district',district);
 	}
 
 	chart.highlightParties = function(hoverParties){
@@ -268,21 +268,21 @@ d3.chart.deputiesGraph = function() {
 		else svg.selectAll('.node').attr('r', radius)
 	}
 
-	chart.highlightDeputy = function( phonebookID, mouseover) {
+	chart.highlightDeputy = function( deputyID, mouseover) {
 		if(mouseover){
-			svg.select(".node#deputy-"+phonebookID).attr("r",radiusHover);
+			svg.select(".node#deputy-"+deputyID).attr("r",radiusHover);
 		}else{
-			svg.select(".node#deputy-"+phonebookID).attr("r",radius);
+			svg.select(".node#deputy-"+deputyID).attr("r",radius);
 		}
 	}
 
 	// select deputies of an array of states 
-	chart.selectStates = function (states){
-		var phonebookIDs = [];
+	chart.selectStates = function (districts){
+		var deputyIDs = [];
 
 		svg.selectAll('.node').classed('selected', function (d){   
-			if(states[ d.record.state ] !== undefined){ 
-				phonebookIDs.push(d.record.phonebookID);
+			if(districts[ d.record.district ] !== undefined){ 
+				deputyIDs.push(d.record.deputyID);
 				return true;
 			}
 			else return false;
@@ -293,8 +293,8 @@ d3.chart.deputiesGraph = function() {
 
 	chart.highlightRollCall = function(rollCall){
 		svg.selectAll('.node').style('fill', 'darkgrey');
-		$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
-			svg.selectAll(".node#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
+		rollCall.rollCall.votes.forEach( function(vote){
+			svg.selectAll(".node#deputy-"+vote.deputyID).style("fill",votoStringToColor[vote.vote]); 
 		});
 	}
 
@@ -307,7 +307,7 @@ d3.chart.deputiesGraph = function() {
 		if (deputies == null) svg.selectAll('.node').classed("selected", true);
 		else {
 			svg.selectAll('.node').classed("selected", false);
-			deputies.forEach( function(deputy){ svg.select(".node#deputy-"+deputy.phonebookID).classed("selected", true); } )
+			deputies.forEach( function(deputy){ svg.select(".node#deputy-"+deputy.deputyID).classed("selected", true); } )
 		}
 	}
 

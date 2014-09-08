@@ -145,7 +145,6 @@ function updateAllDeputiesInTheIdeCadastroMAP(){
 	//var arrayRollCalls = [];
 	// var rollCallsMAP	 = {};
 	// var rollCallsCount = 0;
-	var votoToInteger = {"Sim":0,"Não":1,"Abstenção":2,"Obstrução":3,"Art. 17":4,"Branco":5}
 	function setRollCall(motion, motionRollCalls){
 
 		if (motionRollCalls.Votacoes != null) {

@@ -10,7 +10,7 @@
 
 
 (function($) {
-    $.chamberOfDeputiesDataWrapper = function(motions,ideCadastroCollection,datetimeRollCall,phonebook) {
+    $.chamberOfDeputiesDataWrapper = function(motions,datetimeRollCall,phonebook) {
     	// module to load data from DB 
 		var chamberOfDeputiesClient	= $.chamberOfDeputiesClientDB();
 		//var chamberOfDeputiesClient	= $.chamberOfDeputiesClientHTTP();
@@ -24,20 +24,14 @@
 			});
 
 			rollCallInTheDateRange.forEach( function( rollCall ){
-				if(rollCall.rollCall.votos == undefined){}// console.log("NO VOTES!('secret') -"+entry.rollCall.ObjVotacao)
-				else {
-					rollCall.rollCall.votos.Deputado.forEach( function(deputy){
+				rollCall.rollCall.votes.forEach( function(vote){
 
-						//var phonebookID = phonebook.getPhonebookID( nameUP );
-						deputiesInTheDateRange[deputy.phonebookID] = phonebook.getPhonebookOBJ(deputy.phonebookID);
-						deputiesInTheDateRange[deputy.phonebookID].name 		= deputy.Nome ;
-						deputiesInTheDateRange[deputy.phonebookID].phonebookID  = deputy.phonebookID;
-						//deputiesInTheDateRange[phonebookID].ideCadastro = phonebook.getIdeCadastro( nameUP );
-						deputiesInTheDateRange[deputy.phonebookID].details 	= ideCadastroCollection[phonebook.getIdeCadastro( deputy.Nome )];
-						deputiesInTheDateRange[deputy.phonebookID].state 		= deputy.UF;
-						deputiesInTheDateRange[deputy.phonebookID].party 		= deputy.Partido;
-					})
-				}
+					deputiesInTheDateRange[vote.deputyID] = phonebook.getDeputyObj(vote.deputyID);
+					deputiesInTheDateRange[vote.deputyID].name 		= vote.name ;
+					deputiesInTheDateRange[vote.deputyID].deputyID  = vote.deputyID;
+					deputiesInTheDateRange[vote.deputyID].district 		= vote.district;
+					deputiesInTheDateRange[vote.deputyID].party 		= vote.party;
+				})
 			})
 
 			defer(null, true);
@@ -84,34 +78,39 @@
 					var rollCalls = motionRollCalls.proposicao.Votacoes.Votacao;
 						//chamberOfDeputiesClientHTTP
 						//var rollCalls = motionRollCalls.rollCalls;
-					rollCalls.forEach( function(p){ 
+					rollCalls.forEach( function(rollCall){ 
 
-						if(p.votos !== undefined){
-							p.votos.Deputado.forEach( function(deputy){
-								deputy.Voto    = deputy.Voto.trim();
-								deputy.UF      = deputy.UF.trim();
-								deputy.Nome    = deputy.Nome.trim().toUpperCase();
-								deputy.Partido = deputy.Partido.trim();
+						if(rollCall.votos !== undefined){
+							rollCall.votos.Deputado.forEach( function(deputy){
+								deputy.vote    = deputy.Voto.trim();
+								deputy.district      = deputy.UF.trim();
+								deputy.name   = deputy.Nome.trim().toUpperCase();
+								deputy.party = deputy.Partido.trim();
 
 								//TODO party manager
-								if(deputy.Partido == 'Solidaried') deputy.Partido = 'SDD';
+								if(deputy.party == 'Solidaried') deputy.party = 'SDD';
 							})
-						}
+							rollCall.votes = rollCall.votos.Deputado;
+							delete rollCall.votos;
+						} 
+						else { rollCall.votes = []; }
 
 
 						// create the Date obj
 						//console.log(p.datetime)
-						var parse = p.datetime.match(/\d+/g);
-						p.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
+						var parse = rollCall.datetime.match(/\d+/g);
+						rollCall.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
 							//chamberOfDeputiesClientHTTP
 							//p.datetime = new Date(p.datetime);
 						//console.log(p.datetime)
 
 						// find the datetimeRollCall
-						var dtRollCall = datetimeRollCall.filter(function(d){ return (d.datetime >= p.datetime) && (d.datetime <= p.datetime)} )
+						var dtRollCall = datetimeRollCall.filter(function(d){ 
+							return (d.datetime >= rollCall.datetime) && (d.datetime <= rollCall.datetime)
+						})
 						
 						// set rollCall to the datetimeRollCall entry
-						dtRollCall[0].rollCall = p;
+						dtRollCall[0].rollCall = rollCall;
 
 					})
 
@@ -161,13 +160,11 @@
 
 				// for each rollCallInTheDateRange get/add the deputies to the set/map deputiesInTheDateRange
 				rollCallInTheDateRange.forEach( function( entry ){
-					if(entry.rollCall.votos == undefined){}// console.log("NO VOTES!('secret') -"+entry.rollCall.ObjVotacao)
-					else {
 						// for each vote
-						entry.rollCall.votos.Deputado.forEach( function(deputy){
+						entry.rollCall.votes.forEach( function(vote){
 
-							phonebook.insertNameIdeCadastro(deputy.Nome ,deputy.ideCadastro); 
-							deputy.phonebookID = phonebook.getPhonebookID(deputy.Nome);
+							//phonebook.insertNameIdeCadastro( vote.Nome ,vote.ideCadastro); 
+							vote.deputyID = phonebook.getDeputyID(vote.name);
 
 							// LOAD the deputyDetails with 'ideCadastro' and add it to ideCadastroCollection
 							// some deputies have the same ideCadastro -> so we have to load
@@ -195,7 +192,6 @@
 
 
 						})
-					}
 				})
 
 				laodDeputiesQueue.awaitAll(function(){ defer(null, true);} )  // return to setDateRange()
@@ -248,31 +244,30 @@
 
 
 
-
+// this case each deputy has a constant ID indexed by the deputiesArray
 (function($) {
-    $.chamberOfDeputiesDataWrapperMin = function(motions,datetimeRollCall,phonebook) {
+    $.chamberOfDeputiesDataWrapperMin = function(motions,datetimeRollCall,deputiesArray) {
     	// module to load data
 		var chamberOfDeputiesClient	= $.chamberOfDeputiesClientHTTPMin();
 
-		datetimeRollCall = [];
-		motions 		 = {};
-		var deputiesArray = [];
-
         function init(defer){
+        	if(datetimeRollCall.length != 0) { defer(null, true); return; }
+        	
     		// get the occurance of rollCalls
     		chamberOfDeputiesClient.getDatetimeRollCall( function(a_datetimeRollCall){
-    			datetimeRollCall = 
-    				$.map(a_datetimeRollCall, function(dtRollCall){ 
+    			a_datetimeRollCall.forEach( 
+    				function(dtRollCall){ 
     					var parse = dtRollCall.datetime.match(/\d+/g)
 						dtRollCall.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
-    					return dtRollCall 
-    				});
+    					
+    					datetimeRollCall.push(dtRollCall) 
+    				}
+    			);
 
 
     			// get the array of deputies
     			chamberOfDeputiesClient.getDeputiesArray( function(a_deputiesArray){
-    				deputiesArray = a_deputiesArray;
-
+    				a_deputiesArray.forEach( function(entry){ deputiesArray.push( entry) })
     				//console.log(datetimeRollCall,deputiesArray)
     				defer(null, true)
     			})
@@ -287,8 +282,9 @@
 
 					if(rollCall.votes !== undefined){
 						rollCall.votes.forEach( function(vote){
+							vote.vote = integerToVote[vote.vote];
 							vote.name = deputiesArray[vote.deputyID].name;
-							vote.district = deputiesArray[vote.deputyID].district;
+							vote.district = deputiesArray[vote.deputyID].district; // assuming the distric does not change for the congressman
 							if(vote.party == 'Solidaried') vote.party = 'SDD';
 						})
 					}
@@ -347,15 +343,15 @@
 			});
 
 			rollCallsInTheDateRange.forEach( function( rollCall ){
-				if(rollCall.rollCall.votes == undefined){}// console.log("NO VOTES!('secret') -"+entry.rollCall.ObjVotacao)
-				else {
-					rollCall.rollCall.votes.forEach( function(vote){
+				if(rollCall.rollCall === undefined) console.log(rollCall);
 
-						//var phonebookID = phonebook.getPhonebookID( nameUP );
-						deputiesInTheDateRange[vote.deputyID] = deputiesArray[vote.deputyID];
-						deputiesInTheDateRange[vote.deputyID].party 		= vote.party; // refresh party
-					})
-				}
+				rollCall.rollCall.votes.forEach( function(vote){
+
+					//var phonebookID = phonebook.getDeputyID( nameUP );
+					deputiesInTheDateRange[vote.deputyID] = deputiesArray[vote.deputyID];
+					deputiesInTheDateRange[vote.deputyID].party 		= vote.party; // refresh party
+					deputiesInTheDateRange[vote.deputyID].deputyID 		= vote.deputyID; // refresh party
+				})
 			})
 
 			defer(null, true);
@@ -379,7 +375,6 @@
 				 // console.log(deputiesInTheDateRange);
 				 //console.log("motions",motions);
 				 //console.log('datetimeRollCall',datetimeRollCall)
-
 
 				// console.log(Object.size(deputies));
 				//console.log(Object.size(motions) );

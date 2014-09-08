@@ -4,14 +4,14 @@
 		var selectedDeputies = {};
 		var selectedRollCalls= {};
 
-		function selectDeputy (phonebookID){
-			selectedDeputies[phonebookID]=true;
+		function selectDeputy (deputyID){
+			selectedDeputies[deputyID]=true;
 		}
-		function deselectDeputy (phonebookID){
-			selectedDeputies[phonebookID]=false;		
+		function deselectDeputy (deputyID){
+			selectedDeputies[deputyID]=false;		
 		}
-		function queryIfDeputySelected (phonebookID){
-			return selectedDeputies[phonebookID];
+		function queryIfDeputySelected (deputyID){
+			return selectedDeputies[deputyID];
 		}
 
 		function selectRollCall (key){
@@ -373,22 +373,22 @@ function selectors( class_selector,dispatchSelected){
 		}
 		
 		var names = {}; // possible more than 1 name for each deputy
-		var phonebookIDcount=0;
-		var phonebookIDs ={};
+		var deputyIDcount=0;
+		var deputyIDs ={};
 		var phonebookOBJs = {};
 
-		function getPhonebookOBJ(phonebookID){
-			if( phonebookOBJs[phonebookID] === undefined) phonebookOBJs[phonebookID]={};
+		function getDeputyObj(deputyID){
+			if( phonebookOBJs[deputyID] === undefined) phonebookOBJs[deputyID]={};
 
-			return phonebookOBJs[phonebookID];
+			return phonebookOBJs[deputyID];
 		}
 
-		function getPhonebookID(name){
+		function getDeputyID(name){
 			// correct misspelled 
 			if( dict[name] != undefined) name = dict[name];
 
-			if(phonebookIDs[name] == undefined) {phonebookIDs[name] = phonebookIDcount++; }
-			return phonebookIDs[name];
+			if(deputyIDs[name] == undefined) {deputyIDs[name] = deputyIDcount++; }
+			return deputyIDs[name];
 		}
 
 		function insertNameIdeCadastro(name,ideCadastro){
@@ -412,8 +412,8 @@ function selectors( class_selector,dispatchSelected){
 		}
 
 		return {
-				getPhonebookOBJ			:   getPhonebookOBJ,
-				getPhonebookID			:   getPhonebookID,
+				getDeputyObj			:   getDeputyObj,
+				getDeputyID				:   getDeputyID,
 				insertNameIdeCadastro	: 	insertNameIdeCadastro,
 				getNames 				: 	getNames,
 				getIdeCadastro 			: 	getIdeCadastro,

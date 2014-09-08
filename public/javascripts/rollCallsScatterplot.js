@@ -175,7 +175,7 @@ d3.chart.rollCallsScatterplot = function() {
 	}
 
 	// change the colors of RollCalls acording to the deputy vote
-	chart.highlightDeputyVotes = function( phonebookID, mouseover) {
+	chart.highlightDeputyVotes = function( deputyID, mouseover) {
 
 		if(!mouseover) {
 			chart.setDeputyVotingRate();
@@ -183,13 +183,12 @@ d3.chart.rollCallsScatterplot = function() {
 			g.selectAll('.node').attr('fill', function (rollCall){
 				var color = 'grey';
 
-				if(rollCall.rollCall.votos != undefined){
-					for (var i = 0; i < rollCall.rollCall.votos.Deputado.length; i++) {
-						if(rollCall.rollCall.votos.Deputado[i].phonebookID == phonebookID){
-							color = votoStringToColor[rollCall.rollCall.votos.Deputado[i].Voto ]
-						}
-					};
-				}
+				rollCall.rollCall.votes.forEach( function(vote){
+					if(vote.deputyID == deputyID){
+						color = votoStringToColor[vote.vote];
+					}
+				})
+
 				return  color;
 			})
 		}

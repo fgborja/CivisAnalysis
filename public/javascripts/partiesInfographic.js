@@ -387,14 +387,11 @@ d3.chart.partiesInfographic = function() {
 			d.value.votes = {"Sim":0,"Não":0,"Abstenção":0,"Obstrução":0,"Art. 17":0,"null":0}
 		})
 
-		rollCalls.forEach(function(d){
-			if(d.rollCall.votos == undefined){}
-			else{
-				d.rollCall.votos.Deputado.forEach( function (vote){
-					if(partiesMap[vote.Partido] != undefined)
-						partiesMap[vote.Partido].votes[vote.Voto]++
-				})
-			}
+		rollCalls.forEach(function(rollCall){
+			rollCall.rollCall.votes.forEach( function (vote){
+				if(partiesMap[vote.party] != undefined)
+					partiesMap[vote.party].votes[vote.vote]++
+			})
 		})
 
 		parties.forEach( function(d){

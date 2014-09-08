@@ -80,7 +80,7 @@ d3.chart.deputiesScatterplot = function() {
 		g.select(".selectorRect")
 			.attr('width', width)
 			.attr('height', height)
-			.attr('fill', 'white') 
+			.style('fill', 'white') 
 	
 		// draw the x axis ------------------------------------------------------------------------------------------
 		var xAxis = d3.svg.axis()
@@ -103,9 +103,9 @@ d3.chart.deputiesScatterplot = function() {
 		.transition()
 		.call(yAxis);
 		// ---------------------------------------------------------------------------------------------------------
-
+		
 		var circles = g.selectAll("circle")
-			.data(data, function(d){ return d.phonebookID});
+			.data(data, function(d){ return d.deputyID});
 
 		circles.enter().append("circle");
 
@@ -116,10 +116,11 @@ d3.chart.deputiesScatterplot = function() {
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
 			r: radius,
 			class: function() { if(selected==null) return "node selected" } ,
-			id: function(d) { return "deputy-" + d.phonebookID; },
-			fill: function(d) { return getPartyColor(d.party) },
-			deputy: function(d) { return d.phonebookID}
+			id: function(d) { return "deputy-" + d.deputyID; },
+			deputy: function(d) { return d.deputyID}
 		})
+		.style('fill', function(d) { return getPartyColor(d.party) })
+		
 		circles.exit().transition().remove();
 
 		circles
@@ -135,7 +136,7 @@ d3.chart.deputiesScatterplot = function() {
 	
 			dispatch.hover(d,true);
 
-			tooltip.html(d.name +' ('+d.party+'-'+d.state+")<br /><em>Click to select</em>");
+			tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");
 			
 			return tooltip
 					.style("visibility", "visible")
@@ -201,23 +202,23 @@ d3.chart.deputiesScatterplot = function() {
 	}
 
 	// 'hover' deputies of a single state (or null)
-	chart.highlightState = function (state){
+	chart.highlightDistrict = function (district){
 
 		g.selectAll('.node').attr('r', function (d){   
-			if(d.state == state) 
+			if(d.district == district) 
 				 return radiusHover;
 			else return radius;
 		})
 
-		if(state != null)
-			sortNodesByAtribute('state',state)
+		if(district != null)
+			sortNodesByAtribute('district',district)
 	}
 
-	chart.highlightDeputy = function( phonebookID, mouseover) {
+	chart.highlightDeputy = function( deputyID, mouseover) {
 		if(mouseover){
-			g.selectAll('#deputy-'+phonebookID).attr("r",radiusHover);
+			g.selectAll('#deputy-'+deputyID).attr("r",radiusHover);
 		}else{
-			g.selectAll('#deputy-'+phonebookID).attr("r",radius);
+			g.selectAll('#deputy-'+deputyID).attr("r",radius);
 		}
 		
 	}
@@ -260,9 +261,9 @@ d3.chart.deputiesScatterplot = function() {
 
 	// select deputies of an array of states // and dispatch the selected
 	// @param operation : 'set','add','exclude';
-	chart.selectStates = function (state, operation ){
+	chart.selectStates = function (district, operation ){
 
-		selectNodesByAttr('state', state, operation )
+		selectNodesByAttr('district', district, operation )
 
 		// DISPATCH SELECTED!
 		dispatch.selected(chart.getSelected())
@@ -298,8 +299,9 @@ d3.chart.deputiesScatterplot = function() {
 
 	chart.highlightRollCall = function(rollCall){
 		g.selectAll('.node').style('fill', 'darkgrey');
-		$.map(rollCall.rollCall.votos.Deputado, function(vote){ 
-			g.selectAll("#deputy-"+phonebook.getPhonebookID(vote.Nome)).style("fill",votoStringToColor[vote.Voto]); 
+		
+		rollCall.rollCall.votes.forEach( function(vote){ 
+			g.selectAll("#deputy-"+vote.deputyID).style("fill",votoStringToColor[vote.vote]); 
 		});
 	}
 
@@ -351,26 +353,26 @@ d3.chart.deputiesScatterplot = function() {
 		chart.dispatchSelected();
 	}
 
-	chart.selectDeputies = function (operation, phonebookIDs) {
-		if (phonebookIDs == null) g.selectAll('.node').classed("selected", true);
+	chart.selectDeputies = function (operation, deputyIDs) {
+		if (deputyIDs == null) g.selectAll('.node').classed("selected", true);
 		else {
 			if(operation == 'SET'){
 				g.selectAll('.node').classed("selected", false);
-				phonebookIDs.forEach( function(phonebookID){ g.select(".node#deputy-"+phonebookID).classed("selected", true); } )
+				deputyIDs.forEach( function(deputyID){ g.select(".node#deputy-"+deputyID).classed("selected", true); } )
 			} else 
 			if(operation == 'EXCLUDE') {
-				phonebookIDs.forEach( function(phonebookID){ g.select(".node#deputy-"+phonebookID).classed("selected", false); } )
+				deputyIDs.forEach( function(deputyID){ g.select(".node#deputy-"+deputyID).classed("selected", false); } )
 			} else 
 			if(operation == 'ADD'){
-				phonebookIDs.forEach( function(phonebookID){ g.select(".node#deputy-"+phonebookID).classed("selected", true); } )
+				deputyIDs.forEach( function(deputyID){ g.select(".node#deputy-"+deputyID).classed("selected", true); } )
 			}
 		}
 
 		dispatch.selected(chart.getSelected())
 	}
 
-	chart.isSelected = function( phonebookID ){
-		return g.select('.node#deputy-'+phonebookID).classed('selected')
+	chart.isSelected = function( deputyID ){
+		return g.select('.node#deputy-'+deputyID).classed('selected')
 	}
 
 	return d3.rebind(chart, dispatch, "on");

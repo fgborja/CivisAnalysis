@@ -8,40 +8,19 @@ var tooltip = d3.select("#main")
 // div of selection
 $('div.selected').css('visibility','hidden');
 
-// PARTY COLORS =================================================================================================
-var getConstantPartyColor = function(party){ 
-	if(partiesNamesColor[party] !== undefined ) 
-		{return partiesNamesColor[party];}
-	else{ /*console.log(party);*/ return "#AAA" }
-} 
-// there is a case where partyColor will be (a function) according to electoral alliance color
-var getPartyColor = getConstantPartyColor;
-
-// ===============================================================================================================
-// colors representing the single vote value
-var votoStringToColor = {"Sim":"green","Não":"red","Abstenção":"purple","Obstrução":"blue","Art. 17":"yellow","null":'grey'}
-
-// ===============================================================================================================
-var votingColorGradient = ["rgb(165,0,38)","rgb(215,48,39)","rgb(244,109,67)","rgb(253,174,97)",
- "rgb(254,224,139)","rgb(255,255,191)","rgb(217,239,139)","rgb(166,217,106)",
- "rgb(102,189,99)","rgb(26,152,80)","rgb(0,104,55)"]
-
-var votingColor = d3.scale.quantize()
-	.domain([-1.0, 1.0])
-	.range(d3.range(11).map(function(d) {  return votingColorGradient[d] ; }));
-// ================================================================================================================
-
-
-// = d3.scale.ordinal()
-// 	.domain(partiesNames)
-// 	.range(partiesColors);
 
 var motions = {};  					// collection of motions  => { "tipo+numero+ano":{ rollCalls:{}, details:{} },...}
 var datetimeRollCall = [];			// array of all rollCalls
 var ideCadastroCollection = {};   	// collection of ideCadastro => { ideCadastro: [ Object deputyDetails ], ... }
-var phonebook = Phonebook();		// module to index deputy names 
 
-var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroCollection, datetimeRollCall, phonebook);
+//var phonebook = Phonebook();		// module to index deputy names 
+//var chamberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, datetimeRollCall, phonebook);
+
+var phonebook = {
+			getDeputyObj  : function(deputyID){ return this.deputiesArray[deputyID]; },
+			deputiesArray : []
+		};
+var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollCall, phonebook.deputiesArray);
 
 //var scaleAdjustment     = scaleAdjustment();
 
@@ -94,11 +73,11 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			.on('hover', function(deputy, mouseover){
 				if(deputy!=null){
 					// highlight the state of the deputy
-					brazilianStates.highlightDeputyState( deputy.state , mouseover );
+					brazilianStates.highlightDeputyState( deputy.district , mouseover );
 					// highlight the votes of the deputy in each roll call
-					rollCallsScatterplot.highlightDeputyVotes( deputy.phonebookID , mouseover );
+					rollCallsScatterplot.highlightDeputyVotes( deputy.deputyID , mouseover );
 					// highlight the deputy in the graph
-					deputiesGraph.highlightDeputy( deputy.phonebookID , mouseover );
+					deputiesGraph.highlightDeputy( deputy.deputyID , mouseover );
 				} 
 			})
 	// =====================================================================================
@@ -174,11 +153,11 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 			.on('hover', function(deputy, mouseover){
 				if(deputy!=null){
 					// highlight the state of the deputy
-					brazilianStates.highlightDeputyState( deputy.state , mouseover );
+					brazilianStates.highlightDeputyState( deputy.district , mouseover );
 					// highlight the votes of the deputy in each roll call
-					rollCallsScatterplot.highlightDeputyVotes( deputy.phonebookID , mouseover );
+					rollCallsScatterplot.highlightDeputyVotes( deputy.deputyID , mouseover );
 					// highlight the deputy in the graph
-					deputiesScatterplot.highlightDeputy( deputy.phonebookID , mouseover );
+					deputiesScatterplot.highlightDeputy( deputy.deputyID , mouseover );
 				} 
 			})
 			.on('select', function(operation,deputiesIDs){
@@ -250,14 +229,14 @@ var cahmberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, ideCadastroColle
 	// interactions
 		brazilianStates
 			// when a state is selected
-			.on('selected', function (state,operation) {
-				deputiesScatterplot.selectNodesByAttr('state',state,operation);
+			.on('selected', function (district,operation) {
+				deputiesScatterplot.selectNodesByAttr('district',district,operation);
 				//deputiesGraph.selectStates(states);
 			})
 			// when a state is hovered
-			.on('hover', function (state){
-				deputiesScatterplot.highlightState(state);
-				deputiesGraph.highlightState(state);
+			.on('hover', function (district){
+				deputiesScatterplot.highlightDistrict(district);
+				deputiesGraph.highlightDistrict(district);
 			})
 	// ====================================================================================
 
@@ -345,12 +324,14 @@ function updateDataforDateRange(start,end,callback){
 	//scaleAdjustment.setSampling(deputiesInTheDateRange);
 
 	// get the data (from db or already loaded in the dataWrapper)
-	cahmberOfDeputies.setDateRange(start,end, function(arollCallInTheDateRange,adeputiesInTheDateRange){
+	chamberOfDeputies.setDateRange(start,end, function(arollCallInTheDateRange,adeputiesInTheDateRange){
 
 		rollCallInTheDateRange = arollCallInTheDateRange;
 		deputiesInTheDateRange = adeputiesInTheDateRange;
 
 		// console.log(datetimeRollCall)
+		 // console.log('deputies',deputiesInTheDateRange)
+		 // console.log('rollCalls',rollCallInTheDateRange)
 		// console.log(motions)
 		//AT THIS POINT rollCallInTheDateRange and deputiesInTheDateRange are updated with the date range 
 		
@@ -410,7 +391,7 @@ function updateDataforDateRange(start,end,callback){
 
 		scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,end);
 		callback();
-	}) // cahmberOfDeputies.setDateRange
+	}) // chamberOfDeputies.setDateRange
 
 }
 //=========================================================================================================================
@@ -441,14 +422,11 @@ function calcNumVotesHistogram(deputiesInTheDateRange){
 	//number of votes of each deputy
 	$.each(deputiesInTheDateRange, function(deputy){    deputiesInTheDateRange[deputy].numVotes = 0;  })
 	rollCallInTheDateRange.forEach( function( entry ){
-		if(entry.rollCall.votos == undefined){}// console.log("NO VOTES!('secret') -"+entry.rollCall.ObjVotacao)
-		else {
-			entry.rollCall.votos.Deputado.forEach( function(deputy){
+			entry.rollCall.votes.forEach( function(vote){
 
-				deputiesInTheDateRange[deputy.phonebookID].numVotes++;
+				deputiesInTheDateRange[vote.deputyID].numVotes++;
 				//else {console.log(deputy.Nome); console.log(entr)}
 			})
-		}
 	})
 	// average - stddev
 	var sum =0, sqrSum=0;
@@ -464,46 +442,42 @@ function calcNumVotesHistogram(deputiesInTheDateRange){
 
 function calcRollCallAgreement(rollCalls,deputies){
 	//console.log(rollCalls)
-	//console.log(phonebookIDs)
 	var mapSelectedDeputies = {}; 
 
 	if(deputies != null) 
-		 deputies.forEach(function(deputy){ mapSelectedDeputies[deputy.phonebookID]=true; })
-	else deputyNodes.forEach( function(d){ mapSelectedDeputies[d.phonebookID]=true; })
+		 deputies.forEach(function(deputy){ mapSelectedDeputies[deputy.deputyID]=true; })
+	else deputyNodes.forEach( function(d){ mapSelectedDeputies[d.deputyID]=true; })
 
 
 	$.each(rollCalls, function(d){
 		rollCalls[d].rate='noVotes'
 		rollCalls[d].agreement = 0;
 		
-		if(rollCalls[d].rollCall.votos == undefined){}// console.log("NO VOTES!('secret') -"+entry.rollCall.ObjVotacao)
-		else{
-			var totalVotes=0, // total of votes
-				votes = {};   // sum of each type
+		var totalVotes=0, // total of votes
+			votes = {};   // sum of each type
 
-			rollCalls[d].rollCall.votos.Deputado.forEach( function (vote){
+		rollCalls[d].rollCall.votes.forEach( function (vote){
+			
+			// if deputy is selected count the vote 
+			if(mapSelectedDeputies[vote.deputyID]!== undefined){
+				if( votes[vote.vote] == undefined ) votes[vote.vote]=0;
 				
-				// if deputy is selected count the vote 
-				if(mapSelectedDeputies[vote.phonebookID]!== undefined){
-					if( votes[vote.Voto] == undefined ) votes[vote.Voto]=0;
-					
-					votes[vote.Voto] ++;
-					totalVotes ++;
-				}
-			})
-
-			 var maxAgree=0;
-			 $.each(votes,function(v){ maxAgree = (votes[v] > maxAgree)? votes[v] : maxAgree })
-
-			 if( ( (votes['Sim'] ===undefined ) && (votes['Não'] ===undefined )) )
-				{rollCalls[d].rate = 'noVotes'}
-			 else {
-				 if(votes['Sim'] === undefined) votes['Sim']=0;
-				 if(votes['Não'] === undefined) votes['Não']=0;
-				// agreement(%) is the number of votes in the major vote decision('Sim','Não',...) by the total of votes 
-				rollCalls[d].agreement = maxAgree/totalVotes;
-				rollCalls[d].rate = (votes['Sim']-votes['Não'])/totalVotes;
+				votes[vote.vote] ++;
+				totalVotes ++;
 			}
+		})
+
+		 var maxAgree=0;
+		 $.each(votes,function(v){ maxAgree = (votes[v] > maxAgree)? votes[v] : maxAgree })
+
+		 if( ( (votes['Sim'] ===undefined ) && (votes['Não'] ===undefined )) )
+			{rollCalls[d].rate = 'noVotes'}
+		 else {
+			 if(votes['Sim'] === undefined) votes['Sim']=0;
+			 if(votes['Não'] === undefined) votes['Não']=0;
+			// agreement(%) is the number of votes in the major vote decision('Sim','Não',...) by the total of votes 
+			rollCalls[d].agreement = maxAgree/totalVotes;
+			rollCalls[d].rate = (votes['Sim']-votes['Não'])/totalVotes;
 		}
 	})
 
@@ -527,18 +501,14 @@ function calcDeputyNodesHistogram(selectedRollCalls){
 	})
 
 	$.each(selectedRollCalls, function(d){
-		if(selectedRollCalls[d].rollCall.votos == undefined){}
-		else{
+		selectedRollCalls[d].rollCall.votes.forEach( function (vote){
+			var deputy = phonebook.getDeputyObj(vote.deputyID);
 			
-			selectedRollCalls[d].rollCall.votos.Deputado.forEach( function (vote){
-				var deputy = phonebook.getPhonebookOBJ(vote.phonebookID);
-				
-				if(deputy.votes === undefined) deputy.votes ={};
-				if( deputy.votes[vote.Voto] === undefined ) deputy.votes[vote.Voto]=0;
-				deputy.votes[vote.Voto]++;
+			if(deputy.votes === undefined) deputy.votes ={};
+			if( deputy.votes[vote.vote] === undefined ) deputy.votes[vote.vote]=0;
+			deputy.votes[vote.vote]++;
 
-			})
-		}
+		})
 	})
 
 	deputyNodes.forEach(function(deputy){
@@ -558,17 +528,14 @@ function calcStatesHistogram(selectedRollCalls, states ){
 	$.each(states, function(){ this.votes={}; this.votes['Sim']=0; this.votes['Não']=0; })
 
 	$.each(selectedRollCalls, function(){
-		if(this.rollCall.votos == undefined){}
-		else{
-			
-			this.rollCall.votos.Deputado.forEach( function (vote){
-				var deputy = phonebook.getPhonebookOBJ(vote.phonebookID);
-				
-				if( states[deputy.state].votes[vote.Voto] === undefined ) states[deputy.state].votes[vote.Voto]=0;
-				states[deputy.state].votes[vote.Voto]++;
 
-			})
-		}
+		this.rollCall.votes.forEach( function (vote){
+			var deputy = phonebook.getDeputyObj(vote.deputyID);
+			
+			if( states[deputy.district].votes[vote.vote] === undefined ) states[deputy.district].votes[vote.vote]=0;
+			states[deputy.district].votes[vote.vote]++;
+
+		})
 	})
 
 	$.each(states, function(){
@@ -591,18 +558,18 @@ function calcStatesHistogram(selectedRollCalls, states ){
 	//return states;
 }
 
-function calcDeputyPerState(deputies, states){
-	$.each(states, function(){ this.total=0; this.selected=0; })
+function calcDeputyPerState(deputies, districts){
+	$.each(districts, function(){ this.total=0; this.selected=0; })
 
 	deputyNodes.forEach(function(d){
-		states[d.state].total++;
-		if(deputies==null) states[d.state].selected++;
+		districts[d.district].total++;
+		if(deputies==null) districts[d.district].selected++;
 	})
 
-	if(deputies==null) return states;
+	if(deputies==null) return districts;
 
 	deputies.forEach(function(deputy){
-		states[deputy.state].selected++;
+		districts[deputy.district].selected++;
 	})
 }
 
@@ -667,17 +634,15 @@ function calcSVD(deputies,rollCalls){
 		rollCalls.forEach( function( rollCallEntry, rollCallKey ){
 				
 
-				if(rollCallEntry.rollCall.votos == undefined) console.log("NO VOTES('secret')! -"+rollCallEntry.rollCall.ObjVotacao)
+				if(rollCallEntry.rollCall.votes.length == 0) console.log("NO VOTES('secret')! -"+rollCallEntry.rollCall.ObjVotacao)
 				else{
 					// for each vote in the roll call
-					rollCallEntry.rollCall.votos.Deputado.forEach( function(deputy){
+					rollCallEntry.rollCall.votes.forEach( function(vote){
 
-						var svdKey = deputiesInTheDateRange[deputy.phonebookID].svdKey;
+						var svdKey = deputiesInTheDateRange[vote.deputyID].svdKey;
 						if(svdKey !== undefined){
-							//if(votoStringToInteger[deputy.Voto]===undefined) console.log("'"+deputy.Voto+"'");
-
-							tableDepXRollCall[svdKey][rollCallKey]=votoStringToInteger[deputy.Voto];
-
+							//if(votoStringToInteger[vote.vote]===undefined) console.log("'"+vote.vote+"'");
+							tableDepXRollCall[svdKey][rollCallKey]=votoStringToInteger[vote.vote];
 						}
 					})
 				}
@@ -744,10 +709,10 @@ function setDeputyModal_setTable(data){
 		columns : [
 			{ data: 'name' },
 			{ data: 'party'},
-			{ data: 'state'}
+			{ data: 'district'}
 		],
 		createdRow: function ( row, data, index ) {
-            if ( deputiesScatterplot.isSelected( data.phonebookID ) ) {
+            if ( deputiesScatterplot.isSelected( data.deputyID ) ) {
                  $(row).addClass('selected');
             }
         }

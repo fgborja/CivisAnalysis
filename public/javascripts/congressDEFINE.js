@@ -1,3 +1,7 @@
+var votoToInteger = {"Sim":0,"Não":1,"Abstenção":2,"Obstrução":3,"Art. 17":4,"Branco":5};
+var integerToVote = ["Sim","Não","Abstenção","Obstrução","Art. 17","Branco"];
+//var integerToVote = {'0':"Sim",'1':"Não",'2':"Abstenção",'3':"Obstrução",'4':"Art. 17",'5':"Branco"};
+
 // renamed parties
 // PFL ==> DEM
 // PPB ==> PP
@@ -222,7 +226,28 @@ var elections = {
 
 
 // COLORS!
+// ===============================================================================================================
+// colors representing the single vote value
+var votoStringToColor = {"Sim":"green","Não":"red","Abstenção":"purple","Obstrução":"blue","Art. 17":"yellow","null":'grey'}
 
+// ===============================================================================================================
+var votingColorGradient = ["rgb(165,0,38)","rgb(215,48,39)","rgb(244,109,67)","rgb(253,174,97)",
+ "rgb(254,224,139)","rgb(255,255,191)","rgb(217,239,139)","rgb(166,217,106)",
+ "rgb(102,189,99)","rgb(26,152,80)","rgb(0,104,55)"]
+
+var votingColor = d3.scale.quantize()
+	.domain([-1.0, 1.0])
+	.range(d3.range(11).map(function(d) {  return votingColorGradient[d] ; }));
+// ================================================================================================================
+
+// PARTY COLORS =================================================================================================
+var getConstantPartyColor = function(party){ 
+	if(partiesNamesColor[party] !== undefined ) 
+		{return partiesNamesColor[party];}
+	else{ /*console.log(party);*/ return "#AAA" }
+} 
+// there is a case where partyColor will be (a function) according to electoral alliance color
+var getPartyColor = getConstantPartyColor;
 var partiesNamesColor= {"DEM":"LightCoral", "PFL":"LightCoral", // PFL ==> DEM
 					  "PSDB":"#1f77b4",
 					  "PP":"#008000", "PPB": "#008000", // PPB ==> PP
