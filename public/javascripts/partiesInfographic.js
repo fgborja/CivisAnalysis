@@ -82,13 +82,13 @@ d3.chart.partiesInfographic = function() {
 						width:40,
 						y: function(d){ return /*scaleX(d.y0)*/ margin} ,
 						height: function(d){return scaleX(d.y) - scaleX(d.y0) -margin},
-						fill: function(d){ return /*'lightgrey'*/ getPartyColor(d.key)},
 						cursor : 'pointer',
 						//stroke: function(d){ return partyColor(d.key)},
 						//'stroke-width': 2,
 						opacity:1,
 						stroke: 'none'
 					})
+					.style('fill',function(d){ return /*'lightgrey'*/ getPartyColor(d.key)})
 
 				// -------------------------------------
 				// wrects to express the of proportion of un/selected deputies
@@ -104,10 +104,10 @@ d3.chart.partiesInfographic = function() {
 						width:40 -4,
 						y: function(d){ return /*scaleX(d.y0)*/ margin +2} ,
 						height : function(d){return scaleX(d.value.total - d.value.selected ) - 4 -margin},
-						fill: 'white',
 						cursor : 'pointer',
 						opacity:0.6
 					})
+					.style('fill','white');
 
 				// ----------------------------------
 				// text - party name 
@@ -198,7 +198,11 @@ d3.chart.partiesInfographic = function() {
 			})
 
 			wrects.transition(1000)
-				.attr({ height : function(d){return scaleX(d.value.total - d.value.selected ) - 4 -margin}, opacity: 0.6, fill: 'white'})
+				.attr({ 
+					height : function(d){return scaleX(d.value.total - d.value.selected ) - 4 -margin}, 
+					opacity: 0.6, 
+				})
+				.style('fill','white')
 		}
 	}
 
@@ -351,12 +355,12 @@ d3.chart.partiesInfographic = function() {
 								width:80,
 								y: function(d){ return /*scaleX(d.y0)*/ 1} ,
 								height: function(d){return ( (scaleX(d.y) - scaleX(d.y0) -1) > 1 )? (scaleX(d.y) - scaleX(d.y0) -1): 2 },
-								fill: function(d){ return /*'lightgrey'*/ getPartyColor(d.parties[0])},
 								cursor : 'pointer',
 								//stroke: function(d){ return partyColor(d.key)},
 								//'stroke-width': 2,
 								opacity:1
 						})
+						.style('fill', function(d){ return /*'lightgrey'*/ getPartyColor(d.parties[0])})
 					transition = transition.transition()
 
 					// for each party make a separate movment
@@ -365,7 +369,7 @@ d3.chart.partiesInfographic = function() {
 						transition.select('.party#'+party.key)
 							.attr("transform", function(d, i) { return "translate(70,"+scaleX(d.y0)+")"; })
 							.selectAll('rect.main')
-								.attr('fill', function(d){ return getPartyColor(party.key)} )
+								.style('fill', function(d){ return getPartyColor(party.key)} )
 								.attr('stroke', function(d){ return 'black'} )
 								.attr('stroke-width', function(d){ return 0.5} )
 
@@ -403,8 +407,7 @@ d3.chart.partiesInfographic = function() {
 		})
 
 		svg.selectAll('.party rect.main')
-			.transition()
-			.attr('fill', function(party){ 	
+			.style('fill', function(party){ 	
 				return (party.rate == 'noVotes')? 'lightgrey' : votingColor(party.rate);
 			})
 
@@ -431,7 +434,7 @@ d3.chart.partiesInfographic = function() {
 				}
 
 				svg.selectAll('.alliance rect')
-					.attr('fill', function(alliance){ 	
+					.style('fill', function(alliance){ 	
 						return (alliance.rate == 'noVotes')? 'lightgrey' : votingColor(alliance.rate);
 					})
 			})
@@ -449,13 +452,13 @@ d3.chart.partiesInfographic = function() {
 
 		if( ! svg.selectAll('.alliances').empty() ){
 			svg.selectAll('.alliance rect')
-				.attr('fill', function(alliance){ 	
+				.style('fill', function(alliance){ 	
 					return getPartyColor(alliance.parties[0])
 				})
 		} 
 
 		svg.selectAll('.party rect.main')
-			.attr('fill', function(party){ 	
+			.style('fill', function(party){ 	
 				return getPartyColor(party.key)
 		})
 	}

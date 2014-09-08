@@ -112,7 +112,7 @@ d3.chart.rollCallsScatterplot = function() {
 	
 			dispatch.hover(d);
 
-			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/><em>"+d.rollCall.Resumo+"</em>"+ "<br/><em>Click to select</em>");
+			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/><em>"+d.rollCall.summary+"</em>"+ "<br/><em>Click to select</em>");
 			return tooltip
 					.style("visibility", "visible")
 					.style("opacity", 1);
