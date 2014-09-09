@@ -92,7 +92,8 @@ function updateAllDeputiesInTheIdeCadastroMAP(){
 
 /// =======================================================================================
 /// =======================================================================================
-
+// store the BD entries to JSON -> use the globalUtils.js to save the json
+// 	saveEntriesOfArray( array, getName, 0)
 
 	var arrayMotions = [];
 	var motionsMAP	 = {};
@@ -202,12 +203,6 @@ function updateAllDeputiesInTheIdeCadastroMAP(){
 		})
 	}
 
-	function stringify_ALL_DATA(){
-		console.log(JSON.stringify(arrayMotions))
-		console.log(JSON.stringify(arrayDeputies))
-		console.log(JSON.stringify(arrayRollCalls))
-	}
-
 
 var dict= { // found with Levenshtein Distance levDist() - misspelling deputies names
 			'ANDRE VARGAS':'ANDRÉ VARGAS',
@@ -251,3 +246,36 @@ var dict= { // found with Levenshtein Distance levDist() - misspelling deputies 
 
 /// =======================================================================================
 /// =======================================================================================
+//
+//
+//
+// calc the traces
+
+function calcTheDeputyTraces(){
+	var startYear = 1991, endYear = 2014;
+
+	function calcOneYearRecursive(year) { 
+		if(year > endYear) return;
+
+		updateDataforDateRange( new Date(year,0,1), new Date(year+1,0,1), function(){
+
+			deputyNodes.forEach( function(deputy){ 
+				
+				if(deputy.trace === undefined) 
+					deputy.trace = {};
+
+				deputy.trace[year] = 
+					{
+						party: deputy.party, 
+						scatterplot: [ deputy.scatterplot[0], deputy.scatterplot[1]]
+					};
+			})
+
+			calcOneYearRecursive(year+1);
+		})
+
+	};
+
+	calcOneYearRecursive(startYear);
+
+}
