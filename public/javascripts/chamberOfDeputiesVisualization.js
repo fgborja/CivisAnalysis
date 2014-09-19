@@ -9,9 +9,9 @@ var tooltip = d3.select("#main")
 $('div.selected').css('visibility','hidden');
 
 
-var motions = {};  					// collection of motions  => { "tipo+numero+ano":{ rollCalls:{}, details:{} },...}
-var datetimeRollCall = [];			// array of all rollCalls
-var ideCadastroCollection = {};   	// collection of ideCadastro => { ideCadastro: [ Object deputyDetails ], ... }
+var motions = {};  					// collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
+var datetimeRollCall = [];			// array of all rollCalls sorted by date
+//var ideCadastroCollection = {};   	// collection of ideCadastro => { ideCadastro: [ Object deputyDetails ], ... }
 
 //var phonebook = Phonebook();		// module to index deputy names 
 //var chamberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, datetimeRollCall, phonebook);
@@ -287,28 +287,27 @@ function setNewDateRange(start,end,callback){
 
 	updateDataforDateRange(start,end, function(){
 		
-		timelineBarChart.data(datetimeRollCall)
-		timelineBarChart.update();
+		timelineBarChart
+			.data(datetimeRollCall)
+			.update();
 
-		// set deputy data
-		deputiesScatterplot.data(deputyNodes);
-		// plot
-		deputiesScatterplot.update(null)
+		deputiesScatterplot
+			.data(deputyNodes) // set deputy data
+			.update(null)  // plot
 
 		calcRollCallAgreement(rollCallNodes,null)
-		// set rollcall data
-		rollCallsScatterplot.data(rollCallNodes);
-		// plot
-		rollCallsScatterplot.update(null);
+		
+		rollCallsScatterplot
+			.data(rollCallNodes) 	// set rollcall data
+			.update(null);			// plot
 
-		// GRAPHHH!!
-		// set tableDepXRollCall data
-		deputiesGraph.data(tableDepXRollCall);
-		// plot
-		deputiesGraph.update(null);
+		deputiesGraph
+			.data(tableDepXRollCall) // set tableDepXRollCall data
+			.update(null); // plot
 
-		partiesInfographic.data(deputyNodes);
-		partiesInfographic.update(null);
+		partiesInfographic
+			.data( calcPartiesSizeAndCenter( deputyNodes ))
+			.update(null);
 
 		
 		calcDeputyPerState(null, brazilianStates.getStates())
@@ -590,6 +589,33 @@ function calcDeputyPerParty( deputies ){
 	return parties;
 }
 
+function calcPartiesSizeAndCenter( deputies ){
+	if(deputies==null) return null;
+
+	var parties = {};
+
+	deputies.forEach(function(deputy){
+		if(parties[deputy.party] === undefined) parties[deputy.party] = {size:0,center:[0,0], stdev:[0,0]};
+		parties[deputy.party].size++;
+		// sum of values
+		parties[deputy.party].center[0] += deputy.scatterplot[0];
+		parties[deputy.party].center[1] += deputy.scatterplot[1];
+		// sum of values²
+		parties[deputy.party].stdev[0] += Math.pow(deputy.scatterplot[0], 2);
+		parties[deputy.party].stdev[1] += Math.pow(deputy.scatterplot[1], 2);
+	})
+
+	$.each(parties, function(party){
+		// calc stdev
+		parties[party].stdev[0] = Math.sqrt(  ( parties[party].stdev[0] - Math.pow(parties[party].center[0],2)/parties[party].size) / (parties[party].size -1) )
+		parties[party].stdev[1] = Math.sqrt(  ( parties[party].stdev[1] - Math.pow(parties[party].center[1],2)/parties[party].size) / (parties[party].size -1) )
+		// calc mean
+		parties[party].center[0] = parties[party].center[0]/parties[party].size;
+		parties[party].center[1] = parties[party].center[1]/parties[party].size;
+	})
+		
+	return parties;
+}
 
 
 //var day_month_year = Data.match(/\d+/g);

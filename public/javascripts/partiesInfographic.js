@@ -7,7 +7,7 @@ d3.chart.partiesInfographic = function() {
 	var dispatch = d3.dispatch("hover","selected");
 	chart.on = dispatch.on;
 
-	var partiesMap,parties, alliances;
+	var partiesMap, parties, alliances;
 
 	var width = $('#infoParties').width();
 	var height =   $('.canvas').width() * 2;
@@ -22,27 +22,18 @@ d3.chart.partiesInfographic = function() {
 	}
 
 	chart.update = function(){
-		parties={};
-		partiesMap={};
+
 		//console.log(deputyNodes);
 		var totalDeputies =0;
 
-		data.forEach( function(deputy){ 
-			if(partiesMap[deputy.party]===undefined) 
-				{ 
-					partiesMap[deputy.party]={};
-					partiesMap[deputy.party].party=deputy.party;
-					partiesMap[deputy.party].total=0;
-					partiesMap[deputy.party].selected=0;   
-				};
+		//parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.center[1] - a.value.center[1];  })
+		parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.size - a.value.size;  })
 
-			partiesMap[deputy.party].total++;
-			partiesMap[deputy.party].selected++;
-			totalDeputies++;
-		});
-
-		parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.total - a.value.total;  })
-
+		parties.forEach( function (party) {
+			party.value.selected = party.value.size;
+			totalDeputies += party.value.size;
+		})
+		
 		scaleX = d3.scale.linear()
 				.domain([0,totalDeputies])
 				.range([ 0, height ]);
@@ -54,7 +45,7 @@ d3.chart.partiesInfographic = function() {
 			svg.selectAll('.alliances').remove()
 
 			var y=0;
-			parties.forEach( function(d){ d.y0 = y; y+=d.value.total; d.y=y;  })
+			parties.forEach( function(d){ d.y0 = y; y+=d.value.size; d.y=y;  })
 
 			// create an element <g class='party'> for each party  
 			var g = svg.select('.parties')
@@ -103,7 +94,7 @@ d3.chart.partiesInfographic = function() {
 						x:/*15*/0+2,
 						width:40 -4,
 						y: function(d){ return /*scaleX(d.y0)*/ margin +2} ,
-						height : function(d){return scaleX(d.value.total - d.value.selected ) - 4 -margin},
+						height : function(d){return scaleX(d.value.size - d.value.selected ) - 4 -margin},
 						cursor : 'pointer',
 						opacity:0.6
 					})
@@ -199,7 +190,7 @@ d3.chart.partiesInfographic = function() {
 
 			wrects.transition(1000)
 				.attr({ 
-					height : function(d){return scaleX(d.value.total - d.value.selected ) - 4 -margin}, 
+					height : function(d){return scaleX(d.value.size - d.value.selected ) - 4 -margin}, 
 					opacity: 0.6, 
 				})
 				.style('fill','white')
@@ -219,10 +210,10 @@ d3.chart.partiesInfographic = function() {
 			a_alliances.forEach( function (alliance){ alliances.push(alliance)})
 
 			alliances.forEach( function (alliance){
-				alliance.total = 0;
+				alliance.size = 0;
 				alliance.partiesObjs = [];
 			})
-			alliances.push( {name:'Non-Allied', parties:[], partiesObjs:[], total:0} );
+			alliances.push( {name:'Non-Allied', parties:[], partiesObjs:[], size:0} );
 
 			// push the parties and calc number of deputies to/of each respective alliance
 			parties.forEach( function (partyObj){
@@ -232,14 +223,14 @@ d3.chart.partiesInfographic = function() {
 					alliance.parties.forEach( function (party){
 						if (partyObj.key == party) {
 							nonAllied = false;
-							alliance.total += partyObj.value.total;
+							alliance.size += partyObj.value.size;
 							alliance.partiesObjs.push(partyObj);
 						};
 					})
 				})
 
 				if(nonAllied){ 
-					alliances[alliances.length-1].total += partyObj.value.total; 
+					alliances[alliances.length-1].size += partyObj.value.size; 
 					alliances[alliances.length-1].partiesObjs.push(partyObj);    
 				}
 			})
@@ -250,13 +241,13 @@ d3.chart.partiesInfographic = function() {
 				alliance.i = i;
 
 				alliance.y0 = y; 
-				y+=alliance.total; 
+				y+=alliance.size; 
 				alliance.y=y;  
 
 				var party_y = alliance.y0;
 				alliance.partiesObjs.forEach( function(party){ 
 					party.y0 = party_y; 
-					party_y+=party.value.total; 
+					party_y+=party.value.size; 
 					party.y=party_y;  
 				})
 
@@ -347,7 +338,7 @@ d3.chart.partiesInfographic = function() {
 			
 			// for each alliance make a separate movment
 			alliances.forEach( function(alliance){
-				if(alliance.total > 0){
+				if(alliance.size > 0){
 
 					var rect = transition.select('.alliance.id-'+alliance.i+' rect')
 						.attr({
@@ -465,16 +456,17 @@ d3.chart.partiesInfographic = function() {
 
 	chart.data = function(value){
 		if(!arguments.length) return data;
-		data = value;
+		partiesMap = value;
 		return chart;
 	}
 
 	chart.renderPartyTooltip = function(party){
+		console.log(party)
 		var selectedRate =
-			(party.value.selected == party.value.total)?
-				party.value.total+' Deputies'
+			(party.value.selected == party.value.size)?
+				party.value.size+' Deputies'
 				:
-				(((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total)+')';
+				(((party.value.selected/party.value.size)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.size)+')';
 
 		return party.key+"<br/><em>"+ selectedRate +"</em><br/><em>Click to select</em>"
 	}
@@ -485,17 +477,17 @@ d3.chart.partiesInfographic = function() {
 
 		alliance.partiesObjs.forEach( function (party){
 			var selectedRate = 
-				(party.value.selected == party.value.total)?
-					party.value.total
+				(party.value.selected == party.value.size)?
+					party.value.size
 					:
-					party.value.selected +'/'+party.value.total;
+					party.value.selected +'/'+party.value.size;
 
 			html += "<em>"+party.key+"("+ selectedRate +") : </em> "
 			//: "+((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total +")
 			selected += party.value.selected;
 		})
 
-		var selectedRate = (selected==alliance.total)? (alliance.total+' Deputies') :selected+'/'+alliance.total;
+		var selectedRate = (selected==alliance.size)? (alliance.size+' Deputies') :selected+'/'+alliance.size;
 		return  alliance.name+' ('+selectedRate+")<br/>"+html+'<br/><em>'+ 'Click to select</em>';
 	}
 

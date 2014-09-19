@@ -208,6 +208,10 @@ d3.chart.timelineBarChart = function() {
 		return chart;
 	};
 
+	chart.scaleByX = function(_) {
+		return x(_);
+	};
+
 	chart.x = function(_) {
 		if (!arguments.length) return x;
 		x = _;

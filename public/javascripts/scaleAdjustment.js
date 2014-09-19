@@ -119,9 +119,14 @@
 			var scaleX =1,
 				scaleY =1;
 			//function isInQuadrant3rd(x,y){ return ((y > bisectorY) && ( x < bisectorX))? 1 : 0;  }
-			if(partyPositionAverage[0] > bisectorX) scaleX=-1;
-			if(partyPositionAverage[1] > bisectorY) scaleY=-1;
-
+			if(governmentParty == 'PT'){
+				if(partyPositionAverage[0] < bisectorX) scaleX=-1;
+				if(partyPositionAverage[1] < bisectorY) scaleY=-1;
+			} else {
+				if(partyPositionAverage[0] > bisectorX) scaleX=-1;
+				if(partyPositionAverage[1] > bisectorY) scaleY=-1;
+			}
+			
 			// multiply
 			deputyNodes.forEach( function(d){ 
 				d.scatterplot[0]*=scaleX;
