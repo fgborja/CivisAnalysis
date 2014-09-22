@@ -8,11 +8,15 @@ var tooltip = d3.select("#main")
 // div of selection
 $('div.selected').css('visibility','hidden');
 
+// collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
+var motions = {};  	
 
-var motions = {};  					// collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
-var datetimeRollCall = [];			// array of all rollCalls sorted by date
+// array of all rollCalls sorted by date
+var datetimeRollCall = [];			
+
 //var ideCadastroCollection = {};   	// collection of ideCadastro => { ideCadastro: [ Object deputyDetails ], ... }
 
+// MongoDB verson
 //var phonebook = Phonebook();		// module to index deputy names 
 //var chamberOfDeputies = $.chamberOfDeputiesDataWrapper(motions, datetimeRollCall, phonebook);
 
@@ -21,8 +25,6 @@ var phonebook = {
 			deputiesArray : []
 		};
 var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollCall, phonebook.deputiesArray);
-
-//var scaleAdjustment     = scaleAdjustment();
 
 // ======================================================================================================================
 // LAUNCH APP ===========================================================================================================
@@ -56,7 +58,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 				deputiesGraph.selectDeputies(deputies);
 
 				// set the agreement rate for each RollCall
-				calcRollCallAgreement(rollCallInTheDateRange,deputies);
+				calcRollCallRate(rollCallInTheDateRange,deputies);
 				rollCallsScatterplot.setDeputyVotingRate();
 
 				calcDeputyPerState(deputies, brazilianStates.getStates())
@@ -88,53 +90,54 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 	// RollCalls Scatterplot ---------------------------------------------------------------
 	//
 	//
+	// init
 		var rollCallsScatterplot 	= d3.chart.rollCallsScatterplot();
 		// set html container
 		rollCallsScatterplot(d3.select('#canvasRollCalls'));
+	//
+	// interactions
+		rollCallsScatterplot
+			.on('selected', function (selectedRollCalls){
+							
+				if(selectedRollCalls.length == rollCallNodes.length) {
+					// ALL RollCalls selected - reset roll call rates
+					$('div.rollCalls.selected').css('visibility','hidden');
+					deputiesScatterplot.resetRollCallRates();
+					deputiesGraph.resetRollCallRates();
+					brazilianStates.resetRollCallRates();
+					partiesInfographic.resetRollCallRates();
+				}
+				else {			
+					$('div.rollCalls.selected').css('visibility','visible');
+					calcDeputyNodesRates(selectedRollCalls)
 
-		rollCallsScatterplot.on('selected', function (selectedRollCalls){
+					deputiesScatterplot.setRollCallVotingRate();
+					deputiesGraph.setRollCallVotingRate();
 
-			//console.log('rollCallsScatterplot.on(selected')
-						
-			if(selectedRollCalls.length == rollCallNodes.length) {
-				$('div.rollCalls.selected').css('visibility','hidden');
-				deputiesScatterplot.resetRollCallRates();
-				deputiesGraph.resetRollCallRates();
-				brazilianStates.resetRollCallRates();
-				partiesInfographic.resetRollCallRates();
-			}
-			else {			
-				$('div.rollCalls.selected').css('visibility','visible');
-				calcDeputyNodesHistogram(selectedRollCalls)
+					calcStatesRates(selectedRollCalls, brazilianStates.getStates() )
+					//calcStatesRates(selectedRollCalls, deputiesScatterplot.getSelectedDeputies() )
+					brazilianStates.setRollCallRates();
+					partiesInfographic.setRollCallRates(selectedRollCalls);
+				}
+			})
 
-				deputiesScatterplot.setRollCallVotingRate();
-				deputiesGraph.setRollCallVotingRate();
+			.on('hover', function(rollCall){
+				if(rollCall!=null){
+						 calcStatesRates([rollCall], brazilianStates.getStates() ); 
 
-				calcStatesHistogram(selectedRollCalls, brazilianStates.getStates() )
-				//calcStatesHistogram(selectedRollCalls, deputiesScatterplot.getSelectedDeputies() )
-				brazilianStates.setRollCallRates();
-				partiesInfographic.setRollCallRates(selectedRollCalls);
-			}
-		})
-
-		rollCallsScatterplot.on('hover', function(rollCall){
-			// console.log('hover'+rollCall)
-			// console.log('hover'+mouseover)
-			if(rollCall!=null){
-					 calcStatesHistogram([rollCall], brazilianStates.getStates() ); 
-
-					// highlight the rates of the rollCall in the states
-					brazilianStates.highlightRollCall( rollCall );
-					// highlight the votes of deputies
-					deputiesGraph.highlightRollCall( rollCall );
-					// highlight the votes of deputies
-					deputiesScatterplot.highlightRollCall( rollCall );
-					// highlight the votes of parties
-					partiesInfographic.setRollCallRates([rollCall]);
-			} else {
-				rollCallsScatterplot.dispatchSelected();
-			}
-		})
+						// highlight the rates of the rollCall in the states
+						brazilianStates.highlightRollCall( rollCall );
+						// highlight the votes of deputies
+						deputiesGraph.highlightRollCall( rollCall );
+						// highlight the votes of deputies
+						deputiesScatterplot.highlightRollCall( rollCall );
+						// highlight the votes of parties
+						partiesInfographic.setRollCallRates([rollCall]);
+				} else {
+					// reset rollCallsScatterplot
+					rollCallsScatterplot.dispatchSelected();
+				}
+			})
 	// ====================================================================================
 
 
@@ -265,7 +268,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 	
 
 	// ====================================================================================
-	//  SET THE START DATE FRAME - LAUNCH APP!!
+	//  SET THE START DATE PERIOD - LAUNCH APP!!
 	// ====================================================================================
 		var start = new Date(2012, 0, 1);
 		var end   = new Date(); // == "now"
@@ -278,15 +281,18 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 
 // ======================================================================================================================
 // ======================================================================================================================
-
+// set new date and set the new data for all visualizations 
 function setNewDateRange(start,end,callback){
 	deputiesGraph.stop();
 
 	deputyNodes =[];
 	rollCallNodes =[];
 
+	// update the data for the selected period
 	updateDataforDateRange(start,end, function(){
-		
+		// set the data to all visualizations
+		// ...
+
 		timelineBarChart
 			.data(datetimeRollCall)
 			.update();
@@ -295,7 +301,7 @@ function setNewDateRange(start,end,callback){
 			.data(deputyNodes) // set deputy data
 			.update(null)  // plot
 
-		calcRollCallAgreement(rollCallNodes,null)
+		calcRollCallRate(rollCallNodes,null)
 		
 		rollCallsScatterplot
 			.data(rollCallNodes) 	// set rollcall data
@@ -320,8 +326,6 @@ function setNewDateRange(start,end,callback){
 
 function updateDataforDateRange(start,end,callback){
 
-	//scaleAdjustment.setSampling(deputiesInTheDateRange);
-
 	// get the data (from db or already loaded in the dataWrapper)
 	chamberOfDeputies.setDateRange(start,end, function(arollCallInTheDateRange,adeputiesInTheDateRange){
 
@@ -329,31 +333,22 @@ function updateDataforDateRange(start,end,callback){
 		deputiesInTheDateRange = adeputiesInTheDateRange;
 
 		// console.log(datetimeRollCall)
-		 // console.log('deputies',deputiesInTheDateRange)
-		 // console.log('rollCalls',rollCallInTheDateRange)
+		// console.log('deputies',deputiesInTheDateRange)
+		// console.log('rollCalls',rollCallInTheDateRange)
 		// console.log(motions)
-		//AT THIS POINT rollCallInTheDateRange and deputiesInTheDateRange are updated with the date range 
+		//AT THIS POINT rollCallInTheDateRange and deputiesInTheDateRange are updated with the new date range 
 		
 		// -------------------------------------------------------------------------------------------------------------------
 		//calc Vote Density Histogram  ---------------------------------------------------------------------------------------
 		// 	console.log("calc Vote Density Histogram")
 
-			var mean=0,stdev=0;
-			var result = calcNumVotesHistogram(deputiesInTheDateRange);
-		// 	var mean  = result.mean;
-		// 	var stdev = result.stdev;
-		// 	$('#averageDeputies').text(mean.toPrecision(Math.log(mean)));
-		// 	$('#stdDeputies').text(stdev.toPrecision(Math.log(stdev)));
-
-		// // calc rollCall agreement rate%
-		// 	console.log("calc rollCall agreement rate%")
-		// 	var result = calcRollCallAgreement(rollCallInTheDateRange);
-		// 	var mean  = Math.floor( (result.mean *100));
-		// 	var stdev = Math.floor( (result.stdev*100));
-		// 	$('#averageRollCalls').text(mean+'%');
-		// 	$('#stdRollCalls').text(stdev+'%');
+			//var mean=0,stdev=0;
+			//var result = calcNumVotes(deputiesInTheDateRange);
 			
-		
+			// calc the number of votes for each congressman
+			calcNumVotes(deputiesInTheDateRange);
+			
+		// select only congressmans who votead at least one third 1/3 of all roll calls in the selected period
 		function filterDeputies(filter){ 
 			var svdKey =0;
 			var filteredDeputies;
@@ -416,30 +411,28 @@ function createRollCallNodes(data_voting, rollCalls){
 	return rollCalls;
 }
 
-
-function calcNumVotesHistogram(deputiesInTheDateRange){
-	//number of votes of each deputy
+// calc how many votes each congressman made in the period
+function calcNumVotes(deputiesInTheDateRange){
+	//TODO revisar esse código que parece infeliz - tem que ver se a versão MongoDB e HTTP são compatíveis
 	$.each(deputiesInTheDateRange, function(deputy){    deputiesInTheDateRange[deputy].numVotes = 0;  })
 	rollCallInTheDateRange.forEach( function( entry ){
-			entry.rollCall.votes.forEach( function(vote){
-
-				deputiesInTheDateRange[vote.deputyID].numVotes++;
-				//else {console.log(deputy.Nome); console.log(entr)}
-			})
+		entry.rollCall.votes.forEach( function(vote){
+			deputiesInTheDateRange[vote.deputyID].numVotes++;
+		})
 	})
 	// average - stddev
-	var sum =0, sqrSum=0;
-	$.each(deputiesInTheDateRange, function(d){ 
-		sum += deputiesInTheDateRange[d].numVotes; 
-		sqrSum += Math.pow(deputiesInTheDateRange[d].numVotes,2);  
-	})
-	var mean = sum/Object.size(deputiesInTheDateRange);
-	var stdev = Math.sqrt((sqrSum/Object.size(deputiesInTheDateRange)) - ( Math.pow(sum/Object.size(deputiesInTheDateRange),2) ));
-	return {mean:mean,stdev:stdev};
+	// var sum =0, sqrSum=0;
+	// $.each(deputiesInTheDateRange, function(d){ 
+	// 	sum += deputiesInTheDateRange[d].numVotes; 
+	// 	sqrSum += Math.pow(deputiesInTheDateRange[d].numVotes,2);  
+	// })
+	// var mean = sum/Object.size(deputiesInTheDateRange);
+	// var stdev = Math.sqrt((sqrSum/Object.size(deputiesInTheDateRange)) - ( Math.pow(sum/Object.size(deputiesInTheDateRange),2) ));
+	// return {mean:mean,stdev:stdev};
 }
 
-
-function calcRollCallAgreement(rollCalls,deputies){
+// for each roll call rate how many yes and no it has, in the range [1(yes),-1(no)]
+function calcRollCallRate(rollCalls,deputies){
 	//console.log(rollCalls)
 	var mapSelectedDeputies = {}; 
 
@@ -476,13 +469,11 @@ function calcRollCallAgreement(rollCalls,deputies){
 			if(votes['Não'] === undefined) votes['Não']=0;
 			// agreement(%) is the number of votes in the major vote decision('Sim','Não',...) by the total of votes 
 			//rollCalls[d].agreement = maxAgree/totalVotes;
-			rollCalls[d].rate = (votes['Sim']-votes['Não'])/totalVotes;
+			rollCalls[d].rate = (votes['Sim']-votes['Não'])/( votes['Sim']+votes['Não']);
 		}
 	
 		//if(deputies == null){ rollCalls[d].periodRate = rollCalls[d].rate; }
 	})
-
-
 
 	// average - stddev
 	// var sum =0, sqrSum=0;
@@ -496,7 +487,8 @@ function calcRollCallAgreement(rollCalls,deputies){
 }
 
 // given a set of roll calls calc the rate of votes of each deputy  ([Sim]-[Não])/([Sim]+[Não])
-function calcDeputyNodesHistogram(selectedRollCalls){
+// in the range [1(yes),-1(no)]
+function calcDeputyNodesRates(selectedRollCalls){
 	deputyNodes.forEach(function(deputy){
 		deputy.votes ={};
 		deputy.votes['Sim']=0;
@@ -526,7 +518,7 @@ function calcDeputyNodesHistogram(selectedRollCalls){
 
 }
 
-function calcStatesHistogram(selectedRollCalls, states ){
+function calcStatesRates(selectedRollCalls, states ){
 	//$.each(states, function(id){ states[id]={}; /*states[id].votes={};*/})
 	$.each(states, function(){ this.votes={}; this.votes['Sim']=0; this.votes['Não']=0; })
 
@@ -550,15 +542,9 @@ function calcStatesHistogram(selectedRollCalls, states ){
 			var total = this.votes['Não'] + this.votes['Sim'];
 			// agreement(%) is the number of votes in the major vote decision('Sim','Não',...) by the total of votes 
 			this.rate = (this.votes['Sim']-this.votes['Não'])/total;
-			
-			//states[id].votes['Sim']=0;
-			//states[id].votes['Não']=0;
 		}
 	})
 
-	//$.each(states, function(id){ console.log(id+' '+this.rate+' '+this.votes['Não']+' '+this.votes['Sim']) })
-
-	//return states;
 }
 
 function calcDeputyPerState(deputies, districts){
@@ -616,40 +602,6 @@ function calcPartiesSizeAndCenter( deputies ){
 		
 	return parties;
 }
-
-
-//var day_month_year = Data.match(/\d+/g);
-// function getPartyAtDate(deputyDetails, endDate){
-// 	if(deputyDetails.filiacoesPartidarias == "") return deputyDetails.partidoAtual.sigla;
-// 	else{
-// 		var party="";
-// 		if(isArray(deputyDetails.filiacoesPartidarias.filiacaoPartidaria)){
-			
-// 			var sdate= new Date(1789,6,14);
-
-// 			deputyDetails.filiacoesPartidarias.filiacaoPartidaria.forEach(
-// 				function(filiacaoPartidaria){
-// 					var day_month_year = filiacaoPartidaria.dataFiliacaoPartidoPosterior.match(/\d+/g);
-// 					var dateFili = new Date(day_month_year[2],day_month_year[1]-1,day_month_year[0]);
-
-// 					if(party =="") party = filiacaoPartidaria.siglaPartidoAnterior;
-// 					if( (endDate >= dateFili)) party = filiacaoPartidaria.siglaPartidoPosterior;                    
-
-// 				}
-// 			)
-// 		}
-// 		else{
-// 			//console.log( deputyDetails.filiacoesPartidarias)
-// 			var day_month_year = deputyDetails.filiacoesPartidarias.filiacaoPartidaria.dataFiliacaoPartidoPosterior.match(/\d+/g);
-// 			var dateFili = new Date(day_month_year[2],day_month_year[1]-1,day_month_year[0]);
-
-// 			if(party =="") party = deputyDetails.filiacoesPartidarias.filiacaoPartidaria.siglaPartidoAnterior;
-// 			if( (endDate >= dateFili)) party = deputyDetails.filiacoesPartidarias.filiacaoPartidaria.siglaPartidoPosterior;
-// 		}
-// 		return party;
-// 	}
-// }
-
 
 function calcSVD(deputies,rollCalls){
 	// -------------------------------------------------------------------------------------------------------------------
@@ -712,97 +664,3 @@ function calcSVD(deputies,rollCalls){
 	// ----------------------------------------------------------------------------------------------------------------
 	return {deputies: data_deputies, voting: data_voting};
 }
-
-//=============================================================================
-// Deputies - Modal
-function setDeputyModal_SearchAll(){
-	setDeputyModal_Init();
-	setDeputyModal_setTable(deputyNodes);
-	setDeputyModal_Click();
-}
-
-function setDeputyModal_ListSelected(){
-	setDeputyModal_Init();
-	setDeputyModal_setTable(deputiesScatterplot.getSelected());
-	setDeputyModal_Click();
-}
-
-function setDeputyModal_Init(){
-	d3.select('.modal-title').text('Deputies - search & select')
-	$('.modal-body').children().remove();
-	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Name</th><th>Party</th><th>State</th></tr><thead/></table>')
-}
-
-function setDeputyModal_setTable(data){
-	$('#table').DataTable( {
-		data 	: data,
-		columns : [
-			{ data: 'name' },
-			{ data: 'party'},
-			{ data: 'district'}
-		],
-		createdRow: function ( row, data, index ) {
-            if ( deputiesScatterplot.isSelected( data.deputyID ) ) {
-                 $(row).addClass('selected');
-            }
-        }
-	});
-}
-
-function setDeputyModal_Click(){
-	$('#table tbody').on("click", "tr", function(){
-		$(this).toggleClass('selected');
-		
-		var name = $('td', this).eq(0).text();
-		var party = $('td', this).eq(1).text();
-		var state = $('td', this).eq(2).text();
-		alert( 'You clicked on '+name+'\'s row' );
-	});
-}
-//=============================================================================
-
-
-//=============================================================================
-// RollCall - Modal
-
-function setRollCallModal_SearchAll(){
-	setRollCallModal_Init()
-	setRollCallModal_setTable(rollCallNodes)
-	setRollCallModal_Click();
-}
-
-function setRollCallModal_ListSelected(){
-	setRollCallModal_Init()
-	setRollCallModal_setTable( rollCallsScatterplot.getSelected())
-	setRollCallModal_Click();
-}
-
-function setRollCallModal_Init(){
-	d3.select('.modal-title').text('Roll Calls - search & select')
-	$('.modal-body').children().remove();
-	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Type</th><th>Number</th><th>Year</th></tr><thead/></table>')
-}
-function setRollCallModal_setTable(data){
-	$('#table').DataTable({
-		data: data,
-		columns: [
-			{ data: 'tipo', },
-			{ data: 'numero' },
-			{ data: 'ano' }
-		],
-		createdRow: function ( row, data, index ) {
-            if ( rollCallsScatterplot.isSelected( data.i ) ) {
-                 $(row).addClass('selected');
-            }
-        }
-	});
-}
-function setRollCallModal_Click(){
-	$('#table tbody').on("click", "tr", function(){
-		var name = $('td', this).eq(0).text();
-		var party = $('td', this).eq(1).text();
-		var state = $('td', this).eq(2).text();
-		alert( 'You clicked on '+name+'\'s row' );
-	});
-}
-//=============================================================================
