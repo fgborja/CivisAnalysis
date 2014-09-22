@@ -95,7 +95,7 @@ d3.chart.rollCallsScatterplot = function() {
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
 			r: 4,
 			class: "node selected",
-			fill: function (d) { return votingColor(d.rate) },
+			fill: function (d) { return CONGRESS_DEFINE.votingColor(d.rate) },
 			id: function (d) { return 'rollCall-'+d.i }
 		})
 		circles.exit().transition().remove();
@@ -185,7 +185,7 @@ d3.chart.rollCallsScatterplot = function() {
 
 				rollCall.rollCall.votes.forEach( function(vote){
 					if(vote.deputyID == deputyID){
-						color = votoStringToColor[vote.vote];
+						color = CONGRESS_DEFINE.votoStringToColor[vote.vote];
 					}
 				})
 
@@ -199,7 +199,7 @@ d3.chart.rollCallsScatterplot = function() {
 
 		g.selectAll('.node')
 			.attr('fill', function (rollCall) { 
-				return (rollCall.rate == 'noVotes')? 'darkgrey' : votingColor(rollCall.rate);  
+				return (rollCall.rate == 'noVotes')? 'darkgrey' : CONGRESS_DEFINE.votingColor(rollCall.rate);  
 			})
 			//.attr('r', function(rollCall){ return radius + (radius)*distance(rollCall.rate,rollCall.periodRate);})
 	}

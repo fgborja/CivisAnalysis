@@ -64,7 +64,7 @@ d3.chart.deputiesGraph = function() {
 		node.transition()
 				.attr("class", "node selected")
 				.attr("r", radius)
-				.style("fill", function(d) { return getPartyColor(d.record.party); })
+				.style("fill", function(d) { return CONGRESS_DEFINE.getPartyColor(d.record.party); })
 				.attr("id", function (d) { return "deputy-"+ d.record.deputyID; })
 				//.on('click', function(d){ console.log(d.record) })
 				//.call(force.drag);
@@ -294,7 +294,7 @@ d3.chart.deputiesGraph = function() {
 	chart.highlightRollCall = function(rollCall){
 		svg.selectAll('.node').style('fill', 'darkgrey');
 		rollCall.rollCall.votes.forEach( function(vote){
-			svg.selectAll(".node#deputy-"+vote.deputyID).style("fill",votoStringToColor[vote.vote]); 
+			svg.selectAll(".node#deputy-"+vote.deputyID).style("fill",CONGRESS_DEFINE.votoStringToColor[vote.vote]); 
 		});
 	}
 
@@ -319,11 +319,11 @@ d3.chart.deputiesGraph = function() {
 	function setDeputyFill( d ){
 
 		if(d.record.rate == null){
-			return getPartyColor(d.record.party)
+			return CONGRESS_DEFINE.getPartyColor(d.record.party)
 		} else{ 
 			if (d.record.rate == "noVotes")
 				 return 'darkgrey' 
-			else return votingColor(d.record.rate)
+			else return CONGRESS_DEFINE.votingColor(d.record.rate)
 		}
 	}
 

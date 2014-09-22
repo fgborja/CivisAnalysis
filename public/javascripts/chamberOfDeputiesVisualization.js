@@ -193,13 +193,13 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 			.on("setAlliances", function(alliances) { 
 
 				// SET THE PARTIES COLORS ACORDING TO EACH ALLIANCE
-					if(alliances==null) getPartyColor = getConstantPartyColor;
+					if(alliances==null) CONGRESS_DEFINE.getPartyColor = CONGRESS_DEFINE.getConstantPartyColor;
 					else {
 						var partiesColigationColor = {};
 						$.each(alliances, function(i){
-							$.each(alliances[i].parties, function(party){ return partiesColigationColor[alliances[i].parties[party]]= getPartyColor( alliances[i].parties[0] )  })
+							$.each(alliances[i].parties, function(party){ return partiesColigationColor[alliances[i].parties[party]]= CONGRESS_DEFINE.getPartyColor( alliances[i].parties[0] )  })
 						});
-						getPartyColor = function(party){ 
+						CONGRESS_DEFINE.getPartyColor = function(party){ 
 							if(partiesColigationColor[party] !== undefined ) 
 								{return partiesColigationColor[party];}
 							else{ /*console.log(party);*/ return "#AAA" }
@@ -209,7 +209,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 					//deputiesGraph.setAlliances
 						d3.selectAll(".deputy .node").style("fill", function(d) { 
 							if(d.record !== undefined) d = d.record;
-							return getPartyColor(d.party) 
+							return CONGRESS_DEFINE.getPartyColor(d.party) 
 						});
 
 				// Set the alliance to the partiesInfographic - movment

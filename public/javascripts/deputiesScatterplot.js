@@ -119,7 +119,7 @@ d3.chart.deputiesScatterplot = function() {
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
-		.style('fill', function(d) { return getPartyColor(d.party) })
+		.style('fill', function(d) { return CONGRESS_DEFINE.getPartyColor(d.party) })
 		
 		circles.exit().transition().remove();
 
@@ -301,7 +301,7 @@ d3.chart.deputiesScatterplot = function() {
 		g.selectAll('.node').style('fill', 'darkgrey');
 		
 		rollCall.rollCall.votes.forEach( function(vote){ 
-			g.selectAll("#deputy-"+vote.deputyID).style("fill",votoStringToColor[vote.vote]); 
+			g.selectAll("#deputy-"+vote.deputyID).style("fill",CONGRESS_DEFINE.votoStringToColor[vote.vote]); 
 		});
 	}
 
@@ -318,11 +318,11 @@ d3.chart.deputiesScatterplot = function() {
 
 	function setDeputyFill( d ){
 		if(d.rate == null){
-			return getPartyColor(d.party)
+			return CONGRESS_DEFINE.getPartyColor(d.party)
 		} else{ 
 			if (d.rate == "noVotes")
 				 return 'darkgrey' 
-			else return votingColor(d.rate)
+			else return CONGRESS_DEFINE.votingColor(d.rate)
 		}
 	}
 

@@ -282,7 +282,7 @@
 
 					if(rollCall.votes !== undefined){
 						rollCall.votes.forEach( function(vote){
-							vote.vote = integerToVote[vote.vote];
+							vote.vote = CONGRESS_DEFINE.integerToVote[vote.vote];
 							vote.name = deputiesArray[vote.deputyID].name;
 							vote.district = deputiesArray[vote.deputyID].district; // assuming the distric does not change for the congressman
 							if(vote.party == 'Solidaried') vote.party = 'SDD';

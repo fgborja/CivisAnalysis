@@ -182,7 +182,7 @@ d3.chart.brazilianStates = function() {
 			// selected
 			if(element.classed('selected')){ element.transition().attr('fill', function(d){ 
 					return (d.rate != null)?
-						((d.rate == 'noVotes')? 'lightgrey' : votingColor(d.rate) )
+						((d.rate == 'noVotes')? 'lightgrey' : CONGRESS_DEFINE.votingColor(d.rate) )
 						:
 						'steelblue'; 
 				})
@@ -192,7 +192,7 @@ d3.chart.brazilianStates = function() {
 				element.transition()
 					.attr('fill', function(d){ 
 						return (d.rate != null)?  
-							((d.rate == 'noVotes')? 'lightgrey' : votingColor(d.rate) )
+							((d.rate == 'noVotes')? 'lightgrey' : CONGRESS_DEFINE.votingColor(d.rate) )
 							: 
 							((d.selected/d.total) > 0)? 'steelblue':'lightgrey'; 
 					})
@@ -337,7 +337,7 @@ d3.chart.brazilianStates = function() {
 		var heightS = 8;
 		var g = svg.append('g').attr('class','stateLabel');
 
-		votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
+		CONGRESS_DEFINE.votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
 			g.append('rect').attr({
 					width : 30,
 					height: heightS,
@@ -358,7 +358,7 @@ d3.chart.brazilianStates = function() {
 				})
 		g.append('text').text('Sim').attr({
 					x: initX+6,
-					y:  initY-1+votingColorGradient.length*heightS,
+					y:  initY-1+CONGRESS_DEFINE.votingColorGradient.length*heightS,
 					fill: 'white',
 					stroke: 'none',
 					'font-size':'9px',
@@ -374,7 +374,7 @@ d3.chart.brazilianStates = function() {
 
 		g.append('text').text('- Disagreed').attr({
 					x: initX+36,
-					y:  initY+3+(votingColorGradient.length/2)*heightS,
+					y:  initY+3+(CONGRESS_DEFINE.votingColorGradient.length/2)*heightS,
 					fill: 'black',
 					stroke: 'none',
 					'font-size':'11px',
@@ -382,7 +382,7 @@ d3.chart.brazilianStates = function() {
 
 		g.append('text').text('-   Agreed').attr({
 					x: initX+36,
-					y:  initY-1+votingColorGradient.length*heightS,
+					y:  initY-1+CONGRESS_DEFINE.votingColorGradient.length*heightS,
 					fill: 'black',
 					stroke: 'none',
 					'font-size':'11px',

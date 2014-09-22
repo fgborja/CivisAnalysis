@@ -13,8 +13,8 @@ function isArray(obj) {
 	return Object.prototype.toString.call(obj) === '[object Array]';
 }
 
+// save/download javascript object to json object into filemanme
 (function(console){
-
 console.save = function(data, filename){
 
     if(!data) {

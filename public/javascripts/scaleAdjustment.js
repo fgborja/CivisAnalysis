@@ -91,7 +91,7 @@
 
 			// get party of the president elected in the endDate
 			var governmentParty;
-			legislatures.forEach( function(d){if( (d.start < endDate) && (d.end >= endDate ) ) governmentParty = d.regimeParty; } )
+			CONGRESS_DEFINE.legislatures.forEach( function(d){if( (d.start < endDate) && (d.end >= endDate ) ) governmentParty = d.regimeParty; } )
 			//console.log(governmentParty)
 
 			//console.log(governmentParty)

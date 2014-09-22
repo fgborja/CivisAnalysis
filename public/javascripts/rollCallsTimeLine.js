@@ -129,13 +129,13 @@ d3.chart.timelineBarChart = function() {
 			}
 
 			// TODO contantes chusmes! wtf ive done here?  height,width(?!!)
-			appendGreyRangeButtons(years,height+2)
-			appendGreyRangeButtons(legislatures,height+17 );
-			appendGreyRangeButtons(presidents,height+32 );
+			appendGreyRangeButtons(CONGRESS_DEFINE.years,height+2)
+			appendGreyRangeButtons(CONGRESS_DEFINE.legislatures,height+17 );
+			appendGreyRangeButtons(CONGRESS_DEFINE.presidents,height+32 );
 
-			appendClipedRangeButtons(years,height+2)
-			appendClipedRangeButtons(legislatures, height+17 );
-			appendClipedRangeButtons(presidents, height+32 );
+			appendClipedRangeButtons(CONGRESS_DEFINE.years,height+2)
+			appendClipedRangeButtons(CONGRESS_DEFINE.legislatures, height+17 );
+			appendClipedRangeButtons(CONGRESS_DEFINE.presidents, height+32 );
 
 			appendElections(height+47);
 		}
@@ -360,7 +360,7 @@ d3.chart.timelineBarChart = function() {
 
 
 		var allianceIcons = gb.selectAll('text')
-			.data( $.map(elections,function(d){return d}) )
+			.data( $.map(CONGRESS_DEFINE.elections,function(d){return d}) )
 			.enter()
 				.append('text')
 				.attr({ 
@@ -387,7 +387,7 @@ d3.chart.timelineBarChart = function() {
 			// For each item in our JSON, add a table row and cells to the content string
 			$.each(d.alliances, function(i){
 				tableContent += '<tr>';
-				tableContent += '<td> <span class="color-preview" style="background-color: '+ getConstantPartyColor(d.alliances[i].parties[0])+';"></span> </td>';
+				tableContent += '<td> <span class="color-preview" style="background-color: '+ CONGRESS_DEFINE.getConstantPartyColor(d.alliances[i].parties[0])+';"></span> </td>';
 				tableContent += '<td>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</td>';
 				tableContent += '<td>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</td>';
 				tableContent += '<td>'+d.alliances[i].president+ '</td>';

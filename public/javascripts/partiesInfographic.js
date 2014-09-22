@@ -79,7 +79,7 @@ d3.chart.partiesInfographic = function() {
 						opacity:1,
 						stroke: 'none'
 					})
-					.style('fill',function(d){ return /*'lightgrey'*/ getPartyColor(d.key)})
+					.style('fill',function(d){ return /*'lightgrey'*/ CONGRESS_DEFINE.getPartyColor(d.key)})
 
 				// -------------------------------------
 				// wrects to express the of proportion of un/selected deputies
@@ -351,7 +351,7 @@ d3.chart.partiesInfographic = function() {
 								//'stroke-width': 2,
 								opacity:1
 						})
-						.style('fill', function(d){ return /*'lightgrey'*/ getPartyColor(d.parties[0])})
+						.style('fill', function(d){ return /*'lightgrey'*/ CONGRESS_DEFINE.getPartyColor(d.parties[0])})
 					transition = transition.transition()
 
 					// for each party make a separate movment
@@ -360,7 +360,7 @@ d3.chart.partiesInfographic = function() {
 						transition.select('.party#'+party.key)
 							.attr("transform", function(d, i) { return "translate(70,"+scaleX(d.y0)+")"; })
 							.selectAll('rect.main')
-								.style('fill', function(d){ return getPartyColor(party.key)} )
+								.style('fill', function(d){ return CONGRESS_DEFINE.getPartyColor(party.key)} )
 								.attr('stroke', function(d){ return 'black'} )
 								.attr('stroke-width', function(d){ return 0.5} )
 
@@ -399,7 +399,7 @@ d3.chart.partiesInfographic = function() {
 
 		svg.selectAll('.party rect.main')
 			.style('fill', function(party){ 	
-				return (party.rate == 'noVotes')? 'lightgrey' : votingColor(party.rate);
+				return (party.rate == 'noVotes')? 'lightgrey' : CONGRESS_DEFINE.votingColor(party.rate);
 			})
 
 
@@ -426,7 +426,7 @@ d3.chart.partiesInfographic = function() {
 
 				svg.selectAll('.alliance rect')
 					.style('fill', function(alliance){ 	
-						return (alliance.rate == 'noVotes')? 'lightgrey' : votingColor(alliance.rate);
+						return (alliance.rate == 'noVotes')? 'lightgrey' : CONGRESS_DEFINE.votingColor(alliance.rate);
 					})
 			})
 
@@ -444,13 +444,13 @@ d3.chart.partiesInfographic = function() {
 		if( ! svg.selectAll('.alliances').empty() ){
 			svg.selectAll('.alliance rect')
 				.style('fill', function(alliance){ 	
-					return getPartyColor(alliance.parties[0])
+					return CONGRESS_DEFINE.getPartyColor(alliance.parties[0])
 				})
 		} 
 
 		svg.selectAll('.party rect.main')
 			.style('fill', function(party){ 	
-				return getPartyColor(party.key)
+				return CONGRESS_DEFINE.getPartyColor(party.key)
 		})
 	}
 
@@ -461,7 +461,6 @@ d3.chart.partiesInfographic = function() {
 	}
 
 	chart.renderPartyTooltip = function(party){
-		console.log(party)
 		var selectedRate =
 			(party.value.selected == party.value.size)?
 				party.value.size+' Deputies'
