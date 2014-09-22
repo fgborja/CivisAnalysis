@@ -176,7 +176,7 @@ var CONGRESS_DEFINE = {
 			dates:[new Date(2010,9,3),new Date(2010,9,31)],
 			alliances: [
 				 { 
-				 	president:"Dilma (PT)", name:"Coligação Para o Brasil Seguir Mudando", 
+				 	president:"Dilma Rousseff (PT)", name:"Coligação Para o Brasil Seguir Mudando", 
 				 	parties:["PT", "PMDB", "PDT", "PCdoB", "PSB", "PR","PL", "PRB", "PTN", "PSC", "PTC"],
 					result:[0.4691,0.5605] 
 				 },
@@ -203,20 +203,20 @@ var CONGRESS_DEFINE = {
 			dates:[new Date(2014,10,3)],
 			alliances: [
 				 { 
-				 	president:"Dilma (PT)", name:"Coligação Com a Força do Povo", 
+				 	president:"Dilma Rousseff (PT)", name:"Coligação Com a Força do Povo", 
 				 	parties:["PT", "PP", "PROS", "PCdoB", "PMDB", "PSD","PR", "PDT", "PRB"],
 					result:[0] 
+				 }, 
+				 { 
+				 	president:"Marina Silva (PSB)", name:"Coligação Unidos pelo Brasil", 
+					parties:["PSB","PPS","PHS","PRP","PPL","PSL"],
+					result:[0]
 				 },
 				 { 
 				 	president:"Aécio Neves (PSDB)", name:"Coligação Muda Brasil", 
 					parties:["PSDB", "DEM","PFL","PTN","PTC","PTB","SDD", "PEN", "PTdoB"],
 					result:[0]
-				 },  
-				 { 
-				 	president:"Eduardo Campos (PSB)", name:"Coligação Unidos pelo Brasil", 
-					parties:["PSB","PPS","PHS","PRP","PPL","PSL"],
-					result:[0]
-				 },
+				 }, 
 				 { 
 				 	president:"Pastor Everaldo (PSC)", name:"PSC", 
 					parties:["PSC"],
