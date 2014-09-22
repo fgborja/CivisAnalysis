@@ -2,14 +2,18 @@ html, body {height: 100%;width: 100%}
 
 h2 {text-align: center;}
 
-#head{
-  margin-top: 0px;
-  margin-bottom: 15px;
+.navbar-default{
+  background-color: #F1F0F0;
+}
+
+#socialshare{
+  margin-top: 10px;
 }
 
 #main{
   /*height:400px;*/
   width:1000px;
+  margin-top: 50px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -77,7 +81,7 @@ h2 {text-align: center;}
 .axis text{ display: none }
 
 .node {
-  stroke: #fff;
+  stroke: #E0E0E0;
   stroke-width: 1px;
   opacity: 0.2;
   cursor: pointer;

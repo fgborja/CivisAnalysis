@@ -11,8 +11,28 @@ html
 		link(rel='stylesheet', href="./javascripts/lib/bootstrap/slider/slider.css")
 		link(rel='stylesheet', href="./stylesheets/brazilianStates.css")
 
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+
 	body
-		h2#head CivisAnalysis: Brazilian Chamber of Deputies
+		// FIXED NAV-BAR AT THE TOP
+		navbar.navbar-default.navbar-fixed-top
+			div.container
+				// HEADER
+				ul.nav.navbar-left
+					li
+						h4 CivisAnalysis: Unveiling representatives' policies of the Brazilian Chamber of Deputies
+				// SOCIAL SHARES!
+				ul.nav.navbar-nav.navbar-right.nav-pills#socialshare
+					li
+						// Facebook share 
+						<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.inf.ufrgs.br%2F%7Efgborja%2Fcivisanalysis%2F&amp;width=150&amp;layout=button_count&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:150px; height:21px;" allowTransparency="true"></iframe>
+					li
+						// Twitter share
+						<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.inf.ufrgs.br/~fgborja/civisanalysis/">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+					li
+						// Google Plus share
+						<div width='60px' class="g-plus" data-action="share" data-annotation="bubble" data-href="http://www.inf.ufrgs.br/~fgborja/civisanalysis/"></div>
+
 		#main
 			.col-xs-12
 				.col-xs-2
@@ -85,6 +105,28 @@ html
 						h4.modal-title Modal
 					.modal-body					
 
+	
+		// TODO TODO! http://stackoverflow.com/questions/11616697/how-to-use-og-meta-tag-for-facebook-share
+		<!-- for Google -->
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+
+		<meta name="author" content="Francisco de Borja" />
+		<meta name="copyright" content="" />
+		<meta name="application-name" content="CivisAnalysis" />
+
+		<!-- for Facebook -->          
+		<meta property="og:title" content="CivisAnalysis" />
+		<meta property="og:type" content="article" />
+		<meta property="og:image" content="" />
+		<meta property="og:url" content="http://www.inf.ufrgs.br/~fgborja/civisanalysis/" />
+		<meta property="og:description" content="" />
+
+		<!-- for Twitter -->          
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content="CivisAnalysis" />
+		<meta name="twitter:description" content="" />
+		<meta name="twitter:image" content="" />
 
 		// THIRD_PARTY_LIBS
 		// script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
