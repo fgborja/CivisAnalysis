@@ -1,20 +1,20 @@
 
 // function to check size of properties of an object
 Object.size = function(obj) {
-	var size = 0, key;
-	for (key in obj) {
-		if (obj.hasOwnProperty(key)) size++;
-	}
-	return size;
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
 };
 
 // check is the Object is an Arrayroposicoes2012
 function isArray(obj) {
-	return Object.prototype.toString.call(obj) === '[object Array]';
+    return Object.prototype.toString.call(obj) === '[object Array]';
 }
 
-// save/download javascript object to json object into filemanme
 (function(console){
+
 console.save = function(data, filename){
 
     if(!data) {
@@ -41,20 +41,7 @@ console.save = function(data, filename){
 })(console)
 
 
-//console.save( ,"dateTimeRollCall")
-
-function saveArray(array, getName){
-    var q = queue(1)
-
-    array.forEach(function(d){ 
-        q.defer(
-            function(value,key,defer){ console.save(value,key); defer(null, true); },
-            d,
-            getName(d)
-        )
-    })
-}
-
+// call the callback and wait millis to return 
 function sleep(millis, callback){
     setTimeout(
         function (){ callback() }
@@ -62,19 +49,8 @@ function sleep(millis, callback){
     );
 }
 
-// function saveArrayWithDelay( array, getName, index){
-//     console.log(index)
-
-//     saveArray( array.slice(index,index+100), getName, index)
-
-//     if(index<array.length){
-//         sleep( 20000, function(){ 
-//             saveArrayWithDelay(array, getName, index+100)
-//         });  
-//     }
-    
-// }
-
+// for an given array, save each entry using the filename - getName(entry)
+// is set to wait one second to save each item ( sleep(1000) )
 function saveEntriesOfArray( array, getName, index){
     console.log(index)
     console.save(array[index],getName(array[index]))
@@ -86,16 +62,9 @@ function saveEntriesOfArray( array, getName, index){
     
 }
 
-// function saveMotionsWithDelay(){
-//     saveArrayWithDelay(arrayMotions,function(motion){ return motion.type + motion.number + motion.year; },0)
-// }
 function saveMotionsWithDelay(){
-    saveEntriesOfArray(arrayMotions,function(motion){ return motion.type + motion.number + motion.year; },0)
+    saveEntriesOfArray(arrayMotions, function(motion){ return motion.type + motion.number + motion.year; }, 0)
 }
 function saveDeputiesToFILE(){
     JSON.stringify(arrayDeputies)
 }
-
-// function saveRollCallsWithDelay(){
-//     saveArrayWithDelay(arrayRollCalls,function(rollCall){ return rollCall.type + rollCall.number + rollCall.year + rollCall.datetime; },0)
-// }
