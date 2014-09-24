@@ -36,10 +36,6 @@ html
 		#main
 			.col-xs-12
 				.col-xs-2
-					h5.header Parties
-					#infoParties
-				.col-xs-5
-					.col-xs-4
 						h5.header.content Political Spectrum of Deputies
 						br 
 						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
@@ -54,8 +50,11 @@ html
 							a.btn( onclick='javascript:deputiesScatterplot.reset()')
 								span.glyphicon.glyphicon-remove
 								text  Reset Selection
-
-					.col-xs-8
+				
+				.col-xs-5
+					.col-xs-5
+						#infoParties
+					.col-xs-7
 						.canvas#canvasDeputies
 					//.col-xs-12
 					//	br
