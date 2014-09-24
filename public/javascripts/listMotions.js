@@ -250,7 +250,6 @@ var dict= { // found with Levenshtein Distance levDist() - misspelling deputies 
 //	
 //
 // calc the traces
-var yearExtent ={};
 var yearPartyExtent ={};
 var partyTrace = {};
 
@@ -288,17 +287,15 @@ function calcThePartyTracesByLegislature( ){
 	calcOneLegislatureRecursive(0);
 }
 
-function calcThePartyTracesByYear( ){
+function calcThePartyTracesByYear( periodOfYears ){
 	var startYear = 1991, endYear = 2014;
 
 	function calcOneYearRecursive(year) { 
 
 		if(year > endYear){  return; }
 
-		updateDataforDateRange( new Date(year,0,1), new Date(year+2,0,1), function(){
+		updateDataforDateRange( new Date(year,0,1), new Date(year+periodOfYears,0,1), function(){
 
-			yearExtent[year] = d3.extent(deputyNodes, function(d) { return d.scatterplot[1]; });
-			
 			// store parties trace
 			var parties = calcPartiesSizeAndCenter(deputyNodes);
 			$.each(parties, function(party){
@@ -315,7 +312,7 @@ function calcThePartyTracesByYear( ){
 			})
 			yearPartyExtent[year] = d3.extent( d3.entries(parties), function(d){ return d.value.center[1] });
 			
-			calcOneYearRecursive(year+2);
+			calcOneYearRecursive(year+periodOfYears);
 		})
 
 	};
@@ -323,7 +320,7 @@ function calcThePartyTracesByYear( ){
 	calcOneYearRecursive(startYear);
 
 }
-calcThePartyTracesByYear();
+calcThePartyTracesByYear(2); // calc by two years
 
 function addTraceSVG(){
 
@@ -369,14 +366,14 @@ function drawPartyFlows (party, scaleX_middleOf) {
 
 	var dataPath = [];
 
-	d3.entries( partyTrace[party]).forEach( function (d) {
+	d3.entries( party).forEach( function (d) {
 		dataPath.push( {
 			x: scaleX_middleOf (Number.parseInt(d.key)+1), 
 			y: scaleYearExtents[d.key](d.value.center[1]) + d.value.size/2
 		});
 	});
 
-	d3.entries( partyTrace[party]).reverse().forEach( function (d) {
+	d3.entries( party ).reverse().forEach( function (d) {
 		dataPath.push( {
 			x: scaleX_middleOf(Number.parseInt(d.key)+1), 
 			y: scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2
@@ -389,7 +386,7 @@ function drawPartyFlows (party, scaleX_middleOf) {
 						.attr("d", lineFunction( dataPath ) + "Z")
 						.attr("stroke", 'white' )
 						.attr("stroke-width", 2)
-						.attr("fill", getPartyColor(party))
+						.attr("fill", CONGRESS_DEFINE.getPartyColor(party))
 						.attr("opacity", 0.6);
 
 
@@ -411,7 +408,7 @@ delete partyTrace['PL'];
 delete partyTrace['PPB'];
 delete partyTrace['PPR']; // ??
 
-for (var party in partyTrace) {	drawPartyFlows(party, scaleX_middleOfYear) }
+$.each( partyTrace, function(){ drawPartyFlows(this, scaleX_middleOfYear)})
 
 
 
@@ -503,6 +500,7 @@ function printHistogram ( timestep, scale_middleOfTimestep ) {
       .style("fill", function(d) { return getPartyColor(d.key); });
 
 }
-
+// print histogram by legislatures
 d3.range(6).forEach( function(i){ printHistogram( i, scale_middleOfLegislature)})
+// print histogram by years
 d3.range(1991,2015).forEach( function(i){ printHistogram( i, scaleX_middleOfYear)})
