@@ -21,7 +21,7 @@ d3.chart.deputiesScatterplot = function() {
 
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
 	  , width = colWidth - margin.left - margin.right
-	  , height = colWidth - margin.top - margin.bottom;
+	  , height = colWidth*2 - margin.top - margin.bottom;
 
 	function chart(container) {
 		

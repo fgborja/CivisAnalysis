@@ -351,7 +351,7 @@ function addDeputyTrace(){
 		$.each(yearPartyExtent, function(year){
 			scaleYearExtents[year] = d3.scale.linear()
 										.domain(this)
-										.range([70, 460]);
+										.range([460,70]);
 										//.range([60, 440]);
 		})
 
