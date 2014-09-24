@@ -62,6 +62,8 @@ d3.chart.timelineBarChart = function() {
 			appendClipedRangeButtons(CONGRESS_DEFINE.presidents, histogramHeight+30 );
 
 			appendElections(histogramHeight+45);
+
+			setPartiesTraces(histogramHeight+43)
 		}
 	}
 
@@ -191,6 +193,67 @@ d3.chart.timelineBarChart = function() {
 					.attr("width", x(extent[1]) - x(extent[0]));
 			  }
 			}
+	}
+
+	function setPartiesTraces(y){
+
+		var yearColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
+
+		function scaleX_middleOfYear(year) { return (x(new Date(year+1,0)) -  x(new Date(year,0)))/2 + x(new Date(year,0)) }
+
+		d3.range(1991,2015).forEach(function(year){ 
+			yearColumms.append('path').attr({
+				d: 'M '+scaleX_middleOfYear(year)+' 10 V '+(height-y),
+				stroke:'grey',
+				'stroke-dasharray':"10,10"
+			})    
+		})
+
+		var scaleYearExtents = {};
+		$.each(CONGRESS_DEFINE.partiesTraces.extents, function(year){
+			scaleYearExtents[year] = d3.scale.linear()
+										.domain(this)
+										.range([(height-y-60),90]);
+										//.range([60, 440]);
+		})
+
+			function drawPartyFlows (party, trace, scaleX_middleOf) {
+
+				var lineFunction = d3.svg.line()
+					.x(function (d) { return d.x })
+					.y(function (d) { return d.y })
+					.interpolate("cardinal");
+
+				var dataPath = [];
+
+				d3.entries( trace ).forEach( function (d) {
+					dataPath.push( {
+						x: scaleX_middleOf (Number.parseInt(d.key)+1), 
+						y: scaleYearExtents[d.key](d.value.center[1]) + d.value.size/2
+					});
+				});
+
+				d3.entries( trace ).reverse().forEach( function (d) {
+					dataPath.push( {
+						x: scaleX_middleOf(Number.parseInt(d.key)+1), 
+						y: scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2
+					});
+				});
+
+
+				var lineGraph = yearColumms.append("path")
+									.attr('class', 'trace')
+									.attr('id', party)
+									.attr("d", lineFunction( dataPath ) + "Z")
+									.attr("stroke", 'white' )
+									.attr("stroke-width", 2)
+									.attr("fill", CONGRESS_DEFINE.getPartyColor(party))
+									.attr("opacity", 0.6);
+
+
+			}
+
+		$.each(CONGRESS_DEFINE.partiesTraces.traces, function(party){ drawPartyFlows(party, this, scaleX_middleOfYear) })
 	}
 
 	chart.margin = function(_) {
