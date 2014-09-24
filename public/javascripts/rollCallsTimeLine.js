@@ -8,15 +8,12 @@ d3.chart.timelineBarChart = function() {
 	var data,
 		svg,
 		g,
-		colWidth = $('#timeline').width(),
-		margin = {top: 30, right: 15, bottom: 30, left: 30},
-		width = colWidth - margin.left - margin.right,
-		height = 50,
-		svgHeight = 60,
+		width,height,
+		margin = {top: 0, right: 15, bottom: 30, left: 30},
+		histogramHeight = 40,
 		x,
-		y = d3.scale.linear().range([height, 0]),
-		id = 0, //barChart.id++,
-		gX,axis = d3.svg.axis().orient("bottom"),
+		y = d3.scale.linear().range([histogramHeight, 0]),
+		id = 0,
 		brush = d3.svg.brush(),
 		brushDirty,
 		dimension,
@@ -24,49 +21,119 @@ d3.chart.timelineBarChart = function() {
 		round;
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
-	function chart(div) {
+	function chart(div,svgwidth,svgheight) {
+		width = svgwidth - margin.left - margin.right,
+		height = svgheight - margin.top - margin.bottom;
 
 		g = div.select("g");
 
 		// Create the skeletal chart.
 		if (g.empty()) {
-			// div.select(".title").append("a")
-			// 	.attr("href", "javascript:reset(" + id + ")")
-			// 	.attr("class", "reset")
-			// 	.text("reset")
-			// 	.style("display", "none");
 
 			svg = div.append("svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", svgHeight + margin.top + margin.bottom)
+				.attr("width", svgwidth)
+				.attr("height", svgheight)
 				
 			g =	svg.append("g")
 					.attr("transform", "translate(" + margin.left + ",0)");
 
-			g.append("clipPath")
+			svg.append("clipPath")
 				.attr("id", "clip-timeline")
 				.append("rect")
 					.attr("width", width)
 					.attr("height", height);
-
-			gX = g.append("g")
-				.attr("class", "axis")
-				.attr("transform", "translate(0," + height + ")")
-				.call(axis);
-
 		}
 
 		
 	}
 
 	chart.update = function () {
+
 		if(!group){
+			updateRollCallHistogram();
+
+			// TODO contantes chusmes! wtf ive done here?  height,width(?!!)
+			appendGreyRangeButtons(CONGRESS_DEFINE.years,histogramHeight)
+			appendGreyRangeButtons(CONGRESS_DEFINE.legislatures,histogramHeight+15 );
+			appendGreyRangeButtons(CONGRESS_DEFINE.presidents,histogramHeight+30 );
+
+			appendClipedRangeButtons(CONGRESS_DEFINE.years,histogramHeight)
+			appendClipedRangeButtons(CONGRESS_DEFINE.legislatures, histogramHeight+15 );
+			appendClipedRangeButtons(CONGRESS_DEFINE.presidents, histogramHeight+30 );
+
+			appendElections(histogramHeight+45);
+		}
+	}
+
+	function barPath(groups) {
+		var path = [],
+			i = -1,
+			n = groups.length,
+			d;
+		while (++i < n) {
+			d = groups[i];
+			path.push("M", x(d.key), ",", histogramHeight, "V", y(d.value), "h9V", histogramHeight);
+		}
+		return path.join("");
+	}
+
+	function resizePath(d) {
+		var e = +(d == "e"),
+			x = e ? 1 : -1,
+			y = histogramHeight/3;
+		return "M" + (.5 * x) + "," + y
+			+ "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
+			+ "V" + (2 * y - 6)
+			+ "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
+			+ "Z"
+			+ "M" + (2.5 * x) + "," + (y + 8)
+			+ "V" + (2 * y - 8)
+			+ "M" + (4.5 * x) + "," + (y + 8)
+			+ "V" + (2 * y - 8);
+	}
+
+	// brush.on("brushstart.chart", function() {
+	//   var div = d3.select(this.parentNode.parentNode.parentNode);
+	//   div.select(".title a").style("display", null);
+	// });
+
+	brush.on("brush.chart", function() {
+	  var g = d3.select(this.parentNode),
+		  extent = brush.extent();
+	  if (round) g.select(".brush")
+		  .call(brush.extent(extent = extent.map(round)))
+		.selectAll(".resize")
+		  .style("display", null);
+	  svg.select("#clip-timeline rect")
+		  .attr("x", x(extent[0]))
+		  .attr("width", x(extent[1]) - x(extent[0]));
+	  //dimension.filterRange(extent);
+	  //console.log(extent)
+	});
+
+	brush.on("brushend.chart", function() {
+		if (brush.empty()) {
+			var div = d3.select(this.parentNode.parentNode.parentNode);
+			//div.select(".title a").style("display", "none");
+			//div.select("#clip-timeline rect").attr("x", null).attr("width", "100%");
+			//dimension.filterAll();
+		}
+		// clear selected alliance
+		dispatch.setAlliances(null);
+		svg.select('.glyphicon.selected').classed('selected',false);
+		//!!!!!!!!!!
+		dispatch.timelineFilter(brush.extent())
+		//console.log()
+	});
+
+	function updateRollCallHistogram (){
+
 			var datetimeList =[];
 			data.forEach( function(d){ datetimeList.push( d.datetime )});
 			var dateCF = crossfilter(datetimeList);
 			dimension = dateCF.dimension( function(d){ return d });
-			group = dimension.group(d3.time.day);
-			round = d3.time.day.round;
+			group = dimension.group(d3.time.week);
+			round = d3.time.week.round;
 			
 			chart.x(d3.time.scale()
 				.domain([new Date(1991, 0, 1), new Date(2015, 0, 1)])
@@ -75,7 +142,7 @@ d3.chart.timelineBarChart = function() {
 
 			y.domain([0, group.top(1)[0].value]);
 
-			// MAX VALUE LINE --------------------------------------------
+			// MAX RollCalls/week LINE --------------------------------------------
 				g.append('path')
 					.attr('pointer','none')
 					.attr('stroke-dasharray','5,5,5')
@@ -89,7 +156,7 @@ d3.chart.timelineBarChart = function() {
 					'fill':'grey',
 					'font-size': 11
 				}).text('max RollCalls/week:'+group.top(1)[0].value)
-			// MAX VALUE LINE ===========================================
+			// MAX RollCalls/week LINE ===========================================
 
 
 			g.selectAll(".bar")
@@ -100,15 +167,12 @@ d3.chart.timelineBarChart = function() {
 
 			g.selectAll(".bar").attr("d", barPath);
 
-			gX.transition()
-				.call(axis);
-
 			g.selectAll(".foreground.bar")
 					.attr("clip-path", "url(#clip-timeline)");	
 
 			// Initialize the brush component with pretty resize handles.
 			gBrush = g.append("g").attr("class", "brush").call(brush);
-			gBrush.selectAll("rect").attr("height", height);
+			gBrush.selectAll("rect").attr("height", histogramHeight);
 			gBrush.selectAll(".resize").append("path").attr("d", resizePath);
 
 			// Only redraw the brush if set externally.
@@ -117,90 +181,17 @@ d3.chart.timelineBarChart = function() {
 			  g.selectAll(".brush").call(brush);
 			  //div.select(".title a").style("display", brush.empty() ? "none" : null);
 			  if (brush.empty()) {
-				g.selectAll("#clip-timeline rect")
+				svg.select("#clip-timeline rect")
 					.attr("x", 0)
-					.attr("width", width);
+					.attr("width", 0);
 			  } else {
 				var extent = brush.extent();
-				g.selectAll("#clip-timeline rect")
+				svg.select("#clip-timeline rect")
 					.attr("x", x(extent[0]))
 					.attr("width", x(extent[1]) - x(extent[0]));
 			  }
 			}
-
-			// TODO contantes chusmes! wtf ive done here?  height,width(?!!)
-			appendGreyRangeButtons(CONGRESS_DEFINE.years,height+2)
-			appendGreyRangeButtons(CONGRESS_DEFINE.legislatures,height+17 );
-			appendGreyRangeButtons(CONGRESS_DEFINE.presidents,height+32 );
-
-			appendClipedRangeButtons(CONGRESS_DEFINE.years,height+2)
-			appendClipedRangeButtons(CONGRESS_DEFINE.legislatures, height+17 );
-			appendClipedRangeButtons(CONGRESS_DEFINE.presidents, height+32 );
-
-			appendElections(height+47);
-		}
 	}
-
-	function barPath(groups) {
-		var path = [],
-			i = -1,
-			n = groups.length,
-			d;
-		while (++i < n) {
-			d = groups[i];
-			path.push("M", x(d.key), ",", height, "V", y(d.value), "h9V", height);
-		}
-		return path.join("");
-	}
-
-	function resizePath(d) {
-		var e = +(d == "e"),
-			x = e ? 1 : -1,
-			y = height / 3;
-		return "M" + (.5 * x) + "," + y
-			+ "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
-			+ "V" + (2 * y - 6)
-			+ "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
-			+ "Z"
-			+ "M" + (2.5 * x) + "," + (y + 8)
-			+ "V" + (2 * y - 8)
-			+ "M" + (4.5 * x) + "," + (y + 8)
-			+ "V" + (2 * y - 8);
-	}
-
-	brush.on("brushstart.chart", function() {
-	  var div = d3.select(this.parentNode.parentNode.parentNode);
-	  div.select(".title a").style("display", null);
-	});
-
-	brush.on("brush.chart", function() {
-	  var g = d3.select(this.parentNode),
-		  extent = brush.extent();
-	  if (round) g.select(".brush")
-		  .call(brush.extent(extent = extent.map(round)))
-		.selectAll(".resize")
-		  .style("display", null);
-	  g.select("#clip-timeline rect")
-		  .attr("x", x(extent[0]))
-		  .attr("width", x(extent[1]) - x(extent[0]));
-	  //dimension.filterRange(extent);
-	  //console.log(extent)
-	});
-
-	brush.on("brushend.chart", function() {
-		if (brush.empty()) {
-			var div = d3.select(this.parentNode.parentNode.parentNode);
-			div.select(".title a").style("display", "none");
-			div.select("#clip-timeline rect").attr("x", null).attr("width", "100%");
-			//dimension.filterAll();
-		}
-		// clear selected alliance
-		dispatch.setAlliances(null);
-		svg.select('.glyphicon.selected').classed('selected',false);
-		//!!!!!!!!!!
-		dispatch.timelineFilter(brush.extent())
-		//console.log()
-	});
 
 	chart.margin = function(_) {
 		if (!arguments.length) return margin;
@@ -215,7 +206,6 @@ d3.chart.timelineBarChart = function() {
 	chart.x = function(_) {
 		if (!arguments.length) return x;
 		x = _;
-		axis.scale(x);
 		brush.x(x);
 		return chart;
 	};
@@ -267,7 +257,7 @@ d3.chart.timelineBarChart = function() {
 
 	function appendRangeButtons(ranges, y, fill){
 
-		var gb = svg.append('g').attr('transform','translate(30,'+y+')') 
+		var gb = svg.append('g').attr('transform','translate('+margin.left+','+y+')') 
 
 		var gRects = gb.selectAll('g')
 			.data(ranges)
@@ -290,7 +280,7 @@ d3.chart.timelineBarChart = function() {
 			.text( function(d){return d.name} )
 			.attr({
 				y:17,
-				x:  function(d){return  x(d.start)+ (x(d.end) - x(d.start))/2   },//(xAxis(legislatures[legisNum].end) - xAxis(legislatures[legisNum].start))/2,
+				x:  function(d){return  x(d.start)+ (x(d.end) - x(d.start))/2   },
 				fill:"#fff",
 				'font-size': function(d) { return Math.log((x(d.end) - x(d.start)) / this.getComputedTextLength()*9 )*5 + "px"; },
 				//'font-size': 13,
@@ -356,7 +346,7 @@ d3.chart.timelineBarChart = function() {
 	}
 
 	function appendElections( height ){
-		var gb = svg.append('g').attr('transform','translate(30,'+height+')') 
+		var gb = svg.append('g').attr('transform','translate('+margin.left+','+height+')') 
 
 
 		var allianceIcons = gb.selectAll('text')
