@@ -26,8 +26,8 @@ d3.chart.partiesInfographic = function() {
 		//console.log(deputyNodes);
 		var totalDeputies =0;
 
-		//parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.center[1] - a.value.center[1];  })
-		parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.size - a.value.size;  })
+		parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.center[1] - a.value.center[1];  })
+		//parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.size - a.value.size;  })
 
 		parties.forEach( function (party) {
 			party.value.selected = party.value.size;
