@@ -215,6 +215,8 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 							return CONGRESS_DEFINE.getPartyColor(d.party) 
 						});
 
+						d3.selectAll('.trace').style('fill', function () { return CONGRESS_DEFINE.getPartyColor(this['id']) })
+
 				// Set the alliance to the partiesInfographic - movment
 				partiesInfographic.setAlliance(alliances)
 			})
