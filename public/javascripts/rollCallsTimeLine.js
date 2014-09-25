@@ -217,6 +217,8 @@ d3.chart.timelineBarChart = function() {
 										//.range([60, 440]);
 		})
 
+		var traces = svg.append('g').attr({'class':'traces',transform:'translate('+margin.left+','+y+')'});
+
 			function drawPartyFlows (party, trace, scaleX_middleOf) {
 
 				var lineFunction = d3.svg.line()
@@ -240,8 +242,9 @@ d3.chart.timelineBarChart = function() {
 					});
 				});
 
-
-				var lineGraph = yearColumms.append("path")
+				var trace = traces.append('g').datum(party);
+				
+				var lineGraph = trace.append("path")
 									.attr('class', 'trace')
 									.attr('id', party)
 									.attr("d", lineFunction( dataPath ) + "Z")

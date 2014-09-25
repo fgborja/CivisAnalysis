@@ -215,7 +215,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 							return CONGRESS_DEFINE.getPartyColor(d.party) 
 						});
 
-						d3.selectAll('.trace').style('fill', function () { return CONGRESS_DEFINE.getPartyColor(this['id']) })
+						d3.selectAll('.trace').style('fill', function (d) { return CONGRESS_DEFINE.getPartyColor(d) })
 
 				// Set the alliance to the partiesInfographic - movment
 				partiesInfographic.setAlliance(alliances)
@@ -264,6 +264,16 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 			.on('hover', function (parties){
 				deputiesGraph.highlightParties( parties );
 				deputiesScatterplot.highlightParties( parties );
+
+				// sort the traces - the hovered parties to front
+				if(parties !== null){
+					d3.selectAll('.trace').sort(function (party, b) { // select the parent and sort the path's
+						if(parties[party]!== undefined){
+							if (parties[party]) return 1;  // --> party hovered to front          
+							else return -1;                             
+						} else return -1;
+					});
+				}
 			})
 	// ====================================================================================
 
