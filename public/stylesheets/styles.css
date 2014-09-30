@@ -13,14 +13,13 @@ h2 {text-align: center;}
 #main{
   /*height:400px;*/
   width:1000px;
-  margin-top: 50px;
+  /*margin-top: 50px;*/
   margin-left: auto;
   margin-right: auto;
 }
 
 .header{
-     margin-bottom:0px;
-     margin-top:0px;
+     margin-bottom:50px;
 }
   .header.content{
       text-align: right;
@@ -35,6 +34,7 @@ h2 {text-align: center;}
 #timeline{
   height:120px;
   width:99%;
+  margin-top: 0px;
   margin-left: auto ;
   margin-right: auto ;
 }

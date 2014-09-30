@@ -140,7 +140,7 @@ d3.chart.timeline = function() {
 			chart.x(d3.time.scale()
 				.domain([new Date(1991, 0, 1), new Date(2015, 0, 1)])
 				.rangeRound([margin.left, width -margin.right]))
-				.timelineFilter([new Date(2012, 0, 1), new Date()]);
+				//.timelineFilter([new Date(2012, 0, 1), new Date()]);
 
 			y.domain([0, group.top(1)[0].value]);
 

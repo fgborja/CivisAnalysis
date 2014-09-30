@@ -1,5 +1,5 @@
 /*global d3 tooltip*/
-var tooltip = d3.select("#main")
+var tooltip = d3.select("body")
 	.append("div")
 	.style("visibility", "hidden")
 	.style("opacity", 0)
@@ -24,7 +24,13 @@ var phonebook = {
 			getDeputyObj  : function(deputyID){ return this.deputiesArray[deputyID]; },
 			deputiesArray : []
 		};
-var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollCall, phonebook.deputiesArray);
+var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollCall, phonebook.deputiesArray, function(){
+	timeline
+		.data(datetimeRollCall)
+		.update();
+
+	$('#main').animate({height: 0},1000,function(){ $('#main').hide()})
+});
 
 // ======================================================================================================================
 // LAUNCH APP ===========================================================================================================
@@ -181,14 +187,16 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 		timeline
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
+
+				$('#main').show().animate({height: 470},1000)
 				console.log("filtered", filtered);
 
-				$('#loading').css('visibility','visible');
+				//$('#loading').css('visibility','visible');
 				$('div.selected').css('visibility','hidden');
 
 				setNewDateRange(filtered[0],filtered[1], 
 					function(){
-						d3.select('#loading').style('visibility','hidden');
+						//d3.select('#loading').style('visibility','hidden');
 					}
 				);
 			})
@@ -276,10 +284,10 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, datetimeRollC
 	// ====================================================================================
 	//  SET THE START DATE PERIOD - LAUNCH APP!!
 	// ====================================================================================
-		var start = new Date(2012, 0, 1);
-		var end   = new Date(); // == "now"
+		//var start = new Date(2012, 0, 1);
+		//var end   = new Date(); // == "now"
 
-		setNewDateRange(start,end, null);
+		//setNewDateRange(null,null, null);
 	// ====================================================================================
 	// ====================================================================================
 
@@ -298,10 +306,6 @@ function setNewDateRange(start,end,callback){
 	updateDataforDateRange(start,end, function(){
 		// set the data to all visualizations
 		// ...
-
-		timeline
-			.data(datetimeRollCall)
-			.update();
 
 		deputiesScatterplot
 			.data(deputyNodes) // set deputy data

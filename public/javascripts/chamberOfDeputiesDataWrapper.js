@@ -246,9 +246,14 @@
 
 // this case each deputy has a constant ID indexed by the deputiesArray
 (function($) {
-    $.chamberOfDeputiesDataWrapperMin = function(motions,datetimeRollCall,deputiesArray) {
+    $.chamberOfDeputiesDataWrapperMin = function(motions,datetimeRollCall,deputiesArray, callback) {
     	// module to load data
 		var chamberOfDeputiesClient	= $.chamberOfDeputiesClientHTTPMin();
+		var q = queue(1)
+			q.defer(init)
+			q.awaitAll(function(){  
+				callback()  
+			});
 
         function init(defer){
         	if(datetimeRollCall.length != 0) { defer(null, true); return; }
@@ -364,7 +369,7 @@
 			deputiesInTheDateRange ={};
 
 			var q = queue(1)
-			q.defer(init)
+			q
 			 .defer(loadMotionsInDateRange,start,end) // new queue(20) of load motions
 			 .defer(assertDateRangeObjects) // new queue(20) of load motions
 

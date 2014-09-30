@@ -42,6 +42,7 @@ d3.chart.partiesInfographic = function() {
 	}
 
 	function setDefaultParties(){
+
 			svg.selectAll('.alliances').remove()
 
 			var y=0;
@@ -199,10 +200,11 @@ d3.chart.partiesInfographic = function() {
 
 	chart.setAlliance = function(a_alliances){
 
-		//console.log(JSON.stringify(alliances))
-		if(a_alliances == null) { 
+		console.log(a_alliances)
+		if((a_alliances == null) || (parties === undefined)) { 
 			svg.selectAll('g.alliances').remove(); 
-			setDefaultParties();
+			
+			if(parties !== undefined) setDefaultParties();
 		}
 		else{
 			alliances = [];
