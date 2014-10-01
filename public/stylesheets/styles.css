@@ -121,6 +121,10 @@ h2 {text-align: center;}
   padding: 3px 6px;
 }
 
+.popover {
+  max-width: 800px !important;
+}
+
 .background.bar {
   fill: #ccc;
 }
@@ -162,16 +166,15 @@ div.selected{
 
 #propList {
   margin:0 0 10px 0;
+  font-size: 12px;
 }
   #propList table {
     border-collapse:separate;
-    border-spacing:1px;
     background:#CCC;
   }
     #propList table th {
       background:#EEE;
-      font-weight:600;
-      padding:10px 20px;
+      padding:5px 5px;
       text-align:center;
     }
     #propList table tbody {
@@ -181,25 +184,9 @@ div.selected{
     }
       #propList table td {
         background:#FFF;
-        padding:5px 10px;
+        padding:3px 3px;
         text-align:center;
       }
-
-#propInfo {
-  width:250px;
-  position:absolute;
-  top:0; left:0;
-}
-  #propInfo p {
-    padding:15px;
-    border:1px solid #CCC;
-    background:rgba(80,120,255,0.05);
-  }
-
-fieldset {
-  border:0;
-  padding:0; margin:0;
-}
 
 .glyphicon.selected { 
   fill: steelblue;

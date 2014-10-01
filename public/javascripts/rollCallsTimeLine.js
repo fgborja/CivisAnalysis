@@ -353,26 +353,27 @@ d3.chart.timelineBarChart = function() {
 			.data( $.map(CONGRESS_DEFINE.elections,function(d){return d}) )
 			.enter()
 				.append('text')
-				.attr({ 
+				.attr({    
 					class:"glyphicon",
 					x:function (d) { return x(d.dates[0]) },
 					y:20,
 					width:20,
 					height:20,
-					cursor : 'pointer' 	
+					cursor : 'pointer',
+					href:"#",
+					'data-container':'body',
+					'data-content':alliancePopover, 
+					'data-html': true,
+					rel:"popover", 
+					'data-placement': function (d,i) { if(i>5) return 'left'; else return 'top';}, 
+					'data-original-title': function(d){ return 'Brazilian Presidential Election of '+d.name}, 
+					'data-trigger':"hover",
+					'data-viewport': '#timeline'
 				}).text('')
 				//
 
-		//allianceIcons.append("title").text( function (d) { return d.name })
-
-		allianceIcons.on('mouseout', function(d){ 
-			var tr = tooltip.transition().duration(200).style("opacity", 0);
-			tr.style('visibility','hidden')
-		})
-		allianceIcons.on('mouseover', function(d){
-
+		function alliancePopover( d ){
 			var partiesColigationColor = {};
-
 			var tableContent = '';
 			// For each item in our JSON, add a table row and cells to the content string
 			$.each(d.alliances, function(i){
@@ -388,8 +389,7 @@ d3.chart.timelineBarChart = function() {
 				tableContent += '</tr>';			
 			});
 			
-			tooltip.html('<h3> Brazilian Presidential Election of '+d.name+'</h3>' +' <br>'+
-				'<div id="propList">'+
+			var html = '<div id="propList">'+
 					'<table>'+
 						'<thead>'+
 							'<tr>'+ 
@@ -407,14 +407,11 @@ d3.chart.timelineBarChart = function() {
 					'</table>'+
 				'</div>'
 				+ '<em>Click to set alliances</em>'
-			);
-
-			tooltip.transition().duration(200).style("opacity", 1);
-
-			return tooltip.style("visibility", "visible")
-							.style("top", (100)+"px")
-							.style("left",(50)+"px");
-		})	
+			;
+			return html;
+		}
+		// POPOVER!
+		$('text.glyphicon').popover({ trigger: "hover" });
 
 		// set on/off alliance
 		allianceIcons.on('click', function(d){
@@ -436,6 +433,7 @@ d3.chart.timelineBarChart = function() {
 			
 			}
 		})
+
 	}
 
 
