@@ -338,7 +338,7 @@ d3.chart.timelineBarChart = function() {
 			.selectAll(".resize")
 			  .style("display", null);
 			  
-		g.select("#clip-timeline rect")
+		svg.select("#clip-timeline rect")
 		  .attr("x", x(d.start))
 		  .attr("width", x(d.end) - x(d.start));
 
