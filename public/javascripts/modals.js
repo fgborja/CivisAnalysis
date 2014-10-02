@@ -65,7 +65,7 @@ function setRollCallModal_ListSelected(){
 function setRollCallModal_Init(){
 	d3.select('.modal-title').text('Roll Calls - search & select')
 	$('.modal-body').children().remove();
-	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th></th><th>Type</th><th>Number</th><th>Year</th></tr><thead/></table>')
+	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th></th><th>Motion ID</th><th>Roll Call Date</th><th>Tags</th></tr><thead/></table>')
 }
 function setRollCallModal_setTable(data){
 	var table = $('#table').DataTable({
@@ -77,9 +77,9 @@ function setRollCallModal_setTable(data){
                 "data":           null,
                 "defaultContent": ''
             },
-			{ data: 'tipo', },
-			{ data: 'numero' },
-			{ data: 'ano' }
+			{ data: function(d){ return d.tipo +' '+d.numero +' '+d.ano}, },
+			{ data: function(d){ return d.datetime.toString() }, },
+			{ data: function(d){ return motions[d.tipo+d.numero+d.ano].tags }, visible:false },
 		],
 		// // createdRow: function ( row, data, index ) {
   // //           if ( rollCallsScatterplot.isSelected( data.i ) ) {
@@ -107,16 +107,19 @@ function setRollCallModal_setTable(data){
 }
 
 function formatRollCallDetails ( d ) {
-	console.log(d)
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
-            '<td>Summary:</td>'+
+            '<td>Roll Call Summary:</td>'+
             '<td>'+d.rollCall.summary+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>Amendment:</td>'+
             '<td>'+motions[d.tipo+d.numero+d.ano].amendment+'</td>'+
+        '</tr>'+
+         '<tr>'+
+            '<td>Tags:</td>'+
+            '<td>'+motions[d.tipo+d.numero+d.ano].tags+'</td>'+
         '</tr>'+
     '</table>';
 }
