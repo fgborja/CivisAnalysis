@@ -197,3 +197,11 @@ td.highlight{
 }
 
 #propList .color-preview {vertical-align:middle; border: 1px solid #ccc;border-radius: 4px; margin:0px;height: 1.429em; width: 1.429em; display: inline-block; background-color:#fff}
+
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+}

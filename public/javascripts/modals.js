@@ -65,29 +65,68 @@ function setRollCallModal_ListSelected(){
 function setRollCallModal_Init(){
 	d3.select('.modal-title').text('Roll Calls - search & select')
 	$('.modal-body').children().remove();
-	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Type</th><th>Number</th><th>Year</th></tr><thead/></table>')
+	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th></th><th>Type</th><th>Number</th><th>Year</th></tr><thead/></table>')
 }
 function setRollCallModal_setTable(data){
-	$('#table').DataTable({
+	var table = $('#table').DataTable({
 		data: data,
 		columns: [
+			{
+                "class":          'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ''
+            },
 			{ data: 'tipo', },
 			{ data: 'numero' },
 			{ data: 'ano' }
 		],
-		createdRow: function ( row, data, index ) {
-            if ( rollCallsScatterplot.isSelected( data.i ) ) {
-                 $(row).addClass('selected');
-            }
+		// // createdRow: function ( row, data, index ) {
+  // //           if ( rollCallsScatterplot.isSelected( data.i ) ) {
+  // //                $(row).addClass('selected');
+  // //           }
+  // //       }
+	});
+
+	// Add event listener for opening and closing details
+    $('#table tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
         }
-	});
+        else {
+            // Open this row
+            row.child( formatRollCallDetails(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    });
 }
-function setRollCallModal_Click(){
-	$('#table tbody').on("click", "tr", function(){
-		var name = $('td', this).eq(0).text();
-		var party = $('td', this).eq(1).text();
-		var state = $('td', this).eq(2).text();
-		alert( 'You clicked on '+name+'\'s row' );
-	});
+
+function formatRollCallDetails ( d ) {
+	console.log(d)
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Summary:</td>'+
+            '<td>'+d.rollCall.summary+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Amendment:</td>'+
+            '<td>'+motions[d.tipo+d.numero+d.ano].amendment+'</td>'+
+        '</tr>'+
+    '</table>';
 }
+
+// function setRollCallModal_Click(){
+// 	$('#table tbody').on("click", "tr", function(){
+// 		var name = $('td', this).eq(0).text();
+// 		var party = $('td', this).eq(1).text();
+// 		var state = $('td', this).eq(2).text();
+// 		alert( 'You clicked on '+name+'\'s row' );
+// 	});
+// }
 //=============================================================================
