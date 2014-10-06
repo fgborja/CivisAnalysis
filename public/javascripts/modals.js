@@ -53,13 +53,13 @@ function setDeputyModal_Click(){
 function setRollCallModal_SearchAll(){
 	setRollCallModal_Init()
 	setRollCallModal_setTable(rollCallNodes)
-	setRollCallModal_Click();
+	//setRollCallModal_Click();
 }
 
 function setRollCallModal_ListSelected(){
 	setRollCallModal_Init()
 	setRollCallModal_setTable( rollCallsScatterplot.getSelected())
-	setRollCallModal_Click();
+	//setRollCallModal_Click();
 }
 
 function setRollCallModal_Init(){

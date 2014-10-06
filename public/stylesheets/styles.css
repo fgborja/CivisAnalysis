@@ -192,10 +192,6 @@ div.selected{
   fill: steelblue;
 }
 
-td.highlight{
-  background-color:steelblue;
-}
-
 #propList .color-preview {vertical-align:middle; border: 1px solid #ccc;border-radius: 4px; margin:0px;height: 1.429em; width: 1.429em; display: inline-block; background-color:#fff}
 
 td.details-control {
