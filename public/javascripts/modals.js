@@ -65,27 +65,79 @@ function setRollCallModal_ListSelected(){
 function setRollCallModal_Init(){
 	d3.select('.modal-title').text('Roll Calls - search & select')
 	$('.modal-body').children().remove();
-	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th></th><th>Motion ID</th><th>Roll Call Date</th><th>Tags</th></tr><thead/></table>')
+	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th></th><th>Motion ID</th><th>Roll Call Date</th><th id="select"></th><th>Tags</th></tr><thead/></table>')
+
+	$('.modal-body th#select').append(
+		'<div class="dropdown">' 
+			+'<span class="btn dropdown-toggle" type="button" id="selectMenu" data-toggle="dropdown">'
+			+	'Select ' 
+			+	'<span class="caret"></span>'
+			+'</span>'
+		  	+'<ul class="dropdown-menu" role="menu" aria-labelledby="selectMenu">'
+		    	+'<li role="presentation"><a id="selectAll" class="btn glyphicon glyphicon-check" role="menuitem" tabindex="-1"> All </a></li>'
+		    	+'<li role="presentation"><a id="selectNone" class="btn glyphicon glyphicon-unchecked"  role="menuitem" tabindex="-1"> None</a></li>'
+		 	+'</ul>'
+	 	+'</div>'
+	)
+	// TODO gmail un/select all button 
+	var selectAll = $('.modal-body table .btn#selectAll');
+	selectAll.css('text-align','left');
+	selectAll.click( function () {
+		console.log(this)
+		rollCallsScatterplot.reset();
+		$('.modal-body td span').removeClass('glyphicon-unchecked')
+		$('.modal-body td span').addClass('glyphicon-check')
+	});
+
+	var selectNone = $('.modal-body table .btn#selectNone')
+	selectNone.css('text-align','left');
+	selectNone.click( function () {
+		rollCallsScatterplot.unselectAll();
+		$('.modal-body td span').removeClass('glyphicon-check')
+		$('.modal-body td span').addClass('glyphicon-unchecked')
+	});
 }
+
 function setRollCallModal_setTable(data){
 	var table = $('#table').DataTable({
 		data: data,
 		columns: [
 			{
-                "class":          'details-control',
-                "orderable":      false,
-                "data":           null,
-                "defaultContent": ''
+                'class':          'details-control',
+                orderable:      false,
+                data:           null,
+                defaultContent: ''
             },
 			{ data: function(d){ return d.tipo +' '+d.numero +' '+d.ano}, },
 			{ data: function(d){ return d.datetime.toString() }, },
-			{ data: function(d){ return motions[d.tipo+d.numero+d.ano].tags }, visible:false },
-		],
-		// // createdRow: function ( row, data, index ) {
-  // //           if ( rollCallsScatterplot.isSelected( data.i ) ) {
-  // //                $(row).addClass('selected');
-  // //           }
-  // //       }
+			{
+				//'class'	  : 	'checkbox',	
+                data:           null,
+                orderable:      false,
+                defaultContent: ''
+            },	
+			{ data: function(d){ return motions[d.tipo+d.numero+d.ano].tags }, visible: false, orderable: false }
+        ],
+		createdRow: function ( row, data, index ) {
+			var btn;
+            if ( rollCallsScatterplot.isSelected( data.i ) ) {
+            	btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-check"></span>');
+            } else{ btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-unchecked"></span>'); }
+
+            btn = btn.children('span');
+            btn.click(function(d) {
+					btn.toggleClass('glyphicon-check')
+					btn.toggleClass('glyphicon-unchecked')
+
+					if (btn.hasClass('glyphicon-check')) {
+						rollCallsScatterplot.selectRollCall(data.i);
+					} else {
+						rollCallsScatterplot.unselectRollCall(data.i);
+					}
+			});
+
+            
+        }
 	});
 
 	// Add event listener for opening and closing details

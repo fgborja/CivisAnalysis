@@ -223,6 +223,21 @@ d3.chart.rollCallsScatterplot = function() {
 		chart.dispatchSelected()
 	}
 
+	chart.unselectAll = function(){
+		g.selectAll('circle').classed('selected',false);
+		chart.dispatchSelected()
+	}
+
+	chart.selectRollCall = function(rollCallID){
+		g.select('.node#rollCall-'+rollCallID).classed('selected',true)
+		chart.dispatchSelected()
+	}
+
+	chart.unselectRollCall = function(rollCallID){
+		g.select('.node#rollCall-'+rollCallID).classed('selected',false)
+		chart.dispatchSelected()
+	}
+
 
 	return d3.rebind(chart, dispatch, "on");
 }

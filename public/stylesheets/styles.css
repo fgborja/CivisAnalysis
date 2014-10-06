@@ -83,7 +83,7 @@ h2 {text-align: center;}
 .node {
   stroke: #E0E0E0;
   stroke-width: 1px;
-  opacity: 0.2;
+  opacity: 0.1;
   cursor: pointer;
 }
 
