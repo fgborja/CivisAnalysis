@@ -353,6 +353,11 @@ d3.chart.deputiesScatterplot = function() {
 		chart.dispatchSelected();
 	}
 
+	chart.unselectAll = function(){
+		g.selectAll('.node').classed("selected", false);
+		chart.dispatchSelected();
+	}
+
 	chart.selectDeputies = function (operation, deputyIDs) {
 		if (deputyIDs == null) g.selectAll('.node').classed("selected", true);
 		else {
@@ -372,7 +377,15 @@ d3.chart.deputiesScatterplot = function() {
 	}
 
 	chart.isSelected = function( deputyID ){
-		return g.select('.node#deputy-'+deputyID).classed('selected')
+		return g.select('.node#deputy-'+deputyID).classed('selected');
+	}
+	chart.selectDeputy = function( deputyID ){
+		g.select('.node#deputy-'+deputyID).classed('selected',true);
+		dispatch.selected( chart.getSelected());
+	}
+	chart.unselectDeputy = function( deputyID ){
+		g.select('.node#deputy-'+deputyID).classed('selected',false);
+		dispatch.selected( chart.getSelected());
 	}
 
 	return d3.rebind(chart, dispatch, "on");

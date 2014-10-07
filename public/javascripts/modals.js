@@ -3,48 +3,92 @@
 function setDeputyModal_SearchAll(){
 	setDeputyModal_Init();
 	setDeputyModal_setTable(deputyNodes);
-	setDeputyModal_Click();
 }
 
 function setDeputyModal_ListSelected(){
 	setDeputyModal_Init();
 	setDeputyModal_setTable(deputiesScatterplot.getSelected());
-	setDeputyModal_Click();
 }
 
 function setDeputyModal_Init(){
 	d3.select('.modal-title').text('Deputies - search & select')
 	$('.modal-body').children().remove();
-	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Name</th><th>Party</th><th>State</th></tr><thead/></table>')
+	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Name</th><th>Party</th><th>State</th><th id="select"></th></tr><thead/></table>')
+
+	$('.modal-body th#select').append(
+		'<div class="dropdown">' 
+			+'<span class="btn dropdown-toggle" type="button" id="selectMenu" data-toggle="dropdown">'
+			+	'Select ' 
+			+	'<span class="caret"></span>'
+			+'</span>'
+		  	+'<ul class="dropdown-menu" role="menu" aria-labelledby="selectMenu">'
+		    	+'<li role="presentation"><a id="selectAll" class="btn glyphicon glyphicon-check" role="menuitem" tabindex="-1"> All </a></li>'
+		    	+'<li role="presentation"><a id="selectNone" class="btn glyphicon glyphicon-unchecked"  role="menuitem" tabindex="-1"> None</a></li>'
+		 	+'</ul>'
+	 	+'</div>'
+	);
 }
 
+
 function setDeputyModal_setTable(data){
-	$('#table').DataTable( {
+	var oTable  = $('#table').DataTable( {
 		data 	: data,
 		columns : [
 			{ data: 'name' },
 			{ data: 'party'},
-			{ data: 'district'}
+			{ data: 'district'},
+			{
+				//'class'	  : 	'checkbox',	
+                data:           null,
+                orderable:      false,
+                defaultContent: ''
+            }
 		],
 		createdRow: function ( row, data, index ) {
+            var btn;
             if ( deputiesScatterplot.isSelected( data.deputyID ) ) {
-                 $(row).addClass('selected');
-            }
+            	btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-check"></span>');
+            } else{ btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-unchecked"></span>'); }
+
+            btn = btn.children('span');
+            btn.click(function(d) {
+					btn.toggleClass('glyphicon-check')
+					btn.toggleClass('glyphicon-unchecked')
+
+					if (btn.hasClass('glyphicon-check')) {
+						deputiesScatterplot.selectDeputy(data.deputyID);
+					} else {
+						deputiesScatterplot.unselectDeputy(data.deputyID);
+					}
+			});
         }
 	});
-}
 
-function setDeputyModal_Click(){
-	$('#table tbody').on("click", "tr", function(){
-		$(this).toggleClass('selected');
-		
-		var name = $('td', this).eq(0).text();
-		var party = $('td', this).eq(1).text();
-		var state = $('td', this).eq(2).text();
-		alert( 'You clicked on '+name+'\'s row' );
+	var rows = oTable.rows();
+
+	// TODO gmail un/select all button 
+	// SELECT ALL BUTTON
+	var selectAll = $('.modal-body table .btn#selectAll');
+	selectAll.css('text-align','left');
+	selectAll.click( function () {
+		deputiesScatterplot.reset();
+		rows.$('span').removeClass('glyphicon-unchecked')
+		rows.$('span').addClass('glyphicon-check')
 	});
+	// SELECT NONE BUTTON
+	var selectNone = $('.modal-body table .btn#selectNone')
+	selectNone.css('text-align','left');
+	selectNone.click( function () {
+		deputiesScatterplot.unselectAll();
+		rows.$('span').removeClass('glyphicon-check')
+		rows.$('span').addClass('glyphicon-unchecked')
+	});
+
 }
 //=============================================================================
+//=============================================================================
+
+
 
 
 //=============================================================================
@@ -79,27 +123,10 @@ function setRollCallModal_Init(){
 		 	+'</ul>'
 	 	+'</div>'
 	)
-	// TODO gmail un/select all button 
-	var selectAll = $('.modal-body table .btn#selectAll');
-	selectAll.css('text-align','left');
-	selectAll.click( function () {
-		console.log(this)
-		rollCallsScatterplot.reset();
-		$('.modal-body td span').removeClass('glyphicon-unchecked')
-		$('.modal-body td span').addClass('glyphicon-check')
-	});
-
-	var selectNone = $('.modal-body table .btn#selectNone')
-	selectNone.css('text-align','left');
-	selectNone.click( function () {
-		rollCallsScatterplot.unselectAll();
-		$('.modal-body td span').removeClass('glyphicon-check')
-		$('.modal-body td span').addClass('glyphicon-unchecked')
-	});
 }
 
 function setRollCallModal_setTable(data){
-	var table = $('#table').DataTable({
+	var oTable = $('#table').DataTable({
 		data: data,
 		columns: [
 			{
@@ -135,15 +162,33 @@ function setRollCallModal_setTable(data){
 						rollCallsScatterplot.unselectRollCall(data.i);
 					}
 			});
-
-            
         }
+	});
+
+	var rows = oTable.rows();
+
+	// TODO gmail un/select all button 
+	// SELECT ALL BUTTON
+	var selectAll = $('.modal-body table .btn#selectAll');
+	selectAll.css('text-align','left');
+	selectAll.click( function () {
+		rollCallsScatterplot.reset();
+		rows.$('span').removeClass('glyphicon-unchecked')
+		rows.$('span').addClass('glyphicon-check')
+	});
+	// SELECT NONE BUTTON
+	var selectNone = $('.modal-body table .btn#selectNone')
+	selectNone.css('text-align','left');
+	selectNone.click( function () {
+		rollCallsScatterplot.unselectAll();
+		rows.$('span').removeClass('glyphicon-check')
+		rows.$('span').addClass('glyphicon-unchecked')
 	});
 
 	// Add event listener for opening and closing details
     $('#table tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
-        var row = table.row( tr );
+        var row = oTable.row( tr );
  
         if ( row.child.isShown() ) {
             // This row is already open - close it
