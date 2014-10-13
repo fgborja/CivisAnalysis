@@ -135,7 +135,7 @@ function setRollCallModal_setTable(data){
                 data:           null,
                 defaultContent: ''
             },
-			{ data: function(d){ return d.tipo +' '+d.numero +' '+d.ano}, },
+			{ data: function(d){ return d.type +' '+d.number +' '+d.year}, },
 			{ data: function(d){ return d.datetime.toString() }, },
 			{
 				//'class'	  : 	'checkbox',	
@@ -143,11 +143,11 @@ function setRollCallModal_setTable(data){
                 orderable:      false,
                 defaultContent: ''
             },	
-			{ data: function(d){ return motions[d.tipo+d.numero+d.ano].tags }, visible: false, orderable: false }
+			{ data: function(d){ return motions[d.type+d.number+d.year].tags }, visible: false, orderable: false }
         ],
 		createdRow: function ( row, data, index ) {
 			var btn;
-            if ( rollCallsScatterplot.isSelected( data.i ) ) {
+            if ( rollCallsScatterplot.isSelected( data.rollCallID ) ) {
             	btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-check"></span>');
             } else{ btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-unchecked"></span>'); }
 
@@ -157,9 +157,9 @@ function setRollCallModal_setTable(data){
 					btn.toggleClass('glyphicon-unchecked')
 
 					if (btn.hasClass('glyphicon-check')) {
-						rollCallsScatterplot.selectRollCall(data.i);
+						rollCallsScatterplot.selectRollCall(data.rollCallID);
 					} else {
-						rollCallsScatterplot.unselectRollCall(data.i);
+						rollCallsScatterplot.unselectRollCall(data.rollCallID);
 					}
 			});
         }
@@ -208,15 +208,15 @@ function formatRollCallDetails ( d ) {
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
             '<td>Roll Call Summary:</td>'+
-            '<td>'+d.rollCall.summary+'</td>'+
+            '<td>'+d.summary+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>Amendment:</td>'+
-            '<td>'+motions[d.tipo+d.numero+d.ano].amendment+'</td>'+
+            '<td>'+motions[d.type+d.number+d.year].amendment+'</td>'+
         '</tr>'+
          '<tr>'+
             '<td>Tags:</td>'+
-            '<td>'+motions[d.tipo+d.numero+d.ano].tags+'</td>'+
+            '<td>'+motions[d.type+d.number+d.year].tags+'</td>'+
         '</tr>'+
     '</table>';
 }

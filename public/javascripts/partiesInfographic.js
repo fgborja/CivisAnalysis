@@ -200,7 +200,6 @@ d3.chart.partiesInfographic = function() {
 
 	chart.setAlliance = function(a_alliances){
 
-		console.log(a_alliances)
 		if((a_alliances == null) || (parties === undefined)) { 
 			svg.selectAll('g.alliances').remove(); 
 			
@@ -385,7 +384,7 @@ d3.chart.partiesInfographic = function() {
 		})
 
 		rollCalls.forEach(function(rollCall){
-			rollCall.rollCall.votes.forEach( function (vote){
+			rollCall.votes.forEach( function (vote){
 				if(partiesMap[vote.party] != undefined)
 					partiesMap[vote.party].votes[vote.vote]++
 			})

@@ -87,11 +87,10 @@
 		// adjust the scale of the spectrum by the government axis
 		function setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes, endDate){
 			//console.log(deputyNodes)
-			//console.log(rollCallNodes)
 
 			// get party of the president elected in the endDate
 			var governmentParty;
-			CONGRESS_DEFINE.legislatures.forEach( function(d){if( (d.start < endDate) && (d.end >= endDate ) ) governmentParty = d.regimeParty; } )
+			CONGRESS_DEFINE.legislatures.forEach( function(d){if( (d.period[0] < endDate) && (d.period[1] >= endDate ) ) governmentParty = d.regimeParty; } )
 			//console.log(governmentParty)
 
 			//console.log(governmentParty)

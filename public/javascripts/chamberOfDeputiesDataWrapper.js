@@ -10,13 +10,13 @@
 
 
 (function($) {
-    $.chamberOfDeputiesDataWrapper = function(motions,datetimeRollCall,phonebook) {
-    	// module to load data from DB 
+	$.chamberOfDeputiesDataWrapper = function(motions,datetimeRollCall,phonebook) {
+		// module to load data from DB 
 		var chamberOfDeputiesClient	= $.chamberOfDeputiesClientDB();
 		//var chamberOfDeputiesClient	= $.chamberOfDeputiesClientHTTP();
 		var rollCallInTheDateRange =[];
 		var deputiesInTheDateRange ={};
-        
+		
 		function assertDeputiesInTheDateRange(defer){
 
 			rollCallInTheDateRange.sort(function(a,b){
@@ -38,11 +38,11 @@
 		} 
 
 
-        var chamberOfDeputiesDataWrapper = {
+		var chamberOfDeputiesDataWrapper = {
 
-        	// init getting all the occurances of Roll Calls 
-        	getOcurrencesOfRollCalls	: function (defer){
-        		if(datetimeRollCall.length > 0) {defer(null, true);return;}
+			// init getting all the occurances of Roll Calls 
+			getOcurrencesOfRollCalls	: function (defer){
+				if(datetimeRollCall.length > 0) {defer(null, true);return;}
 
 				chamberOfDeputiesClient.getOcurrencesOfRollCalls(
 					function(ocurrencesOfRollCalls){
@@ -230,24 +230,27 @@
 				} );
 			}
 
-        };
-        return {
-        	getOcurrencesOfRollCalls	: 	chamberOfDeputiesDataWrapper.getOcurrencesOfRollCalls,
-        	loadMotionsInDateRange 		:   chamberOfDeputiesDataWrapper.loadMotionsInDateRange,
-        	loadMotion					: 	chamberOfDeputiesDataWrapper.loadMotion,
-        	loadDeputies				:   chamberOfDeputiesDataWrapper.loadDeputies,
+		};
+		return {
+			getOcurrencesOfRollCalls	: 	chamberOfDeputiesDataWrapper.getOcurrencesOfRollCalls,
+			loadMotionsInDateRange 		:   chamberOfDeputiesDataWrapper.loadMotionsInDateRange,
+			loadMotion					: 	chamberOfDeputiesDataWrapper.loadMotion,
+			loadDeputies				:   chamberOfDeputiesDataWrapper.loadDeputies,
 
-        	setDateRange				: 	chamberOfDeputiesDataWrapper.setDateRange,
-        };
-    };
+			setDateRange				: 	chamberOfDeputiesDataWrapper.setDateRange,
+		};
+	};
 })(jQuery);
 
 
 
 // this case each deputy has a constant ID indexed by the deputiesArray
 (function($) {
-    $.chamberOfDeputiesDataWrapperMin = function(motions,datetimeRollCall,deputiesArray, callback) {
-    	// module to load data
+	$.chamberOfDeputiesDataWrapperMin = function(motions,arrayRollCalls,deputiesArray, callback) {
+		var rollCallInTheDateRange =[];
+		var deputiesInTheDateRange ={};
+
+		// module to load data
 		var chamberOfDeputiesClient	= $.chamberOfDeputiesClientHTTPMin();
 		var q = queue(1)
 			q.defer(init)
@@ -255,36 +258,38 @@
 				callback()  
 			});
 
-        function init(defer){
-        	if(datetimeRollCall.length != 0) { defer(null, true); return; }
-        	
-    		// get the occurance of rollCalls
-    		chamberOfDeputiesClient.getDatetimeRollCall( function(a_datetimeRollCall){
-    			a_datetimeRollCall.forEach( 
-    				function(dtRollCall){ 
-    					var parse = dtRollCall.datetime.match(/\d+/g)
-						dtRollCall.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
-    					
-    					datetimeRollCall.push(dtRollCall) 
-    				}
-    			);
+		function init(defer){
+			if(arrayRollCalls.length != 0) { defer(null, true); return; }
+			
+			// get the occurance of rollCalls
+			chamberOfDeputiesClient.getArrayRollCalls( function(a_arrayRollCalls){
+				
+				a_arrayRollCalls.forEach( 
+					function(rollCall,i){
+						rollCall.datetime = new Date(rollCall.datetime);
+						rollCall.rollCallID = i;
+						arrayRollCalls.push(rollCall) 
+					}
+				);
 
 
-    			// get the array of deputies
-    			chamberOfDeputiesClient.getDeputiesArray( function(a_deputiesArray){
-    				a_deputiesArray.forEach( function(entry){ deputiesArray.push( entry) })
-    				//console.log(datetimeRollCall,deputiesArray)
-    				defer(null, true)
-    			})
-    		})
-        }
+				// get the array of deputies
+				chamberOfDeputiesClient.getDeputiesArray( function(a_deputiesArray){
+					
+					a_deputiesArray.forEach( function(deputy,i){
+						deputy.deputyID = i;
+						deputiesArray.push(deputy) 
+					})
+					defer(null, true)
+				})
+			})
+		}
 
-        function loadMotion(type,number,year,defer){
-        	chamberOfDeputiesClient.getMotion(type,number,year, function(motion){
-        		motions[type+number+year] = motion;
+		function loadMotion(type,number,year,defer){
+			chamberOfDeputiesClient.getMotion(type,number,year, function(motion){
+				motions[type+number+year] = motion;
 
-        		motion.rollCalls.forEach( function(rollCall){ 
-
+				motion.rollCalls.forEach( function(rollCall){ 
 					if(rollCall.votes !== undefined){
 						rollCall.votes.forEach( function(vote){
 							vote.vote = CONGRESS_DEFINE.integerToVote[vote.vote];
@@ -295,32 +300,39 @@
 					}
 
 					// create the Date obj
-					var parse = rollCall.datetime.match(/\d+/g);
-					rollCall.datetime = new Date(parse[0],parse[1]-1,parse[2],parse[3]-3,parse[4]);
+					rollCall.datetime = new Date(rollCall.datetime)
 
-					// find the datetimeRollCall
-					var dtRollCall = datetimeRollCall.filter(function(d){ return (d.datetime >= rollCall.datetime) && (d.datetime <= rollCall.datetime)} )
-					
-					// set rollCall to the datetimeRollCall entry
-					dtRollCall[0].rollCall = rollCall;
+					// find the arrayRollCalls
+					var dtRollCall = arrayRollCalls.filter(function(d){ return (d.datetime.toUTCString() == rollCall.datetime.toUTCString() ) } )
+					// console.log(dtRollCall)
+					if(dtRollCall.length == 0) {
+						console.log(type+number+year,'rollCall',rollCall)
+					}
+					// set rollCall to the arrayRollCalls entry
+					else {
+						for( var atribute in rollCall) dtRollCall[0][atribute] = rollCall[atribute];
+						rollCall.rollCallID = dtRollCall[0].rollCallID; 
+						rollCall = dtRollCall[0];
+					}
 				})
 
 				defer(null, true)
-        	})
-        }
+			})
+		}
 
-        function loadMotionsInDateRange(start,end,defer){
-        	// get the motions with roll calls in the date range
-			rollCallsInTheDateRange = datetimeRollCall.filter( function(rollCall){  
+		function loadMotionsInDateRange(start,end,defer){
+			
+			// get the list of rollCalls of the period [start,end]
+			rollCallInTheDateRange = arrayRollCalls.filter( function(rollCall){  
 				return (start <= rollCall.datetime) && (rollCall.datetime <= end)
 			})
-			//console.log("rollCallsInTheDateRange",rollCallsInTheDateRange)
+			//console.log("rollCallInTheDateRange",rollCallInTheDateRange)
 
 			// check if the motion is already loaded AND reduce repeated motions(with the map{})
 			var motionsToLoad = {};
-			rollCallsInTheDateRange.forEach( function(d){ 
-				if(motions[d.tipo+d.numero+d.ano] == undefined){
-					motionsToLoad[d.tipo+d.numero+d.ano] = d;
+			rollCallInTheDateRange.forEach( function(d){ 
+				if(motions[d.type+d.number+d.year] == undefined){
+					motionsToLoad[d.type+d.number+d.year] = d;
 				}		
 			})
 
@@ -328,70 +340,70 @@
 			var loadMotionsQueue = queue(20); 
 
 			$.each(motionsToLoad, function(motion) {
-				motions[motion]={}
+				motions[motion]={};
 				loadMotionsQueue.defer(
 					loadMotion,
-					motionsToLoad[motion].tipo,
-					motionsToLoad[motion].numero,
-					motionsToLoad[motion].ano
+					motionsToLoad[motion].type,
+					motionsToLoad[motion].number,
+					motionsToLoad[motion].year
 				)
 				
 			})
 
 			loadMotionsQueue.awaitAll(function(){ defer(null, true);} ) // return to setDateRange()
-        }
+		}
 
-        function assertDateRangeObjects(defer){
 
-			rollCallsInTheDateRange.sort(function(a,b){
-			  return new Date(a.datetime) - new Date(b.datetime);
-			});
+		function refreshDeputies(defer){
 
-			rollCallsInTheDateRange.forEach( function( rollCall ){
-				if(rollCall.rollCall === undefined) console.log(rollCall);
-
-				rollCall.rollCall.votes.forEach( function(vote){
-
-					//var phonebookID = phonebook.getDeputyID( nameUP );
+			rollCallInTheDateRange.forEach( function( rollCall ){
+				if(rollCall.votes === undefined){ console.log('withoutVotes',rollCall) }
+				else 
+				rollCall.votes.forEach( function(vote){
 					deputiesInTheDateRange[vote.deputyID] = deputiesArray[vote.deputyID];
 					deputiesInTheDateRange[vote.deputyID].party 		= vote.party; // refresh party
-					deputiesInTheDateRange[vote.deputyID].deputyID 		= vote.deputyID; // refresh party
 				})
 			})
 
 			defer(null, true);
 		} 
 
-    	// LOAD from DB all data we need to reproduce the date range
+		// LOAD from DB all data we need to reproduce the date range
 		function setDateRange(start,end, callback){
 
-			rollCallsInTheDateRange =[];
+			rollCallInTheDateRange =[];
 			deputiesInTheDateRange ={};
 
 			var q = queue(1)
 			q
 			 .defer(loadMotionsInDateRange,start,end) // new queue(20) of load motions
-			 .defer(assertDateRangeObjects) // new queue(20) of load motions
+			 .defer(refreshDeputies) // new queue(20) of load motions
 
 			// wait for all loading and call the app function
 			q.awaitAll(function(){  
 			
 				// console.log(rollCallInTheDateRange);
-				 // console.log(deputiesInTheDateRange);
-				 //console.log("motions",motions);
-				 //console.log('datetimeRollCall',datetimeRollCall)
+				//console.log("motions",motions);
+				//console.log('arrayRollCalls',arrayRollCalls)
 
 				// console.log(Object.size(deputies));
 				//console.log(Object.size(motions) );
-				// console.log(datetimeRollCall.length)
+				// console.log(arrayRollCalls.length)
 
-				callback(rollCallsInTheDateRange,deputiesInTheDateRange)  
+				callback(rollCallInTheDateRange,deputiesInTheDateRange)  
 
 			});
 		}
 
-        return {
-        	setDateRange : setDateRange,
-        };
-    };
+		function getPreCalc(type, id, callback){
+			chamberOfDeputiesClient.getPreCalc(type, id, function(precalc){
+				callback(precalc)  
+			});
+		}
+
+		return {
+			setDateRange : setDateRange,
+			getPreCalc	 : getPreCalc,
+		};
+	};
 })(jQuery);

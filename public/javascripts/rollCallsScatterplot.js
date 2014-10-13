@@ -84,7 +84,7 @@ d3.chart.rollCallsScatterplot = function() {
 		// ---------------------------------------------------------------------------------------------------------
 
 		var circles = g.selectAll("circle")
-			.data(data);
+			.data(data, function(rollCall){ return rollCall.rollCallID; });
 
 		circles.enter().append("circle");
 
@@ -96,7 +96,7 @@ d3.chart.rollCallsScatterplot = function() {
 			r: 4,
 			class: "node selected",
 			fill: function (d) { return CONGRESS_DEFINE.votingColor(d.rate) },
-			id: function (d) { return 'rollCall-'+d.i }
+			id: function (d) { return 'rollCall-'+d.rollCallID }
 		})
 		circles.exit().transition().remove();
 
@@ -112,7 +112,7 @@ d3.chart.rollCallsScatterplot = function() {
 	
 			dispatch.hover(d);
 
-			tooltip.html(d.tipo+' '+d.numero+'/'+d.ano+"<br/>Tags: "+motions[d.tipo+d.numero+d.ano].tags +'<br/></em>'+ d.rollCall.summary+"</em>"+ "<br/><em>Click to select</em>");
+			tooltip.html(d.type+' '+d.number+'/'+d.year+"<br/>Tags: "+motions[d.type+d.number+d.year].tags +'<br/></em>'+ d.summary+"</em>"+ "<br/><em>Click to select</em>");
 			return tooltip
 					.style("visibility", "visible")
 					.style("opacity", 1);
@@ -183,7 +183,7 @@ d3.chart.rollCallsScatterplot = function() {
 			g.selectAll('.node').attr('fill', function (rollCall){
 				var color = 'grey';
 
-				rollCall.rollCall.votes.forEach( function(vote){
+				rollCall.votes.forEach( function(vote){
 					if(vote.deputyID == deputyID){
 						color = CONGRESS_DEFINE.votoStringToColor[vote.vote];
 					}

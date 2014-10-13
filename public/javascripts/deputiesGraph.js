@@ -196,14 +196,14 @@ d3.chart.deputiesGraph = function() {
 		//data == tableDepXRollCall
 
 		// firstly create the table deputy X deputy
-		var crossVotes = numeric.rep([filteredDeputies.length,filteredDeputies.length],0)
+		var crossVotes = numeric.rep([deputyNodes.length,deputyNodes.length],0)
 
 
 		//count the times that a couple of deputy had the same vote
 		for (var rollCallJ = 0; rollCallJ < tableDepXRollCall[0].length; rollCallJ++) {
 
-			for (var deputyFirst = 0; deputyFirst < filteredDeputies.length; deputyFirst++) {
-				for (var deputySecond = deputyFirst+1; deputySecond < filteredDeputies.length; deputySecond++) {
+			for (var deputyFirst = 0; deputyFirst < deputyNodes.length; deputyFirst++) {
+				for (var deputySecond = deputyFirst+1; deputySecond < deputyNodes.length; deputySecond++) {
 					
 					if( tableDepXRollCall[deputyFirst][rollCallJ] == tableDepXRollCall[deputySecond][rollCallJ] /*&& (tableDepXRollCall[deputySecond][rollCallJ] != 0)*/)
 					{
@@ -216,7 +216,7 @@ d3.chart.deputiesGraph = function() {
 		};
 
 		// encapsulate each employeeRecord in a new object with 'record' attribute 
-		nodes = $.map(filteredDeputies, function(d){ return {record:d} })
+		nodes = $.map(deputyNodes, function(d){ return {record:d} })
 		every_link = []; //{ source: obj1, target: obj2, strenght: number of emails}
 
 		for (var i = 0; i < crossVotes.length; i++) {
@@ -293,7 +293,7 @@ d3.chart.deputiesGraph = function() {
 
 	chart.highlightRollCall = function(rollCall){
 		svg.selectAll('.node').style('fill', 'darkgrey');
-		rollCall.rollCall.votes.forEach( function(vote){
+		rollCall.votes.forEach( function(vote){
 			svg.selectAll(".node#deputy-"+vote.deputyID).style("fill",CONGRESS_DEFINE.votoStringToColor[vote.vote]); 
 		});
 	}

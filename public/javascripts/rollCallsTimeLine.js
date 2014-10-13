@@ -303,7 +303,6 @@ d3.chart.timeline = function() {
 					.x(function (d) { return d.x })
 					.y(function (d) { return d.y })
 					.interpolate("linear");
-						console.log(party)
 				var dataPath = [];
 
 				dataPath.push( {x: scaleX_middleOfYear(1990), y: scaleLabels( party.y0 ) });
@@ -315,7 +314,6 @@ d3.chart.timeline = function() {
 				dataPath.push( {x: scaleX_middleOfYear(1991), y: scaleLabels( party.y1 )-8 });
 				dataPath.push( {x: scaleX_middleOfYear(1990), y: scaleLabels( party.y1 )-8 });
 
-				console.log(dataPath)
 				return lineFunction( dataPath ) + "Z";
 			}
 		// traces.selectAll('path')
@@ -418,8 +416,8 @@ d3.chart.timeline = function() {
 			.attr({ 
 				height:15,
 				y:3,
-				x:function (d) { return x(d.start)},
-				width:function (d) { return x(d.end) - x(d.start)}, 
+				x:function (d) { return x(d.period[0])},
+				width:function (d) { return x(d.period[1]) - x(d.period[0])}, 
 				fill: fill,
 				stroke: 'white',
 				'stroke-width': 1,
@@ -430,9 +428,9 @@ d3.chart.timeline = function() {
 			.text( function(d){return d.name} )
 			.attr({
 				y:17,
-				x:  function(d){return  x(d.start)+ (x(d.end) - x(d.start))/2   },
+				x:  function(d){return  x(d.period[0])+ (x(d.period[1]) - x(d.period[0]))/2   },
 				fill:"#fff",
-				'font-size': function(d) { return Math.log((x(d.end) - x(d.start)) / this.getComputedTextLength()*9 )*5 + "px"; },
+				'font-size': function(d) { return Math.log((x(d.period[1]) - x(d.period[0])) / this.getComputedTextLength()*9 )*5 + "px"; },
 				//'font-size': 13,
 				cursor : 'pointer' 
 			}).attr("text-anchor", "middle")
@@ -484,15 +482,15 @@ d3.chart.timeline = function() {
 		
 		
 		svg.select(".brush")
-			.call(brush.extent([d.start, d.end]))
+			.call(brush.extent(d.period))
 			.selectAll(".resize")
 			  .style("display", null);
 			  
 		svg.select("#clip-timeline rect")
-		  .attr("x", x(d.start))
-		  .attr("width", x(d.end) - x(d.start));
+		  .attr("x", x(d.period[0]) )
+		  .attr("width", x(d.period[1])- x(d.period[0]) );
 
-		dispatch.timelineFilter([d.start, d.end])		
+		dispatch.timelineFilter(d.period)		
 	}
 
 	function appendElections( height ){

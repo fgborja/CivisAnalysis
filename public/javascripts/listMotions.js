@@ -1,6 +1,6 @@
 ////  ===================================================================================
 ////  ===================================================================================
-
+////  functions to load data from camara.leg.br and save into the MongoDB
 
 var chamberOfDeputiesManager= $.chamberOfDeputiesManager();
 var chamberOfDeputies	= $.chamberOfDeputiesClient();
@@ -92,10 +92,38 @@ function updateAllDeputiesInTheIdeCadastroMAP(){
 
 /// =======================================================================================
 /// =======================================================================================
-// store the BD entries to JSON -> use the globalUtils.js to save the json
-// 	saveEntriesOfArray( array, getName, 0)
+// store the BD entries to JSON
+//
+// -execute:
+//  LOAD_ALL_DATA()
+//	saveDeputiesToFILE() 	//download the arrayDeputies
+//	saveMotionsWithDelay()	// download the arrayMotions (1second for each motion) 
+//  saveRollCallsArray()
+//  --> you should minify all! (npm install json-minify)
+function saveMotionsWithDelay(){
+	saveEntriesOfArray(arrayMotions, function(motion){ return motion.type + motion.number + motion.year; }, 0)
+}
+function saveDeputiesToFILE(){
+	console.save(arrayDeputies,'arrayDeputies');
+}
+function saveRollCallsArray(){
+	arrayRollCalls.forEach( function (d) {
+		d.datetime = new Date( d.datetime )
+	});
 
-	var arrayMotions = [];
+	arrayRollCalls.sort(function(a,b){
+		// Turn your strings into dates, and then subtract them
+		// to get a value that is either negative, positive, or zero.
+		return a.datetime - b.datetime;
+	});
+
+	console.save(arrayRollCalls,'arrayRollCalls.json');
+}
+
+var arrayMotions = [];
+var arrayDeputies  = [];
+var arrayRollCalls = [];
+
 	var motionsMAP	 = {};
 	var motionsCount = -1;
 	function setMotion(motion){
@@ -124,7 +152,6 @@ function updateAllDeputiesInTheIdeCadastroMAP(){
 
 	var deputiesNAMES = {};
 	var phonebookIDcount = 0;
-	var arrayDeputies  = [];
 	function setDeputy(deputy){
 			deputy.district = deputy.UF.trim();
 			deputy.name    = deputy.Nome.trim().toUpperCase();
@@ -143,19 +170,22 @@ function updateAllDeputiesInTheIdeCadastroMAP(){
 			return deputiesNAMES[deputy.name];
 	}
 
-	//var arrayRollCalls = [];
-	// var rollCallsMAP	 = {};
-	// var rollCallsCount = 0;
 	function setRollCall(motion, motionRollCalls){
 
 		if (motionRollCalls.Votacoes != null) {
 			if (motionRollCalls.Votacoes.Votacao != null) {
 				motionRollCalls.Votacoes.Votacao.forEach( function(votacao){
 
+					// datetimeRollCall - array of all rollCalls
+					var newDateTimeRollCall = {};
+					newDateTimeRollCall.type = motionRollCalls.Sigla.trim();
+					newDateTimeRollCall.year = motionRollCalls.Ano.trim();
+					newDateTimeRollCall.number = motionRollCalls.Numero.trim();
+					newDateTimeRollCall.datetime = votacao.datetime;
+					arrayRollCalls.push(newDateTimeRollCall);
+
+					// complete RollCall Object - inserted on the motion
 					var newRollCall = {}
-					// newRollCall.type = motionRollCalls.Sigla.trim();
-					// newRollCall.year = motionRollCalls.Ano.trim();
-					// newRollCall.number = motionRollCalls.Numero.trim();
 					newRollCall.datetime = votacao.datetime;
 					newRollCall.obj = votacao.ObjVotacao ;
 					newRollCall.summary = votacao.Resumo ;
@@ -168,7 +198,7 @@ function updateAllDeputiesInTheIdeCadastroMAP(){
 							var deputyID = setDeputy(deputado);
 							var vote = {};
 							vote.deputyID = deputyID;
-							vote.vote     = votoToInteger[deputado.Voto.trim()];
+							vote.vote     = CONGRESS_DEFINE.votoToInteger[deputado.Voto.trim()];
 							vote.party    = deputado.Partido.trim();
 							newRollCall.votes.push(vote)
 						})
@@ -242,12 +272,13 @@ var dict= { // found with Levenshtein Distance levDist() - misspelling deputies 
 			'TARCISIO ZIMMERMANN':'TARCÍSIO ZIMMERMANN',
 			'CLAUDIO RORATO':'CLÁUDIO RORATO', 
 			'MARCIO BITTAR':'MÁRCIO BITTAR', 
-}
+	}
+
 
 /// =======================================================================================
 /// =======================================================================================
 //
-//	
+//	 FUNCTIONS TO CALC TRACES/FLOWS
 //
 // calc the traces
 var yearPartyExtent ={};
@@ -486,21 +517,105 @@ function printHistogram ( timestep, scale_middleOfTimestep ) {
 		.domain([0, d3.max(histogramStack, function(band) { return band.total; })])
 
 	var band = yearColumms.selectAll(".state")
-      .data(histogramStack)
-	    .enter().append("g")
-	      .attr("class", "g")
-	      .attr("transform", function(d,i) { return "translate(0," + y(i) + ")"; });
+	  .data(histogramStack)
+		.enter().append("g")
+		  .attr("class", "g")
+		  .attr("transform", function(d,i) { return "translate(0," + y(i) + ")"; });
 
 	band.selectAll("rect")
-      .data(function(d) { return d.parties; })
-    .enter().append("rect")
-      .attr("height", y.rangeBand())
-      .attr("x", function(d) { return  scale_middleOfTimestep(timestep) + x(d.x0); })
-      .attr("width", function(d) { return x(d.x1) - x(d.x0); })
-      .style("fill", function(d) { return getPartyColor(d.key); });
+	  .data(function(d) { return d.parties; })
+	.enter().append("rect")
+	  .attr("height", y.rangeBand())
+	  .attr("x", function(d) { return  scale_middleOfTimestep(timestep) + x(d.x0); })
+	  .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+	  .style("fill", function(d) { return getPartyColor(d.key); });
 
 }
 // print histogram by legislatures
 d3.range(6).forEach( function(i){ printHistogram( i, scale_middleOfLegislature)})
 // print histogram by years
 d3.range(1991,2015).forEach( function(i){ printHistogram( i, scaleX_middleOfYear)})
+
+
+
+
+
+
+/// =======================================================================================
+/// =======================================================================================
+//
+//	 FUNCTIONS TO CALC DEPUTIES history , pre-calc
+//
+// it should have deputies with the constant deputyID  == arrayDeputies
+// it should have rollCalls with the constant RollCallID  == arrayRollCalls
+
+function calcPreSetsHistory(type){
+	function calcRecursive(i) { 
+		console.log(i)
+
+		if(type == 'year') { if(i==CONGRESS_DEFINE.endingYear+1) return; } 
+		else if(type == 'legislature') 	{ if (CONGRESS_DEFINE.legislatures.length == i){ return; } }
+		else if(type == 'president')  	{ if (CONGRESS_DEFINE.presidents.length == i){ return; } }
+
+		var start,end;
+		if(type == 'year') { start = new Date(i,0); 		  end = new Date(i+1,0); }
+		else if(type == 'legislature') 	{ start = CONGRESS_DEFINE.legislatures[i].period[0]; end = CONGRESS_DEFINE.legislatures[i].period[1]; }
+		else if(type == 'president')  	{ start = CONGRESS_DEFINE.presidents[i].period[0]; end = CONGRESS_DEFINE.presidents[i].period[1]; }
+
+
+		updateDataforDateRange( [start, end] , function(){
+
+			var filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
+			var SVDdata = calcSVD(filteredDeputies,rollCallInTheDateRange);
+		
+			// Deputies array
+			deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
+			// RollCalls array
+			rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
+			// Adjust the SVD result to the political spectrum
+			scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,end);
+
+			calcRollCallRate(rollCallNodes,null)
+				
+			// STORE OBJECT - TO SAVE
+			var storeCalcObject = {deputyNodes:[],rollCallNodes:[]};
+			
+			// store deputy trace
+			deputyNodes.forEach( function(deputy){ 
+				deputy.scatterplot[0]= Number(deputy.scatterplot[0].toPrecision(4));
+				deputy.scatterplot[1]= Number(deputy.scatterplot[1].toPrecision(4));
+
+				var storeDeputyTrace ={
+					deputyID : deputy.deputyID,
+					scatterplot : deputy.scatterplot,
+					party: deputy.party 
+				};
+
+				storeCalcObject.deputyNodes.push(storeDeputyTrace)	
+			})
+			// store roll calls
+			rollCallNodes.forEach( function (rollCall) {
+
+				rollCall.scatterplot[0]= Number(rollCall.scatterplot[0].toPrecision(4));
+				rollCall.scatterplot[1]= Number(rollCall.scatterplot[1].toPrecision(4));
+
+				var storeRollCallTrace ={
+					rollCallID: rollCall.rollCallID,
+					scatterplot: rollCall.scatterplot,
+					rate       : (rollCall.rate == 'noVotes')? 'noVotes' : Number(rollCall.rate.toPrecision(4))
+				};
+
+				storeCalcObject.rollCallNodes.push(storeRollCallTrace)	
+			})
+
+			// SAVE!!
+			if(type) console.save(storeCalcObject, type+'.'+i+'.json');
+		//====================================
+			calcRecursive(i+1);
+		})
+
+	};
+
+	if(type == 'year') calcRecursive(CONGRESS_DEFINE.startingYear);
+	else calcRecursive(0);
+}

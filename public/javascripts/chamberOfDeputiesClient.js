@@ -205,10 +205,17 @@
 				})
 			},
 
+			// get the object of motion and roll calls
+			getPreCalc	:	function (type, id,callback){
+				d3.json('./data/precalc/'+type+'.'+id+'.json', function(precalc) {
+					callback(precalc);
+				})
+			},
+
 			// return a list of rollCalls sorted by date
-			getDatetimeRollCall	: 	function (callback){
-				d3.json('./data/datetimeRollCall.json', function( datetimeRollCall ) {
-					callback(datetimeRollCall);
+			getArrayRollCalls	: 	function (callback){
+				d3.json('./data/arrayRollCalls.json', function( arrayRollCalls ) {
+					callback(arrayRollCalls);
 				})
 			},
 
@@ -223,8 +230,9 @@
 		return {  // INTERFACE
 
 			getMotion					: 	chamberOfDeputiesClientHTTPMin.getMotion,
-			getDatetimeRollCall			:   chamberOfDeputiesClientHTTPMin.getDatetimeRollCall,
+			getArrayRollCalls			:   chamberOfDeputiesClientHTTPMin.getArrayRollCalls,
 			getDeputiesArray			:   chamberOfDeputiesClientHTTPMin.getDeputiesArray,
+			getPreCalc					:   chamberOfDeputiesClientHTTPMin.getPreCalc
 		
 		};
 	};

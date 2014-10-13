@@ -300,7 +300,7 @@ d3.chart.deputiesScatterplot = function() {
 	chart.highlightRollCall = function(rollCall){
 		g.selectAll('.node').style('fill', 'darkgrey');
 		
-		rollCall.rollCall.votes.forEach( function(vote){ 
+		rollCall.votes.forEach( function(vote){ 
 			g.selectAll("#deputy-"+vote.deputyID).style("fill",CONGRESS_DEFINE.votoStringToColor[vote.vote]); 
 		});
 	}

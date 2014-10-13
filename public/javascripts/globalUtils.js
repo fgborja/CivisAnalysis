@@ -61,10 +61,3 @@ function saveEntriesOfArray( array, getName, index){
     }
     
 }
-
-function saveMotionsWithDelay(){
-    saveEntriesOfArray(arrayMotions, function(motion){ return motion.type + motion.number + motion.year; }, 0)
-}
-function saveDeputiesToFILE(){
-    JSON.stringify(arrayDeputies)
-}
