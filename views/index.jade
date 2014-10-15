@@ -1,5 +1,163 @@
-extends layout
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		title CivisAnalysis
+		link(rel="stylesheet" href="./javascripts/lib/bootstrap/dist/css/bootstrap.min.css")
+		link(rel='stylesheet', href='./stylesheets/styles.css')
+		link(rel="stylesheet", href="./javascripts/lib/pick-a-color-master/build/1.2.2/css/pick-a-color-1.2.2.min.css")
+		link(rel="stylesheet", href="./javascripts/lib/DataTables-1.10.1/media/css/jquery.dataTables.min.css")
 
-block content
-  h1= title
-  p Welcome to #{title}
+		link(rel='stylesheet', href="./javascripts/lib/bootstrap/slider/slider.css")
+		link(rel='stylesheet', href="./stylesheets/brazilianStates.css")
+
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+	body
+		// FIXED NAV-BAR AT THE TOP
+		navbar.navbar-default.navbar-fixed-top
+			div.container
+				// HEADER
+				ul.nav.navbar-left
+					li
+						h4 CivisAnalysis: The Brazilian Chamber of Deputies
+				// SOCIAL SHARES!
+				ul.nav.navbar-nav.navbar-right.nav-pills#socialshare
+					li
+						// Facebook share 
+						<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.inf.ufrgs.br%2F%7Efgborja%2Fcivisanalysis%2F&amp;width=150&amp;layout=button_count&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:150px; height:21px;" allowTransparency="true"></iframe>
+					li
+						// Twitter share
+						<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.inf.ufrgs.br/~fgborja/civisanalysis/">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+					li
+						// Google Plus share
+						<div width='60px' class="g-plus" data-action="share" data-annotation="bubble" data-href="http://www.inf.ufrgs.br/~fgborja/civisanalysis/"></div>
+
+		div.header
+		#main
+			.col-xs-12
+				.col-xs-2
+						h5.content Political Spectrum of Deputies
+						br 
+						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
+							span.glyphicon.glyphicon-search 
+							text  Search
+						br
+						br
+						.deputies.selected
+							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
+								span.glyphicon.glyphicon-list 
+								text  List Selected
+							a.btn( onclick='javascript:deputiesScatterplot.reset()')
+								span.glyphicon.glyphicon-remove
+								text  Reset Selection
+				
+				.col-xs-5
+					.col-xs-5
+						#infoParties
+					.col-xs-7
+						.canvas#canvasDeputies
+					//.col-xs-12
+					//	br
+					//.col-xs-4
+					//	h5.content Links connects deputies with 
+					//		span.subhead#thresh 70% 
+					//		text of vote correlation:
+					//		.slider#slider
+					//.col-xs-8
+					//	.canvas#canvasGraph
+
+				.col-xs-5
+					.col-xs-4
+						h5.content Political Spectrum of Roll Calls
+						br 
+						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
+							span.glyphicon.glyphicon-search
+							text  Search
+						br
+						br
+						.rollCalls.selected
+							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
+								span.glyphicon.glyphicon-list 
+								text  List Selected
+							a.btn( onclick='javascript:rollCallsScatterplot.reset()')
+								span.glyphicon.glyphicon-remove
+								text  Reset Selection
+					.col-xs-8
+						.canvas#canvasRollCalls
+					.col-xs-12
+						br
+					.col-xs-4
+						h5.content States
+					.col-xs-8
+						.canvas#infoStates
+
+		.col-xs-12#timeline
+			#loading
+				img#loadingGIF(src='./images/ajax_loader.gif')
+
+		// MODAL (POP-UP)
+		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")
+			.modal-dialog.modal-lg
+				.modal-content
+					.modal-header
+						button.close(type="button", data-dismiss="modal", aria-hidden="true") ×
+						h4.modal-title Modal
+					.modal-body					
+
+	
+		// TODO TODO! http://stackoverflow.com/questions/11616697/how-to-use-og-meta-tag-for-facebook-share
+		<!-- for Google -->
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+
+		<meta name="author" content="Francisco de Borja" />
+		<meta name="copyright" content="" />
+		<meta name="application-name" content="CivisAnalysis" />
+
+		<!-- for Facebook -->          
+		<meta property="og:title" content="CivisAnalysis" />
+		<meta property="og:type" content="article" />
+		<meta property="og:image" content="" />
+		<meta property="og:url" content="http://www.inf.ufrgs.br/~fgborja/civisanalysis/" />
+		<meta property="og:description" content="" />
+
+		<!-- for Twitter -->          
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content="CivisAnalysis" />
+		<meta name="twitter:description" content="" />
+		<meta name="twitter:image" content="" />
+
+		// THIRD_PARTY_LIBS
+		// script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
+		
+		script(src='./javascripts/lib/jquery.min.js')
+		script(src="./javascripts/lib/bootstrap/dist/js/bootstrap.min.js")
+		script(src="./javascripts/lib/d3/d3.min.js")
+		script(src="./javascripts/lib/d3/queue.v1.min.js")
+		script(src="./javascripts/lib/numeric-1.2.6.js")
+		script(src="./javascripts/lib/crossfilter.v1.min.js")
+		script(src="./javascripts/lib/pick-a-color-master/build//dependencies/tinycolor-0.9.15.min.js")
+		script(src="./javascripts/lib/pick-a-color-master/build/1.2.2/js/pick-a-color-1.2.2.min.js")
+		script(src="./javascripts/lib/bootstrap/slider/slider.js")
+		script(src="./javascripts/lib/topojson.min.js")
+		script(src="./javascripts/lib/DataTables-1.10.1/media/js/jquery.dataTables.min.js")
+
+
+		// APP_LIBS
+		script(src='./javascripts/globalUtils.js')
+		script(src='./javascripts/congressDEFINE.js')
+		script(src='./javascripts/chamberOfDeputiesClient.js')
+		script(src='./javascripts/chamberOfDeputiesDataWrapper.js')
+		script(src='./javascripts/scaleAdjustment.js')
+		script(src='./javascripts/selectionModule.js')
+
+		script(src='./javascripts/deputiesScatterplot.js')
+		script(src='./javascripts/deputiesGraph.js')
+		script(src='./javascripts/rollCallsScatterplot.js')
+		script(src='./javascripts/rollCallsTimeLine.js')
+		script(src='./javascripts/brazilianStates.js')
+		script(src='./javascripts/partiesInfographic.js')
+		script(src='./javascripts/modals.js')
+
+		script(src='./javascripts/chamberOfDeputiesVisualization.js')

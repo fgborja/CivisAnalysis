@@ -9,7 +9,15 @@
     "express": "3.4.8",
     "jade": "*",
     "xml2js": "*",
-	  "mongoskin": "*",
-	  "requestify":"*"
+    "mongoskin": "*",
+    "requestify": "*"
+  },
+  "devDependencies": {
+    "connect-livereload": "^0.4.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-jade": "^0.13.0",
+    "grunt-contrib-watch": "^0.6.1"
   }
 }
