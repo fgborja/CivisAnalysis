@@ -29,7 +29,7 @@ exports.getAllMotionsRollCalls = function(db){
 
 // View to check the chamberOfDeputies... chamberOfDeputies.jade
 exports.chamberOfDeputies = function(req, res){
-	res.render('chamberOfDeputies');
+	res.render('index');
 };
 
 // return the array of all MOTIONS voted in plenary in the @param:year

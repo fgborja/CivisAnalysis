@@ -107,7 +107,11 @@ d3.chart.deputiesScatterplot = function() {
 		var circles = g.selectAll("circle")
 			.data(data, function(d){ return d.deputyID});
 
-		circles.enter().append("circle");
+		circles.enter().append("circle")
+			.on("mouseover", mouseoverDeputy)
+			.on("mousemove", mousemoveDeputy)
+			.on("mouseout", mouseoutDeputy)
+			.on("click", mouseClickDeputy)
 
 		circles
 		.transition()
@@ -119,16 +123,18 @@ d3.chart.deputiesScatterplot = function() {
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
-		.style('fill', function(d) { return CONGRESS_DEFINE.getPartyColor(d.party) })
+
+		circles.style('fill', function(d){ 
+						if(d.rate == null){
+							return CONGRESS_DEFINE.getPartyColor(d.party)
+						} else{ 
+							if (d.rate == "noVotes")
+								return 'darkgrey' 
+							else return CONGRESS_DEFINE.votingColor(d.rate)
+						} 
+					})
 		
 		circles.exit().transition().remove();
-
-		circles
-			.on("mouseover", mouseoverDeputy)
-			.on("mousemove", mousemoveDeputy)
-			.on("mouseout", mouseoutDeputy)
-			.on("click", mouseClickDeputy)
-
 			
 		// mouse OVER circle deputy
 		function mouseoverDeputy(d) {
@@ -303,17 +309,6 @@ d3.chart.deputiesScatterplot = function() {
 		rollCall.votes.forEach( function(vote){ 
 			g.selectAll("#deputy-"+vote.deputyID).style("fill",CONGRESS_DEFINE.votoStringToColor[vote.vote]); 
 		});
-	}
-
-	chart.setRollCallVotingRate = function(){
-		//console.log('deputiesScatterplot : setRollCallVotingRate')
-		//g.selectAll('.node').style('fill', 'darkgrey');
-		g.selectAll(".node").style("fill", function(d) { return setDeputyFill(d) });	
-	}
-
-	chart.resetRollCallRates = function (){
-		var nodes = g.selectAll('.node').each( function(d){ d.rate = null;	})
-		nodes.style('fill', function(d){ return setDeputyFill(d) })
 	}
 
 	function setDeputyFill( d ){
