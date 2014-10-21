@@ -111,7 +111,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 					$('div.rollCalls.selected').css('visibility','hidden');
 					deputyNodes.forEach(function (deputy) { deputy.rate = null;	})
 
-					deputiesScatterplot.update();
+					deputiesScatterplot.update(false);
 					deputiesGraph.resetRollCallRates();
 					brazilianStates.resetRollCallRates();
 					partiesInfographic.resetRollCallRates();
@@ -120,7 +120,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 					$('div.rollCalls.selected').css('visibility','visible');
 					calcDeputyNodesRates(selectedRollCalls)
 
-					deputiesScatterplot.update();
+					deputiesScatterplot.update(false);
 					deputiesGraph.setRollCallVotingRate();
 
 					calcStatesRates(selectedRollCalls, brazilianStates.getStates() )
@@ -206,7 +206,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 						// ...
 						deputiesScatterplot
 							.data(deputyNodes) // set deputy data
-							.update(null)  // plot
+							.update(true)  // plot
 						
 						rollCallsScatterplot
 							.data(rollCallNodes) 	// set rollcall data

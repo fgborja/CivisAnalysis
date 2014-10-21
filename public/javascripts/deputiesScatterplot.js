@@ -119,7 +119,7 @@ d3.chart.deputiesScatterplot = function() {
 			cx: function (d) { return scaleX(d.scatterplot[0]); },
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
 			r: radius,
-			class: function() { if(selected==null) return "node selected" } ,
+			class: function() { if( selected || d3.select(this).classed('selected') ) return "node selected"; else return "node";} ,
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
