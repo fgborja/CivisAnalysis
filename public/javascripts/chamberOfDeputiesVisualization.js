@@ -286,8 +286,9 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// parties infograph ------------------------------------------------------------------
 	//
 	// init
+		var partiesInfographicSVG = d3.select('#infoParties').append('svg').attr('height',  $('.canvas').width()*2 );
 		var partiesInfographic = d3.chart.partiesInfographic();
-		partiesInfographic(d3.select('#infoParties'));
+		partiesInfographic( partiesInfographicSVG ,0,0 );
 	//
 	// interactions
 		partiesInfographic

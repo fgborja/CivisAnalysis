@@ -14,9 +14,13 @@ d3.chart.partiesInfographic = function() {
 
 	var margin = 4;
 
-	function chart(container) {
+	function chart(svgcontainer, x, y) {
 
-		svg = container.append('svg').attr({ width : width, height : height })
+		svg = svgcontainer.append('g')
+			.attr({
+				id:'partiesInfographic',
+				transform:'translate('+x+','+y+')'
+			});
 
 		svg.append('g').attr('class','parties');
 	}
