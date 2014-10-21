@@ -610,6 +610,8 @@ function calcPartiesSizeAndCenter( deputies ){
 	var parties = {};
 
 	deputies.forEach(function(deputy){
+		if(deputy.party== 'S.Part.') deputy.party='NoParty';
+
 		if(parties[deputy.party] === undefined) parties[deputy.party] = {size:0,center:[0,0], stdev:[0,0]};
 		parties[deputy.party].size++;
 		// sum of values
