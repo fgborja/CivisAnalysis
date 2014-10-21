@@ -702,7 +702,7 @@ function filterDeputies ( deputiesInTheDateRange, rollCallInTheDateRange) {
 		calcNumVotes(deputiesInTheDateRange);
 			
 		// select only congressmans who votead at least one third 1/3 of all roll calls in the selected period
-		function filterFunction(){ 
+		function filterDeputiesWhoVotedAtLeastOneThirdOfVotes(){ 
 			var svdKey =0;
 			var dep = $.map(deputiesInTheDateRange, function(deputy){ 
 
@@ -720,6 +720,32 @@ function filterDeputies ( deputiesInTheDateRange, rollCallInTheDateRange) {
 				})
 			return dep;
 		}
+
+		// select 513 deputies, deputies with more present in votings.
+		function filter513DeputiesMorePresent(){ 
+			var deputies = $.map(deputiesInTheDateRange, function(deputy){ 
+								return deputy;
+							})
+			deputies = deputies.sort(function(a,b){ return b.numVotes - a.numVotes})
+
+			// get the first 513nd deputies
+			var selectedDeputies = deputies.splice(0, ((deputies.lenght < 513)? deputies.lenght : 513) )
+
+			// set selected
+			var svdKey =0;
+			selectedDeputies.forEach( function(deputy,i){
+				deputy.svdKey = svdKey++;
+			})
+
+			// reset non selected
+			deputies.forEach( function(deputy){
+				deputy.scatterplot = null;
+				deputy.svdKey= null;
+			})
+
+			return selectedDeputies;
+		}
 		// -------------------------------------------------------------------------------------------------------------------
+	var filterFunction = filter513DeputiesMorePresent;
 	return filterFunction();
 }
