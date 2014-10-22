@@ -9,17 +9,17 @@ d3.chart.partiesInfographic = function() {
 
 	var partiesMap, parties, alliances;
 
-	var width = $('#infoParties').width();
-	var height =   $('.canvas').width() * 2;
+	var _dimensions;
 
 	var margin = 4;
 
-	function chart(svgcontainer, x, y) {
+	function chart(svgcontainer, dimensions) {
+		_dimensions = dimensions;
 
 		svg = svgcontainer.append('g')
 			.attr({
 				id:'partiesInfographic',
-				transform:'translate('+x+','+y+')'
+				transform:'translate('+dimensions.x+','+dimensions.y+')'
 			});
 
 		svg.append('g').attr('class','parties');
@@ -40,7 +40,7 @@ d3.chart.partiesInfographic = function() {
 		
 		scaleX = d3.scale.linear()
 				.domain([0,totalDeputies])
-				.range([ 0, height ]);
+				.range([ 0, _dimensions.height ]);
 
 		setDefaultParties();
 	}
@@ -494,6 +494,91 @@ d3.chart.partiesInfographic = function() {
 		var selectedRate = (selected==alliance.size)? (alliance.size+' Deputies') :selected+'/'+alliance.size;
 		return  alliance.name+' ('+selectedRate+")<br/>"+html+'<br/><em>'+ 'Click to select</em>';
 	}
+
+	return d3.rebind(chart, dispatch, "on");
+}
+
+
+
+
+
+
+
+if(!d3.chart) d3.chart = {};
+
+d3.chart.chamberInfographic = function() {
+
+	var chamberInfographic;
+
+	var dispatch = d3.dispatch("hover","selected");
+	chart.on = dispatch.on;
+	var _dimensions;
+
+	var deputies;
+	var partiesMap, parties;
+
+	// @param dimensions : {x: , y: , width: , height: }
+	function chart(svgContainer, dimensions) {
+		_dimensions = dimensions;
+		chamberInfographic = svgContainer.append('g').attr('transform', 'translate(' + dimensions.x + ',' + dimensions.y + ')')
+	}
+
+	chart.data = function(deputyNodes){
+		if(!arguments.length) return deputies;
+		deputies = deputyNodes;
+		return chart;
+	}
+
+	chart.update = function(){
+		partiesMap = calcPartiesSizeAndCenter(deputyNodes)
+		parties = d3.entries(partiesMap).sort( function(a,b){ return (b.value.center[1]+1) - (a.value.center[1]+1);  })
+		//parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.size - a.value.size;  })
+		parties.forEach(function(d,i){ partiesMap[d.key].rank = i });
+
+		deputyNodes.sort( function(a,b){ 
+			return (a.party != b.party)? 
+			 	(partiesMap[a.party].rank - partiesMap[b.party].rank) 
+			 	: 
+			 	( (b.scatterplot[1]+1) - (a.scatterplot[1]+1) ); 
+		})
+
+		var circlePerAngle = 9;
+		function calcAngle(i){return Math.floor(i / circlePerAngle) / Math.floor( (deputyNodes.length - 1) / circlePerAngle) * Math.PI; }
+
+		var cicles = chamberInfographic.selectAll('circle')
+						.data(deputyNodes, function(d){ return d.deputyID})
+			
+		cicles.enter().append('circle')
+				
+		cicles.exit().transition().remove();
+
+		cicles.transition(2000)
+				.attr({
+					cy: function(d,i){ return _dimensions.width - (_dimensions.width-5 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
+					cx: function(d,i){ return _dimensions.width - (_dimensions.width-5 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
+					r: radius,
+					fill: function(d){ 
+						if(d.rate == null){
+							return CONGRESS_DEFINE.getPartyColor(d.party)
+						} else{ 
+							if (d.rate == "noVotes")
+								return 'darkgrey' 
+							else return CONGRESS_DEFINE.votingColor(d.rate)
+						} 
+					}
+				})	
+
+
+
+		// TweenMax.to($('[data-deputado="' + t[i].number + '"]'), .5, {
+		// 			left: 470 - (f - i % r * s) * Math.cos(angle),
+		// 			top: 470 - (f - i % r * s) * Math.sin(angle),
+		// 			rotation: 180 * (angle / Math.PI),
+		// 			delay: .2 / Math.floor((len - 1) / r) * i
+		// 		})
+		// 	}
+	}
+
 
 	return d3.rebind(chart, dispatch, "on");
 }

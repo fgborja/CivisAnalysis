@@ -44,13 +44,16 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	var deputyNodes =[];
 	var rollCallNodes =[];
 
+	var canvasDimension = { height:$('.canvas').width()*2.2, width:$('#canvas').width() };
+	var canvasSVG = d3.select('#canvas').append('svg').attr(canvasDimension);
+
 	// =====================================================================================
 	// Deputies Scatterplot ----------------------------------------------------------------
 	//
 	// init
 		var deputiesScatterplot 	= d3.chart.deputiesScatterplot();
 		// set html container
-		deputiesScatterplot(d3.select('#canvasDeputies'));
+		deputiesScatterplot(canvasSVG, {x:300, y:0, width: canvasDimension.width*0.4, height: canvasDimension.height} );
 	//
 	// interactions
 		deputiesScatterplot
@@ -90,6 +93,35 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 				} 
 			})
 	// =====================================================================================
+
+	// ====================================================================================
+	// parties infograph ------------------------------------------------------------------
+	//
+	// init	
+		var partiesInfographic = d3.chart.partiesInfographic();
+		partiesInfographic( canvasSVG ,{x:220, y:canvasDimension.height*0.005, width: canvasDimension.width*0.2, height: canvasDimension.height*0.95} );
+	//
+	// interactions
+		partiesInfographic
+			// when party or parties(alliance) are selected
+			.on('selected', function (parties, operation) {
+				deputiesScatterplot.selectParties( parties, operation );
+			})
+			// when a party or parties(alliance) are hovered
+			.on('hover', function (parties){
+				deputiesGraph.highlightParties( parties );
+				deputiesScatterplot.highlightParties( parties );
+
+				// sort the traces - the hovered parties to front
+				timeline.partiesHovered( parties)
+				
+			})
+	// ====================================================================================
+
+		var chamberInfographic = d3.chart.chamberInfographic();
+		chamberInfographic( canvasSVG ,{x:0, y:8, width:220, height:0} );
+
+	// ====================================================================================
 
 
 
@@ -220,7 +252,10 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 							.data( calcPartiesSizeAndCenter( deputyNodes ))
 							.update(null);
 
-						
+						chamberInfographic
+							.data(deputyNodes)
+							.update(null);
+
 						calcDeputyPerState(null, brazilianStates.getStates())
 						brazilianStates.resetRollCallRates();
 						brazilianStates.selectAllStates();
@@ -280,34 +315,6 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			})
 	// ====================================================================================
 
-
-
-	// ====================================================================================
-	// parties infograph ------------------------------------------------------------------
-	//
-	// init
-		var partiesInfographicSVG = d3.select('#infoParties').append('svg').attr('height',  $('.canvas').width()*2 );
-		var partiesInfographic = d3.chart.partiesInfographic();
-		partiesInfographic( partiesInfographicSVG ,0,0 );
-	//
-	// interactions
-		partiesInfographic
-			// when party or parties(alliance) are selected
-			.on('selected', function (parties, operation) {
-				deputiesScatterplot.selectParties( parties, operation );
-			})
-			// when a party or parties(alliance) are hovered
-			.on('hover', function (parties){
-				deputiesGraph.highlightParties( parties );
-				deputiesScatterplot.highlightParties( parties );
-
-				// sort the traces - the hovered parties to front
-				timeline.partiesHovered( parties)
-				
-			})
-	// ====================================================================================
-
-	
 
 	// ====================================================================================
 	//  SET THE START DATE PERIOD - LAUNCH APP!!

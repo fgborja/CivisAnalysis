@@ -12,7 +12,6 @@ h2 {text-align: center;}
 
 #main{
   /*height:400px;*/
-  width:1000px;
   /*margin-top: 50px;*/
   margin-left: auto;
   margin-right: auto;
@@ -24,12 +23,6 @@ h2 {text-align: center;}
   .header.content{
       text-align: right;
   }
-
-.canvas{
-    width:215px;
-    margin-left: auto ;
-    margin-right: auto ;
-}
 
 #timeline{
   height:120px;
@@ -75,6 +68,10 @@ h2 {text-align: center;}
       opacity: 0.4;
 }
 
+.gchart {
+  stroke:rgba(0, 0, 0, .2);
+  fill: white;
+}
 .chart {border:1px solid rgba(0, 0, 0, .2);}
 
 .chart .axis {display: none}

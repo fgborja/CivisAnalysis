@@ -13,30 +13,35 @@ var pxMargin = radius+5;
 if(!d3.chart) d3.chart = {};
 
 d3.chart.deputiesScatterplot = function() {
-	var scatterplot, g;
+	var g;
 	var data;
 	var dispatch = d3.dispatch("hover","selected");
 
+	var _dimensions ={};
 	var colWidth = $('.canvas').width();
 
-	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
-	  , width = colWidth - margin.left - margin.right
-	  , height = colWidth*2 - margin.top - margin.bottom;
+	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin};
 
-	function chart(container) {
+	function chart(containerSVG, dimensions) {
 		
-		scatterplot = container.append('svg:svg')
-			.attr('class', 'chart deputy');
+		dimensions.width = dimensions.width - margin.left - margin.right;
+	  	dimensions.height = dimensions.height - margin.top - margin.bottom;
 
-		// scatterplot.append('path')
-		// 	.attr('pointer','none')
-		// 	//.attr('stroke-dasharray','5,5,5')
-		// 	.attr('stroke','grey')
-		// 	.attr('stroke-width','2px')
-		// 	.attr('d','M0 '+colWidth+' l'+colWidth+' -'+colWidth)
+		_dimensions = dimensions;
 
-		g = scatterplot.append('g')
-			.attr('class', 'main')
+		g = containerSVG.append('g')
+			.attr({
+				'class' 	: 'chart deputy',
+				transform 	:'translate('+ (dimensions.x+margin.left) +','+ (dimensions.y+margin.top) +')',
+				width 		: dimensions.width,
+				height 		: dimensions.height
+			});
+
+		g.append('rect').attr({
+			'class':'gchart',
+			width 		: dimensions.width,
+			height 		: dimensions.height
+		});
 
 		g.append('rect')
 			.attr('class', 'selectorRect')
@@ -62,24 +67,15 @@ d3.chart.deputiesScatterplot = function() {
 
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
-			.range([ 0, width ]);
+			.range([ margin.left, _dimensions.width-margin.right ]);
 
 		var scaleY = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
-			.range([ height, 0 ]);
-
-		scatterplot
-			.attr('width', width + margin.right + margin.left)
-			.attr('height', height + margin.top + margin.bottom)
-
-		g	
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-			.attr('width', width)
-			.attr('height', height) 
+			.range([ _dimensions.height-margin.bottom, margin.top ]);
 
 		g.select(".selectorRect")
-			.attr('width', width)
-			.attr('height', height)
+			.attr('width', _dimensions.width)
+			.attr('height', _dimensions.height)
 			.style('fill', 'white') 
 	
 		// draw the x axis ------------------------------------------------------------------------------------------
@@ -88,7 +84,7 @@ d3.chart.deputiesScatterplot = function() {
 		.orient('bottom');
 
 		var xg = g.select(".axis.x")
-		.attr('transform', 'translate(0,' + height + ')')
+		.attr('transform', 'translate(0,' + _dimensions.height + ')')
 		.transition()
 		.call(xAxis);
 		// ---------------------------------------------------------------------------------------------------------
