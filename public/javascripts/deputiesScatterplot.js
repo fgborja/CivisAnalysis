@@ -55,7 +55,7 @@ d3.chart.deputiesScatterplot = function() {
 
 
 
-		selectors('deputy', chart.dispatchSelected );
+		selectors('deputy', dispatch.selected );
 		
 		//update();
 	}
@@ -63,7 +63,7 @@ d3.chart.deputiesScatterplot = function() {
 	chart.on = dispatch.on;
 
 	chart.update = update;
-	function update( selected ) {
+	function update() {
 
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
@@ -101,7 +101,7 @@ d3.chart.deputiesScatterplot = function() {
 		// ---------------------------------------------------------------------------------------------------------
 		
 		var circles = g.selectAll("circle")
-			.data(data, function(d){ return d.deputyID});
+			.data(data, function(d,i){ if(d===undefined) return 1; else return d.deputyID});
 
 		circles.enter().append("circle")
 			.on("mouseover", mouseoverDeputy)
@@ -115,20 +115,13 @@ d3.chart.deputiesScatterplot = function() {
 			cx: function (d) { return scaleX(d.scatterplot[0]); },
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
 			r: radius,
-			class: function() { if( selected || d3.select(this).classed('selected') ) return "node selected"; else return "node";} ,
+			class: function(d) { return (d.selected)? "node selected" : "node"; } ,
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
 
-		circles.style('fill', function(d){ 
-						if(d.rate == null){
-							return CONGRESS_DEFINE.getPartyColor(d.party)
-						} else{ 
-							if (d.rate == "noVotes")
-								return 'darkgrey' 
-							else return CONGRESS_DEFINE.votingColor(d.rate)
-						} 
-					})
+		circles.style('fill',setDeputyFill )
+
 		
 		circles.exit().transition().remove();
 			
@@ -159,28 +152,26 @@ d3.chart.deputiesScatterplot = function() {
 
 		function mouseClickDeputy(d){
 			if (d3.event.shiftKey){	
-				// using the shiftKey deselect the rollCall				
-				d3.select(this).classed('selected',false);
-				
-				//dispatch event of selected rollCalls
-				chart.dispatchSelected()
+				// using the shiftKey deselect the deputy				
+				d.selected = false;
+				console.log(d)
+				//dispatch event of selected deputy
+				dispatch.selected()
 
 			} else 
 			if (d3.event.ctrlKey){
-				// using the ctrlKey add rollCalls to selection
-				d3.select(this).classed('selected',true);
-				
-				//dispatch event of selected rollCalls
-				chart.dispatchSelected()
+				// using the ctrlKey add deputy to selection
+				d.selected = true;
+				//dispatch event of selected deputy
+				dispatch.selected()
 
 			} 
 			else {
-				// a left click without any key pressed -> select only the state (deselect others)
-				g.selectAll('circle').classed('selected',false)
-				d3.select(this).classed('selected',true);
-
+				// a left click without any key pressed -> select only the deputy (deselect others)
+				data.forEach(function (deputy) { deputy.selected = false; })
+				d.selected = true;
 				//dispatch event of selected states
-				chart.dispatchSelected()
+				dispatch.selected()
 			}		
 		}				
 
@@ -242,79 +233,19 @@ d3.chart.deputiesScatterplot = function() {
 		}
 		else g.selectAll('.node').attr('r', radius)
 	}
+	// @param selectParties : Array	
 
-	// @param selectParties : Array
-	chart.selectParties = function(selectParties, operation){
-
-		if(selectParties != null){
-			
-			chart.selectNodesByAttr('party', selectParties[0], operation )
-
-			if(operation == 'SET'){
-				selectParties.forEach( function(party){ chart.selectNodesByAttr('party', party, 'ADD' ) })
-			} else {
-				selectParties.forEach( function(party){ chart.selectNodesByAttr('party', party, operation ) })
-			}
-
-			//$.each(selectParties, function(party){ chart.selectNodesByAttr('party', party, operation ) })
+	function setDeputyFill( d ){ 
+		if(d.vote != null){
+			return CONGRESS_DEFINE.votoStringToColor[d.vote];
 		}
-		else g.selectAll('.node').attr('r', radius)
-	}
-
-	// select deputies of an array of states // and dispatch the selected
-	// @param operation : 'set','add','exclude';
-	chart.selectStates = function (district, operation ){
-
-		selectNodesByAttr('district', district, operation )
-
-		// DISPATCH SELECTED!
-		dispatch.selected(chart.getSelected())
-	}
-
-	chart.selectNodesByAttr = function (attr, value, operation ){
-
-		// SELECT OPERATION
-		if(value == null) g.selectAll('.node').classed('selected',true);
-		else{
-			if(operation == 'SET'){
-				g.selectAll('.node').classed('selected', function (d){   
-					if(value == d[attr]){ return true; }
-					else return false;
-				})
-			}
-			else{ 
-				g.selectAll('.node').each(function(d){  
-					if(value == d[attr]){
-						//var selectedState = d3.select(this).attr('selected');
-						if(operation == 'ADD'){ 
-							d3.select(this).classed('selected',true);
-						}
-						else if(operation == 'EXCLUDE') { d3.select(this).classed('selected',false); }
-					}
-				});
-			}
-		}
-
-		// DISPATCH SELECTED!
-		dispatch.selected(chart.getSelected())
-	}
-
-	chart.highlightRollCall = function(rollCall){
-		g.selectAll('.node').style('fill', 'darkgrey');
-		
-		rollCall.votes.forEach( function(vote){ 
-			g.selectAll("#deputy-"+vote.deputyID).style("fill",CONGRESS_DEFINE.votoStringToColor[vote.vote]); 
-		});
-	}
-
-	function setDeputyFill( d ){
-		if(d.rate == null){
-			return CONGRESS_DEFINE.getPartyColor(d.party)
-		} else{ 
+		if(d.rate != null){
 			if (d.rate == "noVotes")
-				 return 'darkgrey' 
+				return 'darkgrey' 
 			else return CONGRESS_DEFINE.votingColor(d.rate)
-		}
+		} else{ 
+			return CONGRESS_DEFINE.getPartyColor(d.party)
+		} 
 	}
 
 	function sortNodesByAtribute( attr , value){
@@ -322,61 +253,6 @@ d3.chart.deputiesScatterplot = function() {
 				if (a[attr] != value) return -1;               // a is not the hovered element, send "a" to the back
 				else return 1;                             // a is the hovered element, bring "a" to the front
 			});
-	}
-
-	chart.getSelectedDeputiesIDs = function(){
-		var selectedNodes = g.selectAll('.node.selected');
-		return selectedNodes[0].map(function(d){ return d3.select(d).attr('deputy') })
-	}
-
-	chart.getSelected = function(){
-		var selected = [];
-		g.selectAll('.node.selected').each( function(d){ selected.push(d) })
-		return selected;
-	}
-
-	chart.dispatchSelected = function(){
-		dispatch.selected( chart.getSelected());
-	}
-
-	chart.reset = function(){
-		g.selectAll('.node').classed("selected", true);
-		chart.dispatchSelected();
-	}
-
-	chart.unselectAll = function(){
-		g.selectAll('.node').classed("selected", false);
-		chart.dispatchSelected();
-	}
-
-	chart.selectDeputies = function (operation, deputyIDs) {
-		if (deputyIDs == null) g.selectAll('.node').classed("selected", true);
-		else {
-			if(operation == 'SET'){
-				g.selectAll('.node').classed("selected", false);
-				deputyIDs.forEach( function(deputyID){ g.select(".node#deputy-"+deputyID).classed("selected", true); } )
-			} else 
-			if(operation == 'EXCLUDE') {
-				deputyIDs.forEach( function(deputyID){ g.select(".node#deputy-"+deputyID).classed("selected", false); } )
-			} else 
-			if(operation == 'ADD'){
-				deputyIDs.forEach( function(deputyID){ g.select(".node#deputy-"+deputyID).classed("selected", true); } )
-			}
-		}
-
-		dispatch.selected(chart.getSelected())
-	}
-
-	chart.isSelected = function( deputyID ){
-		return g.select('.node#deputy-'+deputyID).classed('selected');
-	}
-	chart.selectDeputy = function( deputyID ){
-		g.select('.node#deputy-'+deputyID).classed('selected',true);
-		dispatch.selected( chart.getSelected());
-	}
-	chart.unselectDeputy = function( deputyID ){
-		g.select('.node#deputy-'+deputyID).classed('selected',false);
-		dispatch.selected( chart.getSelected());
 	}
 
 	return d3.rebind(chart, dispatch, "on");

@@ -316,12 +316,20 @@ function selectors( class_selector,dispatchSelected){
 			// deselect all
 			d3.selectAll( selectClass).classed( "selected", false);
 			//select 
-			selectInElement(selectClass,selectionElement,function(){return true},function(){return false})							
+			selectInElement(selectClass,selectionElement,function(d){return true},function(){return false})							
 		}
 
 		var selectedNodes = d3.selectAll('.chart'+selectClass+".selected");
 		if(selectedNodes[0].length == 0) {
-			d3.selectAll( selectClass).classed( "selected", true);
+			d3.selectAll(selectClass).classed( "selected", true);
+
+			var data = d3.selectAll(selectClass).data();
+			data.forEach( function(d){ d.selected = true; })
+		} else{
+			var data = d3.selectAll('.chart'+selectClass).data();
+			data.forEach( function(d){ d.selected = false; })
+			data = d3.selectAll('.chart'+selectClass+".selected").data();
+			data.forEach( function(d){ d.selected = true; })
 		}
 
 		dispatchSelected()

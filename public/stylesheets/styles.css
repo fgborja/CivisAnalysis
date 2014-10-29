@@ -88,8 +88,6 @@ h2 {text-align: center;}
   opacity: 1;
 }
 
-.node.hover{ stroke: #ddd; }
-
 .selectorRect {
     cursor: crosshair;
 }

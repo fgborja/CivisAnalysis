@@ -508,19 +508,24 @@ if(!d3.chart) d3.chart = {};
 
 d3.chart.chamberInfographic = function() {
 
+	var partyBandWidth = 30;
+
 	var chamberInfographic;
 
-	var dispatch = d3.dispatch("hover","selected");
+	var dispatch = d3.dispatch("party_hovered","party_selected","deputy_hovered","deputy_selected");
 	chart.on = dispatch.on;
 	var _dimensions;
 
-	var deputies;
+	var deputies, alliances = null;
 	var partiesMap, parties;
 
 	// @param dimensions : {x: , y: , width: , height: }
 	function chart(svgContainer, dimensions) {
 		_dimensions = dimensions;
-		chamberInfographic = svgContainer.append('g').attr('transform', 'translate(' + dimensions.x + ',' + dimensions.y + ')')
+		chamberInfographic = svgContainer.append('g').attr('transform', 'translate(' + (dimensions.x) + ',' + dimensions.y + ')')
+	
+		chamberInfographic.append('g').attr('class','deputies')
+		chamberInfographic.append('g').attr('class','parties')
 	}
 
 	chart.data = function(deputyNodes){
@@ -529,56 +534,277 @@ d3.chart.chamberInfographic = function() {
 		return chart;
 	}
 
+	chart.parties = function(deputyNodes){
+		if(!arguments.length) return parties;
+		return chart;
+	}
+
+	chart.setAlliances = function(electoralAlliances){
+		if(!arguments.length) return alliances;
+		alliances = electoralAlliances;
+		return chart;
+	}
+
 	chart.update = function(){
-		partiesMap = calcPartiesSizeAndCenter(deputyNodes)
-		parties = d3.entries(partiesMap).sort( function(a,b){ return (b.value.center[1]+1) - (a.value.center[1]+1);  })
-		//parties = d3.entries(partiesMap).sort( function(a,b){ return b.value.size - a.value.size;  })
+		partiesMap = calcPartiesSizeAndCenter(deputyNodes);
+
+		parties = d3.entries(partiesMap).sort( function(a,b){
+			return (b.value.center[1]+1) - (a.value.center[1]+1);  
+		})
 		parties.forEach(function(d,i){ partiesMap[d.key].rank = i });
 
+		if(alliances !== null){
+			calcAlliance(alliances);
+			parties.sort(function(a,b){
+				return (a.value.allianceRank != b.value.allianceRank)? 
+					a.value.allianceRank - b.value.allianceRank
+					:
+					(b.value.center[1]+1) - (a.value.center[1]+1);  
+			})
+		}
+
+
 		deputyNodes.sort( function(a,b){ 
-			return (a.party != b.party)? 
-			 	(partiesMap[a.party].rank - partiesMap[b.party].rank) 
-			 	: 
-			 	( (b.scatterplot[1]+1) - (a.scatterplot[1]+1) ); 
+			if(alliances !== null){
+				if(partiesMap[a.party].allianceRank != partiesMap[b.party].allianceRank) 
+					 return partiesMap[a.party].allianceRank - partiesMap[b.party].allianceRank;
+				else return (a.party != b.party)? 
+							(partiesMap[a.party].rank - partiesMap[b.party].rank) 
+							: 
+							( (b.scatterplot[1]+1) - (a.scatterplot[1]+1) ); 
+			}
+			else {
+				return (a.party != b.party)? 
+						(partiesMap[a.party].rank - partiesMap[b.party].rank) 
+						: 
+						( (b.scatterplot[1]+1) - (a.scatterplot[1]+1) ); 
+			}
 		})
+
+		updateDeputies();
+		updateParties();
+	}
+
+	function calcAlliance(a_alliances){
+		alliances = [];
+		// set argument to new alliances array
+		a_alliances.forEach( function (alliance){ alliances.push(alliance)})
+
+		alliances.forEach( function (alliance){
+			alliance.size = 0;
+			alliance.center =0;
+			alliance.partiesObjs = [];
+		})
+		//alliances.push( {name:'Non-Allied', parties:[], partiesObjs:[], size:0} );
+
+		// push the parties and calc number of deputies to/of each respective alliance
+		parties.forEach( function (partyObj){
+			var nonAllied = true;
+			alliances.forEach( function (alliance){
+				
+				alliance.parties.forEach( function (party){
+					if (partyObj.key == party) {
+						nonAllied = false;
+						alliance.size += partyObj.value.size;
+						alliance.center += partyObj.value.center[1] *partyObj.value.size;
+						alliance.partiesObjs.push(partyObj);
+					};
+				})
+			})
+
+			if(nonAllied){ 
+				alliances.push({
+					name: partyObj.key, 
+					parties:[partyObj.key], 
+					partiesObjs:[partyObj], 
+					center:partyObj.value.center[1] * partyObj.value.size, 
+					size:partyObj.value.size
+				})
+
+				// alliances[alliances.length-1].size += partyObj.value.size; 
+				// alliances[alliances.length-1].center += partyObj.value.center[1] * partyObj.value.size;
+				// alliances[alliances.length-1].partiesObjs.push(partyObj);    
+			}
+		})
+		// calc the average center 
+		alliances.forEach( function (alliance){
+			alliance.center /= alliance.size;
+		})
+		// sort by the center
+		alliances.sort( function (a,b) {
+			return (b.center+1) - (a.center+1);
+		})
+		// set the rank
+		alliances.forEach( function (alliance,i){
+			// alliance.rank = i;
+			alliance.partiesObjs.forEach( function (party){
+				//party.allianceRank = i;
+				partiesMap[party.key].allianceRank = i;
+			})
+		})
+	}
+
+	function updateDeputies(){
 
 		var circlePerAngle = 9;
 		function calcAngle(i){return Math.floor(i / circlePerAngle) / Math.floor( (deputyNodes.length - 1) / circlePerAngle) * Math.PI; }
 
-		var cicles = chamberInfographic.selectAll('circle')
+		var circles = chamberInfographic
+						.select('.deputies')
+						.attr('transform', 'translate(' + (partyBandWidth+4) + ',' + (_dimensions.height/2 -_dimensions.width) + ')')
+						.selectAll('circle')
 						.data(deputyNodes, function(d){ return d.deputyID})
 			
-		cicles.enter().append('circle')
+		circles.enter().append('circle')
+			.on("mouseover", mouseoverDeputy)
+			.on("mousemove", mousemoveDeputy)
+			.on("mouseout", mouseoutDeputy)
+			.on("click", mouseClickDeputy)
 				
-		cicles.exit().transition().remove();
+		circles.exit().transition().remove();
 
-		cicles.transition(2000)
+		circles.transition(2000)
 				.attr({
-					cy: function(d,i){ return _dimensions.width - (_dimensions.width-5 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
-					cx: function(d,i){ return _dimensions.width - (_dimensions.width-5 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
+					cy: function(d,i){ return _dimensions.width- (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
+					cx: function(d,i){ return _dimensions.width - (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
 					r: radius,
 					fill: function(d){ 
-						if(d.rate == null){
-							return CONGRESS_DEFINE.getPartyColor(d.party)
-						} else{ 
+						if(d.vote != null){
+							return CONGRESS_DEFINE.votoStringToColor[d.vote];
+						}
+						if(d.rate != null){
 							if (d.rate == "noVotes")
 								return 'darkgrey' 
 							else return CONGRESS_DEFINE.votingColor(d.rate)
+						} else{ 
+							return CONGRESS_DEFINE.getPartyColor(d.party)
 						} 
-					}
+					},
+					class: function(d) { return (d.selected)? "node selected" : "node"; } ,
+					id: function(d) { return "deputy-" + d.deputyID; }
 				})	
-
-
-
-		// TweenMax.to($('[data-deputado="' + t[i].number + '"]'), .5, {
-		// 			left: 470 - (f - i % r * s) * Math.cos(angle),
-		// 			top: 470 - (f - i % r * s) * Math.sin(angle),
-		// 			rotation: 180 * (angle / Math.PI),
-		// 			delay: .2 / Math.floor((len - 1) / r) * i
-		// 		})
-		// 	}
 	}
 
+	function updateParties(){
+		var arc = d3.svg.arc()
+			.outerRadius(_dimensions.width+partyBandWidth)
+			.innerRadius(_dimensions.width);
+
+		var innerArc = d3.svg.arc()
+			.outerRadius(_dimensions.width+partyBandWidth-2)
+			.innerRadius(_dimensions.width+2);
+
+		var pie = d3.layout.pie()
+			.sort(null)
+			.value(function(d) { return d.value.size; })
+			.startAngle(Math.PI *2 +0.02)
+			.endAngle( Math.PI -0.02);
+
+		var arcs = chamberInfographic
+					.select('.parties')
+					.attr("transform", "translate(" + (_dimensions.width+partyBandWidth+4) +"," + (_dimensions.height/2)  + ")")
+					.selectAll(".arc")
+					.data(pie(parties), function(d){return d.data.key})
+			
+		var enterArcs =
+			arcs.enter().append("g")
+				.attr("class", "arc")
+				.attr("id", function(d){return d.data.key});
+				
+		var paths = arcs.selectAll('path.main')
+						.data( function(d){ return [d] });
+
+		paths.enter().append('path').attr('class','main')
+		
+		paths.transition()
+			.attr("d", arc)
+			.style("fill", function(d) { return CONGRESS_DEFINE.getPartyColor(d.data.key); });
+
+
+		var innerPaths = arcs.selectAll('path.inner')
+						.data( function(d){ return [d] });
+		innerPaths.enter().append('path').attr('class','inner')
+		
+		innerPaths.transition()
+			.attr("d", function(d){ 
+				var newD = {
+					startAngle: d.startAngle - ( (d.startAngle - d.endAngle) * (d.data.value.selected/d.data.value.size) +0.01 ),
+					endAngle: (d.endAngle +0.01)
+				};
+				return innerArc(newD);
+			})
+			.attr("opacity", 0.8 )
+			.attr('visibility', function (d) {	return ( (d.data.value.selected/d.data.value.size)!=1 )? 'visible' : 'hidden';  })
+			.style("fill", 'white')
+			
+
+		var texts = arcs.selectAll('text')
+						.data( function(d){ return [d] });
+
+		texts.enter().append('text')
+
+		texts.transition()
+			.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+			.attr("dy", ".35em")
+			.style("text-anchor", "middle")
+			.text(function(d) { return (d.data.value.size > 10 )? d.data.key : ''; });
+
+		arcs.exit().remove()
+	}
+
+
+
+	// mouse OVER circle deputy
+	function mouseoverDeputy(d) {
+		d3.select(this).attr("r",radiusHover)
+
+		dispatch.deputy_hovered(d,true);
+
+		tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");
+		
+		return tooltip
+				.style("visibility", "visible")
+				.style("opacity", 1)
+	}	
+
+	// mouse MOVE circle deputy
+	function mousemoveDeputy() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
+
+	// mouse OUT circle deputy
+	function mouseoutDeputy(d){ 
+		d3.select(this).attr("r",radius);
+
+		dispatch.deputy_hovered(d,false);
+
+		return tooltip.style('visibility','hidden')
+	}
+
+	function mouseClickDeputy(d){
+		if (d3.event.shiftKey){	
+			// using the shiftKey deselect the deputy				
+			d.selected = false;
+			
+			//dispatch event of selected deputy
+			dispatch.deputy_selected()
+
+		} else 
+		if (d3.event.ctrlKey){
+			// using the ctrlKey add deputy to selection
+			d.selected = true;
+			
+			//dispatch event of selected deputy
+			dispatch.deputy_selected()
+
+		} 
+		else {
+			// a left click without any key pressed -> select only the deputy (deselect others)
+			deputies.forEach(function (deputy) { deputy.selected = false; })
+			d.selected = true;
+
+			//dispatch event of selected deputy
+			dispatch.deputy_selected()
+		}		
+	}
 
 	return d3.rebind(chart, dispatch, "on");
 }
