@@ -4,7 +4,7 @@ d3.chart.rollCallsScatterplot = function() {
 	var pxMargin = 10;
 	var scatterplot, g;
 	var data;
-	var dispatch = d3.dispatch("hover","selected");
+	var dispatch = d3.dispatch('update');
 
 	var colWidth = $('.canvas').width();
 
@@ -30,13 +30,12 @@ d3.chart.rollCallsScatterplot = function() {
 	    g.append("g")
 	    .classed("axis y", true)
 
-	    selectors('rollCall',chart.dispatchSelected);
+	    selectors('rollCall',dispatch.update);
 	}
 
 	chart.on = dispatch.on;
 
-	chart.update = update;
-	function update() {
+	chart.update = function(){
 		
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
@@ -50,7 +49,6 @@ d3.chart.rollCallsScatterplot = function() {
 			.attr('width', width + margin.right + margin.left)
 			.attr('height', height + margin.top + margin.bottom)
 			
-
 		g
 			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 			.attr('width', width)
@@ -86,76 +84,82 @@ d3.chart.rollCallsScatterplot = function() {
 		var circles = g.selectAll("circle")
 			.data(data, function(rollCall){ return rollCall.rollCallID; });
 
-		circles.enter().append("circle");
+		circles.enter().append("circle")
+							.on("mouseover", mouseOverVoting)
+							.on("mousemove", mousemoveVoting)
+							.on("mouseout", mouseOutVoting)
+							.on("click", mouseClickVoting)
 
 		circles
-		.transition()
-		.attr({
-			cx: function (d) { return scaleX(d.scatterplot[0]); },
-			cy: function (d) { return scaleY(d.scatterplot[1]); },
-			r: 4,
-			class: "node selected",
-			fill: function (d) { return CONGRESS_DEFINE.votingColor(d.rate) },
-			id: function (d) { return 'rollCall-'+d.rollCallID }
-		})
-		circles.exit().transition().remove();
+			.transition()
+			.attr({
+				cx: function (d) { return scaleX(d.scatterplot[0]); },
+				cy: function (d) { return scaleY(d.scatterplot[1]); },
+				r: function(d){ return (d.hovered)? radiusHover : radius },
+				class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
+				id: function (d) { return 'rollCall-'+d.rollCallID }
+			})
+			.style('fill', setRollCallFill )
 
-		circles
-			.on("mouseover", mouseOverVoting)
-			.on("mousemove", mousemoveVoting)
-			.on("mouseout", mouseOutVoting)
-			.on("click", mouseClickVoting)
+		circles.exit().transition().remove();				
+	}
 
-		// mouse OVER circle voting
-		function mouseOverVoting(d) {
-			d3.select(this).attr("r",8)
-	
-			dispatch.hover(d);
-
-			tooltip.html(d.type+' '+d.number+'/'+d.year+"<br/>Tags: "+motions[d.type+d.number+d.year].tags +'<br/></em>'+ d.summary+"</em>"+ "<br/><em>Click to select</em>");
-			return tooltip
-					.style("visibility", "visible")
-					.style("opacity", 1);
-		}	
-
-		// mouse OUT circle voting
-		function mouseOutVoting(d){ 
-			d3.select(this).attr("r",4)
-				
-			dispatch.hover(null);
-				
-			return tooltip.style("visibility", "hidden");
+	function setRollCallFill (d){
+		if(d.vote != null){
+			return CONGRESS_DEFINE.votoStringToColor[d.vote];
 		}
+		if(d.rate != null){
+			if (d.rate == "noVotes")
+				return 'grey' 
+			else return CONGRESS_DEFINE.votingColor(d.rate)
+		} else{ 
+			return 'grey';
+		} 
+	}
 
-		// mouse MOVE circle voting
-		function mousemoveVoting() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
+	// mouse OVER circle voting
+	function mouseOverVoting(d) {
+		d.hovered = true;
+
+		dispatch.update();
+
+		tooltip.html(d.type+' '+d.number+'/'+d.year+"<br/>Amendment: "+motions[d.type+d.number+d.year].amendment +'<br/></em>'+ d.summary+"</em>"+ "<br/><em>Click to select</em>");
+		return tooltip
+				.style("visibility", "visible")
+				.style("opacity", 1);
+	}	
+
+	// mouse OUT circle voting
+	function mouseOutVoting(d){ 
+		d.hovered = false;
+			
+		dispatch.update();
+			
+		return tooltip.style("visibility", "hidden");
+	}
+
+	// mouse MOVE circle voting
+	function mousemoveVoting() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
+	
+	function mouseClickVoting(d) { 
+		if (d3.event.shiftKey){	
+			// using the shiftKey deselect the rollCall				
+			d.selected = false;
+		} else 
+		if (d3.event.ctrlKey){
+			// using the ctrlKey add rollCalls to selection
+			d.selected = true;
+		} 
+		else {
+			// a left click without any key pressed -> select only the state (deselect others)
+			data.forEach( function (rollCall) {
+				rollCall.selected = false;
+			})
+			d.selected = true;
+		}
 		
-		function mouseClickVoting(d) { 
-			if (d3.event.shiftKey){	
-				// using the shiftKey deselect the rollCall				
-				d3.select(this).classed('selected',false);
-				
-				//dispatch event of selected rollCalls
-				chart.dispatchSelected();
-
-			} else 
-			if (d3.event.ctrlKey){
-				// using the ctrlKey add rollCalls to selection
-				d3.select(this).classed('selected',true);
-				
-				//dispatch event of selected rollCalls
-				chart.dispatchSelected();
-
-			} 
-			else {
-				// a left click without any key pressed -> select only the state (deselect others)
-				g.selectAll('circle').classed('selected',false)
-				d3.select(this).classed('selected',true);
-
-				//dispatch event of selected states
-				chart.dispatchSelected();
-			}
-		}		
+		//dispatch event of selected rollCalls
+		dispatch.update()
 	}
 
 	chart.data = function(value) {
@@ -173,71 +177,6 @@ d3.chart.rollCallsScatterplot = function() {
 		height = value;
 		return chart;
 	}
-
-	// change the colors of RollCalls acording to the deputy vote
-	chart.highlightDeputyVotes = function( deputyID, mouseover) {
-
-		if(!mouseover) {
-			chart.setDeputyVotingRate();
-		} else {
-			g.selectAll('.node').attr('fill', function (rollCall){
-				var color = 'grey';
-
-				rollCall.votes.forEach( function(vote){
-					if(vote.deputyID == deputyID){
-						color = CONGRESS_DEFINE.votoStringToColor[vote.vote];
-					}
-				})
-
-				return  color;
-			})
-		}
-	}
-
-	chart.setDeputyVotingRate = function () {
-		function distance(a,b){ return Math.sqrt( Math.pow(b - a, 2) )}
-
-		g.selectAll('.node')
-			.attr('fill', function (rollCall) { 
-				return (rollCall.rate == 'noVotes')? 'darkgrey' : CONGRESS_DEFINE.votingColor(rollCall.rate);  
-			})
-			//.attr('r', function(rollCall){ return radius + (radius)*distance(rollCall.rate,rollCall.periodRate);})
-	}
-
-	chart.getSelected = function(){
-		var selected = [];
-		g.selectAll('.node.selected').each( function(d){ selected.push(d) })
-		return selected;
-	}
-
-	chart.dispatchSelected = function(){
-		dispatch.selected( chart.getSelected());
-	}
-
-	chart.isSelected = function(rollCallID){
-		return g.select('.node#rollCall-'+rollCallID).classed('selected')
-	}
-
-	chart.reset = function(){
-		g.selectAll('circle').classed('selected',true);
-		chart.dispatchSelected()
-	}
-
-	chart.unselectAll = function(){
-		g.selectAll('circle').classed('selected',false);
-		chart.dispatchSelected()
-	}
-
-	chart.selectRollCall = function(rollCallID){
-		g.select('.node#rollCall-'+rollCallID).classed('selected',true)
-		chart.dispatchSelected()
-	}
-
-	chart.unselectRollCall = function(rollCallID){
-		g.select('.node#rollCall-'+rollCallID).classed('selected',false)
-		chart.dispatchSelected()
-	}
-
 
 	return d3.rebind(chart, dispatch, "on");
 }

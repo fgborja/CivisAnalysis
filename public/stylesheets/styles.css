@@ -85,7 +85,11 @@ h2 {text-align: center;}
 }
 
 .node.selected {
-  opacity: 1;
+  opacity: 1 !important;
+}
+
+.node.hovered {
+  opacity: 0.4;
 }
 
 .selectorRect {

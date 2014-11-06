@@ -7,7 +7,9 @@ function setDeputyModal_SearchAll(){
 
 function setDeputyModal_ListSelected(){
 	setDeputyModal_Init();
-	setDeputyModal_setTable(deputiesScatterplot.getSelected());
+	var selectedDeputies = [];
+	deputyNodes.forEach( function (deputy) { if(deputy.selected) selectedDeputies.push(deputy) });
+	setDeputyModal_setTable(selectedDeputies);
 }
 
 function setDeputyModal_Init(){
@@ -27,6 +29,10 @@ function setDeputyModal_Init(){
 		 	+'</ul>'
 	 	+'</div>'
 	);
+
+	$('.modal').on('hidden.bs.modal', function () {
+		updateDeputies();
+	})
 }
 
 
@@ -44,9 +50,10 @@ function setDeputyModal_setTable(data){
                 defaultContent: ''
             }
 		],
-		createdRow: function ( row, data, index ) {
+		createdRow: function ( row, deputy, index ) {
+			// create the checkbox button
             var btn;
-            if ( deputiesScatterplot.isSelected( data.deputyID ) ) {
+            if ( deputy.selected ) {
             	btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-check"></span>');
             } else{ btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-unchecked"></span>'); }
 
@@ -56,9 +63,9 @@ function setDeputyModal_setTable(data){
 					btn.toggleClass('glyphicon-unchecked')
 
 					if (btn.hasClass('glyphicon-check')) {
-						deputiesScatterplot.selectDeputy(data.deputyID);
+						deputy.selected = true;
 					} else {
-						deputiesScatterplot.unselectDeputy(data.deputyID);
+						deputy.selected = false;
 					}
 			});
         }
@@ -71,7 +78,8 @@ function setDeputyModal_setTable(data){
 	var selectAll = $('.modal-body table .btn#selectAll');
 	selectAll.css('text-align','left');
 	selectAll.click( function () {
-		deputiesScatterplot.reset();
+		// select all deputies
+		modals.selectAllDeputies();
 		rows.$('span').removeClass('glyphicon-unchecked')
 		rows.$('span').addClass('glyphicon-check')
 	});
@@ -79,7 +87,8 @@ function setDeputyModal_setTable(data){
 	var selectNone = $('.modal-body table .btn#selectNone')
 	selectNone.css('text-align','left');
 	selectNone.click( function () {
-		deputiesScatterplot.unselectAll();
+		// unselect all deputies
+		modals.unselectAllDeputies();
 		rows.$('span').removeClass('glyphicon-check')
 		rows.$('span').addClass('glyphicon-unchecked')
 	});
@@ -87,9 +96,28 @@ function setDeputyModal_setTable(data){
 }
 //=============================================================================
 //=============================================================================
+var modals = {
 
-
-
+	unselectAllDeputies	: function(){
+		deputyNodes.forEach( function (deputy) { deputy.selected = false; });
+		updateDeputies();
+	}
+	,
+	selectAllDeputies	: function(){
+		deputyNodes.forEach( function (deputy) { deputy.selected = true; });
+		updateDeputies();
+	}
+	,
+	unselectAllRollCalls	: function(){
+		rollCallNodes.forEach( function (rollCall) { rollCall.selected = false; });
+		updateRollCalls();
+	}
+	,
+	selectAllRollCalls		: function(){
+		rollCallNodes.forEach( function (rollCall) { rollCall.selected = true; });
+		updateRollCalls();
+	}
+}
 
 //=============================================================================
 // RollCall - Modal
@@ -102,7 +130,9 @@ function setRollCallModal_SearchAll(){
 
 function setRollCallModal_ListSelected(){
 	setRollCallModal_Init()
-	setRollCallModal_setTable( rollCallsScatterplot.getSelected())
+	var selectedRollCalls = [];
+	rollCallNodes.forEach( function (rollCall) { if(rollCall.selected) selectedRollCalls.push(rollCall) })
+	setRollCallModal_setTable( selectedRollCalls )
 	//setRollCallModal_Click();
 }
 
@@ -123,6 +153,10 @@ function setRollCallModal_Init(){
 		 	+'</ul>'
 	 	+'</div>'
 	)
+
+	$('.modal').on('hidden.bs.modal', function () {
+		updateRollCalls();
+	})
 }
 
 function setRollCallModal_setTable(data){
@@ -145,9 +179,9 @@ function setRollCallModal_setTable(data){
             },	
 			{ data: function(d){ return motions[d.type+d.number+d.year].tags }, visible: false, orderable: false }
         ],
-		createdRow: function ( row, data, index ) {
+		createdRow: function ( row, rollCall, index ) {
 			var btn;
-            if ( rollCallsScatterplot.isSelected( data.rollCallID ) ) {
+            if ( rollCall.selected ) {
             	btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-check"></span>');
             } else{ btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-unchecked"></span>'); }
 
@@ -157,9 +191,9 @@ function setRollCallModal_setTable(data){
 					btn.toggleClass('glyphicon-unchecked')
 
 					if (btn.hasClass('glyphicon-check')) {
-						rollCallsScatterplot.selectRollCall(data.rollCallID);
+						rollCall.selected = true;
 					} else {
-						rollCallsScatterplot.unselectRollCall(data.rollCallID);
+						rollCall.selected = false;
 					}
 			});
         }
@@ -172,7 +206,7 @@ function setRollCallModal_setTable(data){
 	var selectAll = $('.modal-body table .btn#selectAll');
 	selectAll.css('text-align','left');
 	selectAll.click( function () {
-		rollCallsScatterplot.reset();
+		modal.selectAllRollCalls();
 		rows.$('span').removeClass('glyphicon-unchecked')
 		rows.$('span').addClass('glyphicon-check')
 	});
@@ -180,7 +214,7 @@ function setRollCallModal_setTable(data){
 	var selectNone = $('.modal-body table .btn#selectNone')
 	selectNone.css('text-align','left');
 	selectNone.click( function () {
-		rollCallsScatterplot.unselectAll();
+		modals.unselectAllRollCalls();
 		rows.$('span').removeClass('glyphicon-check')
 		rows.$('span').addClass('glyphicon-unchecked')
 	});

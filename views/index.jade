@@ -48,7 +48,7 @@ html
 							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
 								span.glyphicon.glyphicon-list 
 								text  List Selected
-							a.btn( onclick='javascript:deputiesScatterplot.reset()')
+							a.btn( onclick='javascript:modals.selectAllDeputies()')
 								span.glyphicon.glyphicon-remove
 								text  Reset Selection
 				
@@ -140,11 +140,13 @@ html
 		script(src='./javascripts/selectionModule.js')
 
 		script(src='./javascripts/deputiesScatterplot.js')
-		script(src='./javascripts/deputiesGraph.js')
+		//script(src='./javascripts/deputiesGraph.js')
 		script(src='./javascripts/rollCallsScatterplot.js')
 		script(src='./javascripts/rollCallsTimeLine.js')
 		script(src='./javascripts/brazilianStates.js')
-		script(src='./javascripts/partiesInfographic.js')
+		// script(src='./javascripts/partiesInfographic.js')
+		script(src='./javascripts/chamberInfographic.js')
 		script(src='./javascripts/modals.js')
+		script(src='./javascripts/labelManager.js')
 
 		script(src='./javascripts/chamberOfDeputiesVisualization.js')

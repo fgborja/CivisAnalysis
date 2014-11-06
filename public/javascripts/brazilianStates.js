@@ -37,7 +37,8 @@ d3.chart.brazilianStates = function() {
 
 	var svg;
 	var data;
-	var dispatch = d3.dispatch("hover","selected");
+	var deputies;
+	var dispatch = d3.dispatch("update");
 
 	var colWidth = $('.canvas').width();
 
@@ -72,7 +73,8 @@ d3.chart.brazilianStates = function() {
 			.attr("height", height)
 			.on("click", function(){ 
 				chart.selectAllStates(); 
-				dispatch.selected( null ); 
+				deputies.forEach( function (deputy) { deputy.selected = true });
+				dispatch.update(); 
 			})
 			.attr("fill","white")
 
@@ -91,12 +93,17 @@ d3.chart.brazilianStates = function() {
 				.attr("d", path)
 				.attr("id", function(d) { return state[ d.properties.NAME_1 ] ; })
 				.attr("class", "states selected")
+
 				.on("mouseover", function (d) { 
 					d3.select(this).classed('mouseover',true) ; 
 					setStateStyle(d3.select(this));
 
+					deputies.forEach(function (deputy) {
+						deputy.hovered = (deputy.district == state[d.properties.NAME_1])? true : false;
+					})
+
 					//dispatch event of hovering state.
-					dispatch.hover( d3.select(this).attr('id'))  
+					dispatch.update()  
 
 					tooltip.html(chart.renderStateTooltip(d));
 					return tooltip
@@ -110,8 +117,12 @@ d3.chart.brazilianStates = function() {
 					d3.select(this).classed('mouseover',false); 
 					setStateStyle(d3.select(this));
 
+					deputies.forEach(function (deputy) {
+						deputy.hovered = false;
+					}) 
+
 					//dispatch event of end of hover
-					dispatch.hover( null ) 				
+					dispatch.update() 				
 					return tooltip.style("visibility", "hidden");			
 				})
 				.on("click",function (d) {
@@ -121,51 +132,48 @@ d3.chart.brazilianStates = function() {
 						// using the shiftKey deselect the state					
 						d3.select(this).classed('selected',false);
 						setStateStyle(d3.select(this));
-
-						//dispatch event of selected states
-						dispatch.selected( state[d.properties.NAME_1],'EXCLUDE')
+						deputies.forEach(function (deputy) {
+							deputy.selected = (deputy.district == state[d.properties.NAME_1])? false : deputy.selected;
+						})
 
 					} else 
 					if (d3.event.ctrlKey){
 						// using the ctrlKey add state to selection
 						d3.select(this).classed('selected',true);
 						setStateStyle(d3.select(this));
-
-						//dispatch event of selected states
-						dispatch.selected( state[d.properties.NAME_1],'ADD')
-
+						deputies.forEach(function (deputy) {
+							deputy.selected = (deputy.district == state[d.properties.NAME_1])? true : deputy.selected;
+						})
 					}
 					else {
 						// a left click without any key pressed -> select only the state (deselect others)
 						svg.selectAll('.states').each( function(i){ 
 							if(i.properties.NAME_1 == d.properties.NAME_1) d3.select(this).classed('selected',true);
 							else d3.select(this).classed('selected',false);
-
 							setStateStyle(d3.select(this));
+						
 						}) 
 
-						//dispatch event of selected states
-						dispatch.selected( state[d.properties.NAME_1],'SET')
+						deputies.forEach(function (deputy) {
+							deputy.selected = (deputy.district == state[d.properties.NAME_1])? true : false;
+						})
 					}
-
-					tooltip.html(chart.renderStateTooltip(d));				
+					
+					dispatch.update()
+					tooltip.html(chart.renderStateTooltip(d));	
 				})
 				// html tooltip
 				//.append("title").text( function (d) { return d.properties.NAME_1 });	
-
 				setStatesStyle()
 		});
 	}
 
 	chart.on = dispatch.on;
 
-	// return an object-map of selected states 
-	// getSelectedStates = 
-	// 	function getSelectedStates(){
-	// 		var c = {};
-	// 		svg.selectAll(".states.selected").each( function(d){ c[ state[d.properties.NAME_1] ]= d;  })
-	// 		return c;
-	// 	}
+	chart.deputies = function (deputyNodes){
+		deputies = deputyNodes;
+		return chart;
+	}
 
 	chart.getStates = 
 		function getStates(){

@@ -89,6 +89,8 @@
 
 								//TODO party manager
 								if(deputy.party == 'Solidaried') deputy.party = 'SDD';
+								if(deputy.party == 'S.Part.') deputy.party = 'NoParty';
+
 							})
 							rollCall.votes = rollCall.votos.Deputado;
 							delete rollCall.votos;
@@ -296,6 +298,7 @@
 							vote.name = deputiesArray[vote.deputyID].name;
 							vote.district = deputiesArray[vote.deputyID].district; // assuming the distric does not change for the congressman
 							if(vote.party == 'Solidaried') vote.party = 'SDD';
+							if(vote.party == 'S.Part.') vote.party = 'NoParty';
 						})
 					}
 

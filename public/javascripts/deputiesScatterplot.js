@@ -7,7 +7,7 @@
 // }
 
 var radius = 3.7;
-var radiusHover = radius*1.5;
+var radiusHover = radius*2;
 var pxMargin = radius+5;
 
 if(!d3.chart) d3.chart = {};
@@ -15,7 +15,7 @@ if(!d3.chart) d3.chart = {};
 d3.chart.deputiesScatterplot = function() {
 	var g;
 	var data;
-	var dispatch = d3.dispatch("hover","selected");
+	var dispatch = d3.dispatch("update");
 
 	var _dimensions ={};
 	var colWidth = $('.canvas').width();
@@ -55,7 +55,7 @@ d3.chart.deputiesScatterplot = function() {
 
 
 
-		selectors('deputy', dispatch.selected );
+		selectors('deputy', dispatch.update );
 		
 		//update();
 	}
@@ -114,25 +114,22 @@ d3.chart.deputiesScatterplot = function() {
 		.attr({
 			cx: function (d) { return scaleX(d.scatterplot[0]); },
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
-			r: radius,
-			class: function(d) { return (d.selected)? "node selected" : "node"; } ,
+			r: function(d){ return (d.hovered)? radiusHover : radius },
+			class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
-
-		circles.style('fill',setDeputyFill )
+		.style('fill',setDeputyFill )
 
 		
 		circles.exit().transition().remove();
 			
 		// mouse OVER circle deputy
 		function mouseoverDeputy(d) {
-			d3.select(this).attr("r",radiusHover)
-	
-			dispatch.hover(d,true);
+			d.hovered = true;
+			dispatch.update();
 
-			tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");
-			
+			tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");			
 			return tooltip
 					.style("visibility", "visible")
 					.style("opacity", 1)
@@ -143,10 +140,8 @@ d3.chart.deputiesScatterplot = function() {
 
 		// mouse OUT circle deputy
 		function mouseoutDeputy(d){ 
-			d3.select(this).attr("r",radius);
-
-			dispatch.hover(d,false);
-
+			d.hovered = false;
+			dispatch.update()
 			return tooltip.style('visibility','hidden')
 		}
 
@@ -154,25 +149,17 @@ d3.chart.deputiesScatterplot = function() {
 			if (d3.event.shiftKey){	
 				// using the shiftKey deselect the deputy				
 				d.selected = false;
-				console.log(d)
-				//dispatch event of selected deputy
-				dispatch.selected()
-
 			} else 
 			if (d3.event.ctrlKey){
 				// using the ctrlKey add deputy to selection
 				d.selected = true;
-				//dispatch event of selected deputy
-				dispatch.selected()
-
 			} 
 			else {
 				// a left click without any key pressed -> select only the deputy (deselect others)
 				data.forEach(function (deputy) { deputy.selected = false; })
-				d.selected = true;
-				//dispatch event of selected states
-				dispatch.selected()
-			}		
+				d.selected = true;				
+			}	
+			dispatch.update()	
 		}				
 
 	}
@@ -194,45 +181,6 @@ d3.chart.deputiesScatterplot = function() {
 		return chart;
 	}
 
-	// 'hover' deputies of a single state (or null)
-	chart.highlightDistrict = function (district){
-
-		g.selectAll('.node').attr('r', function (d){   
-			if(d.district == district) 
-				 return radiusHover;
-			else return radius;
-		})
-
-		if(district != null)
-			sortNodesByAtribute('district',district)
-	}
-
-	chart.highlightDeputy = function( deputyID, mouseover) {
-		if(mouseover){
-			g.selectAll('#deputy-'+deputyID).attr("r",radiusHover);
-		}else{
-			g.selectAll('#deputy-'+deputyID).attr("r",radius);
-		}
-		
-	}
-
-	// @param hoverParties : Object
-	chart.highlightParties = function(hoverParties){
-
-		if(hoverParties != null){
-			g.selectAll('.node').attr('r', function (d){   
-				if(hoverParties[ d.party] !== undefined) 
-					 return radiusHover;
-				else return radius;
-			})
-
-			// sort elements 
-			$.each( hoverParties, function(party){
-				sortNodesByAtribute('party',party);	
-			})		
-		}
-		else g.selectAll('.node').attr('r', radius)
-	}
 	// @param selectParties : Array	
 
 	function setDeputyFill( d ){ 
@@ -241,18 +189,11 @@ d3.chart.deputiesScatterplot = function() {
 		}
 		if(d.rate != null){
 			if (d.rate == "noVotes")
-				return 'darkgrey' 
+				return 'grey' 
 			else return CONGRESS_DEFINE.votingColor(d.rate)
 		} else{ 
 			return CONGRESS_DEFINE.getPartyColor(d.party)
 		} 
-	}
-
-	function sortNodesByAtribute( attr , value){
-			g.selectAll('.node').sort(function (a, b) { // select the parent and sort the path's
-				if (a[attr] != value) return -1;               // a is not the hovered element, send "a" to the back
-				else return 1;                             // a is the hovered element, bring "a" to the front
-			});
 	}
 
 	return d3.rebind(chart, dispatch, "on");
