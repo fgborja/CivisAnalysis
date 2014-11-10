@@ -92,7 +92,8 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 				deputiesLabel: {x:canvasDimension.width*0.35, y:canvasDimension.height/2, width: canvasDimension.width*0.35, height:0 },
 				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
 			} 
-		);
+		)
+		labelManager.on('update', updateDeputies);
 	// ====================================================================================
 
 	// ====================================================================================
@@ -342,7 +343,6 @@ function updateRollCalls(){
 }
 
 function updateDeputies(){
-
 	var selectedDeputies = [];
 	var hoveredDeputies = [];
 	deputyNodes.forEach(function (deputy) { 

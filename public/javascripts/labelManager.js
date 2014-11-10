@@ -17,6 +17,7 @@ d3.chart.labelManager = function() {
 		}
 
 	var labels;
+	var votesPieChart;
 
 	var dispatch = d3.dispatch('update');
 	chart.on = dispatch.on;
@@ -32,8 +33,22 @@ d3.chart.labelManager = function() {
 				.attr('class','labels')
 
 		labels.append('g').attr('class','parties')
-		labels.append('g').attr('class','deputies')
 		labels.append('g').attr('class','rollCalls')
+		
+		var deputiesLabel = labels.append('g').attr('class','deputies')
+			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.x+30)+","+_dimensions.deputiesLabel.y+")"})
+			
+			deputiesLabel.append('circle')
+					.attr({
+						r:_dimensions.deputiesLabel.width/2+10,
+						fill: 'white',
+						stroke: 'black',
+						'stroke-width': '2px',
+						'stroke-opacity': 0.2
+					})
+
+		votesPieChart = d3.chart.votesPieChart({labels:false});
+		votesPieChart(deputiesLabel, {x:0, y:52, width:80, height:80} );
 	}
 
 	chart.deputies = function(deputyNodes){
@@ -57,7 +72,7 @@ d3.chart.labelManager = function() {
 	}
 
 	chart.update = function(){ 
-		flags.rollCalls.hovered = false;
+		flags.rollCalls.hovered = null;
 
 		var deputiesSelected = [];
 		deputies.forEach( function (deputy) {
@@ -68,9 +83,10 @@ d3.chart.labelManager = function() {
 		var rollCallsSelected = [];
 		rollCalls.forEach( function (rollCall) {
 			if(rollCall.selected) rollCallsSelected.push(rollCall);
-			if(rollCall.hovered) flags.rollCalls.hovered = true;
+			if(rollCall.hovered) flags.rollCalls.hovered = rollCall;
 		})
 		flags.rollCalls.selected = rollCallsSelected.length;
+		if( (rollCallsSelected.length == 1) && (flags.rollCalls.hovered == null) ) flags.rollCalls.hovered = rollCallsSelected[0];
 		// var rollCallsSelected = [];
 		// rollCalls.forEach( function (rollCall) {
 		// 	if(rollCall.selected) rollCallsSelected.push(deputy);
@@ -87,29 +103,21 @@ d3.chart.labelManager = function() {
 	}
 
 	function deputiesLabel() {
-		var cdy =-25; //(flags.rollCalls.selected != flags.rollCalls.total)? -25 : -15;
+		votesPieChart.visible(false);
 
-		labels.select('.deputies g').remove();
+		var cdy =-35; //(flags.rollCalls.selected != flags.rollCalls.total)? -25 : -15;
+
+		labels.select('.deputies .texts').remove();
 
 		var text1 = (flags.deputies.selected == flags.deputies.total)?
 					(flags.deputies.total+' Deputies')
 					:
 					(flags.deputies.selected+' Deputies selected');
 
-		var g = labels.select('.deputies').append('g')
-			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.x+30)+","+_dimensions.deputiesLabel.y+")"})
-			
+		var g = labels.select('.deputies').append('g').attr('class','texts')
+						
 		g.transition()
 			.attr('opacity',1);
-
-			g.append('circle')
-				.attr({
-					r:_dimensions.deputiesLabel.width/2+10,
-					fill: 'white',
-					stroke: 'black',
-					'stroke-width': '2px',
-					'stroke-opacity': 0.2
-				})
 
 			g.append('text').text(text1)
 				.attr({
@@ -149,7 +157,15 @@ d3.chart.labelManager = function() {
 		if( (flags.rollCalls.selected != flags.rollCalls.total) || flags.rollCalls.hovered ){
 
 			if( flags.rollCalls.hovered || (flags.rollCalls.selected==1) ){
+				votesPieChart.visible(true);
+
 				// one roll call selected
+				var rollCall = flags.rollCalls.hovered;
+
+				votesPieChart.rollCall(rollCall);
+				votesPieChart.deputies(deputies);
+				votesPieChart.update();
+				votesPieChart.on('update', dispatch.update )
 
 			}else{
 				var gg = g.append('g').attr("transform", function(d){return "translate("+(0.8 *(-_dimensions.deputiesLabel.width/2))+","+cdy+")"})
@@ -187,21 +203,13 @@ d3.chart.labelManager = function() {
 
 				g.append('text').text('the selected motions')
 					.attr({
-						dy: 75,
+						dy: 65,
 						'font-size': 'small',
 						fill:'grey',
 						'text-anchor': 'middle'
 					})
 			}
 		}
-
-
-		
-			
-		
-				
-
-
 	}
 
 	function rollCallsLabel() {
@@ -210,3 +218,4 @@ d3.chart.labelManager = function() {
 
 	return d3.rebind(chart, dispatch, "on");
 }
+
