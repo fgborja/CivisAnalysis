@@ -174,7 +174,7 @@ d3.chart.timeline = function() {
 
 			// Initialize the brush component with pretty resize handles.
 			gBrush = g.append("g").attr("class", "brush").call(brush);
-			gBrush.selectAll("rect").attr("height", histogramHeight);
+			gBrush.selectAll("rect").attr("height", height+histogramHeight);
 			gBrush.selectAll(".resize").append("path").attr("d", resizePath);
 
 			// Only redraw the brush if set externally.
@@ -202,11 +202,12 @@ d3.chart.timeline = function() {
 		function scaleX_middleOfYear(year) { return (x(new Date(year+1,0)) -  x(new Date(year,0)))/2 + x(new Date(year,0)) }
 
 		d3.range(1991,2015).forEach(function(year){ 
-			yearColumms.append('path').attr({
-				d: 'M '+scaleX_middleOfYear(year)+' 10 V '+(height-y),
-				stroke:'grey',
-				'stroke-dasharray':"10,10"
-			})    
+			if((year+1)%2)
+				yearColumms.append('path').attr({
+					d: 'M '+scaleX_middleOfYear(year)+' 10 V '+(height),
+					stroke:'grey',
+					'stroke-dasharray':"10,10"
+				})    
 		})
 
 		var scaleYearExtents = {};
