@@ -111,6 +111,23 @@ d3.chart.timeline = function() {
 		  .attr("width", x(extent[1]) - x(extent[0]));
 	  //dimension.filterRange(extent);
 	  //console.log(extent)
+	  
+	var labels = svg.selectAll('.dateLabel')
+		.data(extent)
+	  	
+	labels.enter()
+  		.append('text')
+  			.attr({
+  				'class':'dateLabel',
+  				opacity: 0.8
+  			});
+
+	labels.transition()
+		.attr({
+			y: function(d,i){ return (i)? histogramHeight : histogramHeight/3; },
+		  	x: function(d,i){ return ((i)? +35 : -40) + x(d);} 
+		})
+		.text( function(d){return d.toLocaleDateString();})
 	});
 
 	brush.on("brushend.chart", function() {
@@ -477,6 +494,7 @@ d3.chart.timeline = function() {
 	}
 
 	function presetDateRangeButtonSelected(d){
+		svg.selectAll('.dateLabel').remove();
 		// clear selected alliance
 		dispatch.setAlliances(null);
 		svg.select('.glyphicon.selected').classed('selected',false);
