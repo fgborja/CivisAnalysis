@@ -12,6 +12,8 @@ d3.chart.chamberInfographic = function() {
 	chart.on = dispatch.on;
 	var _dimensions;
 
+	var sortByAlliance = true;
+
 	var deputies, alliances = null;
 	var partiesMap, parties;
 
@@ -28,6 +30,12 @@ d3.chart.chamberInfographic = function() {
 	chart.data = function(deputyNodes){
 		if(!arguments.length) return deputies;
 		deputies = deputyNodes;
+		return chart;
+	}
+
+	chart.sortByAlliance = function(value){
+		if(!arguments.length) return sortByAlliance;
+		sortByAlliance = value;
 		return chart;
 	}
 
@@ -50,7 +58,7 @@ d3.chart.chamberInfographic = function() {
 		})
 		parties.forEach(function(d,i){ partiesMap[d.key].rank = i });
 
-		if(alliances !== null){
+		if(sortByAlliance && (alliances !== null)){
 			calcAlliance(alliances);
 			parties.sort(function(a,b){
 				return (a.value.allianceRank != b.value.allianceRank)? 
@@ -62,7 +70,7 @@ d3.chart.chamberInfographic = function() {
 
 
 		deputyNodes.sort( function(a,b){ 
-			if(alliances !== null){
+			if( sortByAlliance && (alliances !== null)){
 				if(partiesMap[a.party].allianceRank != partiesMap[b.party].allianceRank) 
 					 return partiesMap[a.party].allianceRank - partiesMap[b.party].allianceRank;
 				else return (a.party != b.party)? 
@@ -297,7 +305,7 @@ d3.chart.chamberInfographic = function() {
 				.attr( { 
 					cursor : 'pointer'
 				})
-				//.on(allianceInteractions)	
+				.on(allianceInteractions())	
 				
 		var paths = arcs.selectAll('path.main')
 						.data( function(d){ return [d] });
@@ -420,6 +428,86 @@ d3.chart.chamberInfographic = function() {
 				(((party.value.selected/party.value.size)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.size)+')';
 
 		return party.key+"<br/><em>"+ selectedRate +"</em><br/><em>Click to select</em>"
+	}
+
+	function allianceInteractions(){
+		var interactions = {
+			mouseover: function(d){ 
+				var hoverParties = {};
+				d.data.partiesObjs.forEach( function(party) { 
+					hoverParties[party.key] = true;
+				})
+
+				deputies.map(function(d){ 
+					d.hovered = (hoverParties[d.party] !== undefined)? true : false;
+				})	
+
+				dispatch.update();
+
+				tooltip.html(renderAllianceTooltip(d));
+				return tooltip
+					.style("visibility", "visible")
+					.style("opacity", 1);
+			},
+			mousemove: function(){
+				return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 25)+"px");
+			},
+			mouseout: function(d){
+				deputies.map(function(d){ 
+					d.hovered = false;
+				})	 
+				dispatch.update();
+				return tooltip.style("visibility", "hidden");
+			},
+			click: function(d){
+					var selectedParties = {};
+					d.data.partiesObjs.forEach( function(party) { 
+						selectedParties[party.key] = true;
+					})
+
+					if (d3.event.shiftKey){ // EXCLUDE
+						deputies.map(function(d){ 
+							d.selected = (selectedParties[d.party] !== undefined)? false : d.selected;
+						})	
+					} else 
+					if (d3.event.ctrlKey){
+						deputies.map(function(d){ 
+							d.selected = (selectedParties[d.party] !== undefined)? true : d.selected;
+						})	
+					} 
+					else {
+						deputies.map(function(d){ 
+							d.selected = (selectedParties[d.party] !== undefined)? true : false;
+						})	
+					}
+
+				dispatch.update();
+				tooltip.html(renderAllianceTooltip(d));
+			}
+		}
+
+		return interactions;
+	}
+
+	function renderAllianceTooltip (d){
+		var html = '';
+		var selected = 0;
+		var alliance = d.data;
+
+		alliance.partiesObjs.forEach( function (party){
+			var selectedRate = 
+				(party.value.selected == party.value.size)?
+					party.value.size
+					:
+					party.value.selected +'/'+party.value.size;
+
+			html += "<em>"+party.key+"("+ selectedRate +") : </em> "
+			//: "+((party.value.selected/party.value.total)*100).toFixed(1) +"% selected ("+ party.value.selected +'/'+party.value.total +")
+			selected += party.value.selected;
+		})
+
+		var selectedRate = (selected==alliance.size)? (alliance.size+' Deputies') :selected+'/'+alliance.size;
+		return  alliance.name+' ('+selectedRate+")<br/>"+html+'<br/><em>'+ 'Click to select</em>';
 	}
 
 	return d3.rebind(chart, dispatch, "on");
