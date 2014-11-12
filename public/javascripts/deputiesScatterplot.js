@@ -54,7 +54,7 @@ d3.chart.deputiesScatterplot = function() {
 
 	chart.update = update;
 	function update() {
-		g.attr({
+		g.transition().attr({
 			transform 	:'translate('+ (_dimensions.x+margin.left) +','+ (_dimensions.y+margin.top) +')',
 			width 		: _dimensions.width,
 			height 		: _dimensions.height
@@ -125,7 +125,9 @@ d3.chart.deputiesScatterplot = function() {
 		circles.exit().transition().remove();
 
 		g.selectAll("circle").sort( function (x,y) {
-			return (x.hovered);
+			if(x !== undefined)
+				return (x.hovered);
+				else false;
 		})
 
 	}

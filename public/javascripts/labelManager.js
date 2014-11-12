@@ -40,7 +40,7 @@ d3.chart.labelManager = function() {
 			
 			deputiesLabel.append('circle')
 					.attr({
-						r:_dimensions.deputiesLabel.width/2+10,
+						r:_dimensions.deputiesLabel.width/2+8,
 						fill: 'white',
 						stroke: 'black',
 						'stroke-width': '2px',

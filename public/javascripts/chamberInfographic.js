@@ -22,6 +22,7 @@ d3.chart.chamberInfographic = function() {
 	
 		chamberInfographic.append('g').attr('class','deputies')
 		chamberInfographic.append('g').attr('class','parties')
+		chamberInfographic.append('g').attr('class','alliances')
 	}
 
 	chart.data = function(deputyNodes){
@@ -80,6 +81,10 @@ d3.chart.chamberInfographic = function() {
 
 		updateDeputies();
 		updateParties();
+
+		if(alliances !== null)
+			updateAlliance();
+		else chamberInfographic.selectAll('.alliances g').remove();
 	}
 
 	function calcAlliance(a_alliances){
@@ -194,8 +199,12 @@ d3.chart.chamberInfographic = function() {
 		var pie = d3.layout.pie()
 			.sort(null)
 			.value(function(d) { return d.value.size; })
+			// LEFT
 			.startAngle(Math.PI *2 +0.02)
 			.endAngle( Math.PI -0.02);
+			// UP
+			// .startAngle(-Math.PI/2 +0.02)
+			// .endAngle( Math.PI/2 -0.02);
 
 		var arcs = chamberInfographic
 					.select('.parties')
@@ -262,9 +271,45 @@ d3.chart.chamberInfographic = function() {
 			.text(function(d) { return (d.data.value.size > 10 )? d.data.key : ''; });
 
 		arcs.exit().remove()
-	}
+	};
 
+	function updateAlliance (){
 
+		var arc = d3.svg.arc()
+			.outerRadius(_dimensions.width+partyBandWidth+15)
+			.innerRadius(_dimensions.width+partyBandWidth+5);
+
+		var pie = d3.layout.pie()
+			.sort(null)
+			.value(function(d) { return d.size; })
+			.startAngle(Math.PI *2 +0.02)
+			.endAngle( Math.PI -0.02);
+
+		var arcs = chamberInfographic
+					.select('.alliances')
+					.attr("transform", "translate(" + (_dimensions.width+partyBandWidth+4) +"," + (_dimensions.height/2)  + ")")
+					.selectAll(".arc")
+					.data(pie(alliances), function(d,i){return i})
+			
+		var enterArcs =
+			arcs.enter().append("g")
+				.attr("class", "arc")
+				.attr( { 
+					cursor : 'pointer'
+				})
+				//.on(allianceInteractions)	
+				
+		var paths = arcs.selectAll('path.main')
+						.data( function(d){ return [d] });
+
+		paths.enter().append('path').attr('class','main')
+		
+		paths.transition()
+			.attr("d", arc)
+			.style("fill", function(d) { return CONGRESS_DEFINE.getPartyColor(d.data.partiesObjs[0].key) })
+			.attr('visibility', function(d){ return (d.data.partiesObjs.length>1)? 'visible': 'hidden'; })
+
+	};
 
 	// mouse OVER circle deputy
 	function mouseoverDeputy(d) {
@@ -275,7 +320,7 @@ d3.chart.chamberInfographic = function() {
 		return tooltip
 				.style("visibility", "visible")
 				.style("opacity", 1)
-	}	
+	};	
 
 	// mouse MOVE circle deputy
 	function mousemoveDeputy() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
