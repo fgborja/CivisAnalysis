@@ -18,7 +18,6 @@ d3.chart.deputiesScatterplot = function() {
 	var dispatch = d3.dispatch("update");
 
 	var _dimensions ={};
-	var colWidth = $('.canvas').width();
 
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin};
 
@@ -39,8 +38,6 @@ d3.chart.deputiesScatterplot = function() {
 
 		g.append('rect').attr({
 			'class':'gchart',
-			width 		: dimensions.width,
-			height 		: dimensions.height
 		});
 
 		g.append('rect')
@@ -72,6 +69,11 @@ d3.chart.deputiesScatterplot = function() {
 		var scaleY = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
 			.range([ _dimensions.height-margin.bottom, margin.top ]);
+
+		g.select('rect').attr({
+			width 		: _dimensions.width,
+			height 		: _dimensions.height
+		});
 
 		g.select(".selectorRect")
 			.attr('width', _dimensions.width)
@@ -171,13 +173,13 @@ d3.chart.deputiesScatterplot = function() {
 		return chart;
 	}
 	chart.width = function(value) {
-		if(!arguments.length) return width;
-		width = value;
+		if(!arguments.length) return _dimensions.width;
+		_dimensions.width = value;
 		return chart;
 	}
 	chart.height = function(value) {
-		if(!arguments.length) return height;
-		height = value;
+		if(!arguments.length) return _dimensions.height;
+		_dimensions.height = value;
 		return chart;
 	}
 

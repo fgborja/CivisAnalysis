@@ -206,7 +206,7 @@ function setRollCallModal_setTable(data){
 	var selectAll = $('.modal-body table .btn#selectAll');
 	selectAll.css('text-align','left');
 	selectAll.click( function () {
-		modal.selectAllRollCalls();
+		modals.selectAllRollCalls();
 		rows.$('span').removeClass('glyphicon-unchecked')
 		rows.$('span').addClass('glyphicon-check')
 	});
