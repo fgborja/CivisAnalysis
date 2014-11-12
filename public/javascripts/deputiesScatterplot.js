@@ -6,10 +6,6 @@
 
 // }
 
-var radius = 3.7;
-var radiusHover = radius*2;
-var pxMargin = radius+5;
-
 if(!d3.chart) d3.chart = {};
 
 d3.chart.deputiesScatterplot = function() {
@@ -18,22 +14,19 @@ d3.chart.deputiesScatterplot = function() {
 	var dispatch = d3.dispatch("update");
 
 	var _dimensions ={};
-
-	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin};
+	var margin;
 
 	function chart(containerSVG, dimensions) {
 		
-		dimensions.width = dimensions.width - margin.left - margin.right;
-	  	dimensions.height = dimensions.height - margin.top - margin.bottom;
-
 		_dimensions = dimensions;
+		margin = {top: _dimensions.radius+5, right: _dimensions.radius+5, bottom: _dimensions.radius+5, left: _dimensions.radius+5};
+		_dimensions.width = _dimensions.width - margin.left - margin.right;
+	  	_dimensions.height = _dimensions.height - margin.top - margin.bottom;
+
 
 		g = containerSVG.append('g')
 			.attr({
 				'class' 	: 'chart deputy',
-				transform 	:'translate('+ (dimensions.x+margin.left) +','+ (dimensions.y+margin.top) +')',
-				width 		: dimensions.width,
-				height 		: dimensions.height
 			});
 
 		g.append('rect').attr({
@@ -61,6 +54,11 @@ d3.chart.deputiesScatterplot = function() {
 
 	chart.update = update;
 	function update() {
+		g.attr({
+			transform 	:'translate('+ (_dimensions.x+margin.left) +','+ (_dimensions.y+margin.top) +')',
+			width 		: _dimensions.width,
+			height 		: _dimensions.height
+		})
 
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
@@ -116,7 +114,7 @@ d3.chart.deputiesScatterplot = function() {
 		.attr({
 			cx: function (d) { return scaleX(d.scatterplot[0]); },
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
-			r: function(d){ return (d.hovered)? radiusHover : radius },
+			r: function(d){ return (d.hovered)? _dimensions.radius*2 : _dimensions.radius },
 			class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
@@ -125,44 +123,10 @@ d3.chart.deputiesScatterplot = function() {
 
 		
 		circles.exit().transition().remove();
-			
-		// mouse OVER circle deputy
-		function mouseoverDeputy(d) {
-			d.hovered = true;
-			dispatch.update();
 
-			tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");			
-			return tooltip
-					.style("visibility", "visible")
-					.style("opacity", 1)
-		}	
-
-		// mouse MOVE circle deputy
-		function mousemoveDeputy() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
-
-		// mouse OUT circle deputy
-		function mouseoutDeputy(d){ 
-			d.hovered = false;
-			dispatch.update()
-			return tooltip.style('visibility','hidden')
-		}
-
-		function mouseClickDeputy(d){
-			if (d3.event.shiftKey){	
-				// using the shiftKey deselect the deputy				
-				d.selected = false;
-			} else 
-			if (d3.event.ctrlKey){
-				// using the ctrlKey add deputy to selection
-				d.selected = true;
-			} 
-			else {
-				// a left click without any key pressed -> select only the deputy (deselect others)
-				data.forEach(function (deputy) { deputy.selected = false; })
-				d.selected = true;				
-			}	
-			dispatch.update()	
-		}				
+		g.selectAll("circle").sort( function (x,y) {
+			return (x.hovered);
+		})
 
 	}
 
@@ -172,18 +136,38 @@ d3.chart.deputiesScatterplot = function() {
 
 		return chart;
 	}
-	chart.width = function(value) {
-		if(!arguments.length) return _dimensions.width;
-		_dimensions.width = value;
-		return chart;
-	}
-	chart.height = function(value) {
-		if(!arguments.length) return _dimensions.height;
-		_dimensions.height = value;
+
+	chart.dimensions = function(value) {
+		if(!arguments.length) return _dimensions;
+		_dimensions = value;
 		return chart;
 	}
 
-	// @param selectParties : Array	
+		chart.width = function(value) {
+			if(!arguments.length) return _dimensions.width;
+			_dimensions.width = value;
+			return chart;
+		}
+		chart.height = function(value) {
+			if(!arguments.length) return _dimensions.height;
+			_dimensions.height = value;
+			return chart;
+		}
+		chart.x = function(value) {
+			if(!arguments.length) return _dimensions.x;
+			_dimensions.x = value;
+			return chart;
+		}
+		chart.y = function(value) {
+			if(!arguments.length) return _dimensions.y;
+			_dimensions.y = value;
+			return chart;
+		}
+		chart.radius = function(value) {
+			if(!arguments.length) return _dimensions.radius;
+			_dimensions.radius = value;
+			return chart;
+		}
 
 	function setDeputyFill( d ){ 
 		if(d.vote != null){
@@ -197,6 +181,44 @@ d3.chart.deputiesScatterplot = function() {
 			return CONGRESS_DEFINE.getPartyColor(d.party)
 		} 
 	}
+
+	// mouse OVER circle deputy
+	function mouseoverDeputy(d) {
+		d.hovered = true;
+		dispatch.update();
+
+		tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");			
+		return tooltip
+				.style("visibility", "visible")
+				.style("opacity", 1)
+	}	
+
+	// mouse MOVE circle deputy
+	function mousemoveDeputy() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
+
+	// mouse OUT circle deputy
+	function mouseoutDeputy(d){ 
+		d.hovered = false;
+		dispatch.update()
+		return tooltip.style('visibility','hidden')
+	}
+
+	function mouseClickDeputy(d){
+		if (d3.event.shiftKey){	
+			// using the shiftKey deselect the deputy				
+			d.selected = false;
+		} else 
+		if (d3.event.ctrlKey){
+			// using the ctrlKey add deputy to selection
+			d.selected = true;
+		} 
+		else {
+			// a left click without any key pressed -> select only the deputy (deselect others)
+			data.forEach(function (deputy) { deputy.selected = false; })
+			d.selected = true;				
+		}	
+		dispatch.update()	
+	}				
 
 	return d3.rebind(chart, dispatch, "on");
 }

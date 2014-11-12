@@ -35,7 +35,9 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 
 // ======================================================================================================================
 // LAUNCH APP ===========================================================================================================
-	
+	var radius = 3.7;
+	var radiusHover = radius*2;
+
 	// deputies and rollCalls found in the date range 
 	var rollCallInTheDateRange =[];
 	var deputiesInTheDateRange ={};
@@ -66,7 +68,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// Deputies Scatterplot ----------------------------------------------------------------
 	//
 		var deputiesScatterplot = d3.chart.deputiesScatterplot();
-		deputiesScatterplot(canvasSVG, {x:canvasDimension.width*0.6, y:0, width: canvasDimension.width*0.4, height: canvasDimension.height} );
+		deputiesScatterplot(canvasSVG, {x:canvasDimension.width*0.6, y:0, width: canvasDimension.width*0.4, height: canvasDimension.height, radius: radius} );
 
 		deputiesScatterplot
 			.on('update', updateDeputies )
