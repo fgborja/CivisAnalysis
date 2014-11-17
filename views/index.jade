@@ -34,52 +34,64 @@ html
 						<div width='60px' class="g-plus" data-action="share" data-annotation="bubble" data-href="http://www.inf.ufrgs.br/~fgborja/civisanalysis/"></div>
 
 		div.header
-		#main
-			.col-xs-12
-				.col-xs-2
-						h4.content The Brazilian Chamber of Deputies
-						br 
-						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
-							span.glyphicon.glyphicon-search 
-							text  Search
-						br
-						br
-						.deputies.selected
-							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
-								span.glyphicon.glyphicon-list 
-								text  List Selected
-							a.btn( onclick='javascript:modals.selectAllDeputies()')
-								span.glyphicon.glyphicon-remove
-								text  Reset Selection
-				
-				.col-xs-6#canvas
+		.col-md-12#main
+			.col-md-8.col-xs-12
+				#chamber.col-md-3.col-xs-3(style='padding-left:0')
+							h3.content The Brazilian Chamber of Deputies
+							br
+							text(style='font-size:large')
+								tspan Constitued by the 
+								a#deputies 513 Deputies 
+								tspan more present in the 
+								a#rollCalls 5 Roll Calls 
+								tspan wich take place in the period
+								br
+								tspan of 
+								span#startDate  __/__/___ 
+								br
+								tspan  to 
+								span#endDate  __/__/___ 
+							br
+							br
+							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
+								span.glyphicon.glyphicon-search 
+								text  Search Deputies
+							br
+							#deputiesSelected
+								a.btn.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
+									span.glyphicon.glyphicon-list 
+									text  List Selected
+								a.btn.disabled( onclick='javascript:modals.selectAllDeputies()')
+									span.glyphicon.glyphicon-remove
+									text  Reset Selection
 
-				.col-xs-4
-					.col-xs-4
-						h5.content Political Spectrum of Roll Calls
-						br 
-						a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
-							span.glyphicon.glyphicon-search
-							text  Search
-						br
-						br
-						.rollCalls.selected
-							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
-								span.glyphicon.glyphicon-list 
-								text  List Selected
-							a.btn( onclick='javascript:modals.selectAllRollCalls()')
-								span.glyphicon.glyphicon-remove
-								text  Reset Selection
-					.col-xs-8
-						.canvas#canvasRollCalls
-					.col-xs-12
-						br
-					.col-xs-4
-						h5.content States
-					.col-xs-8
-						.canvas#infoStates
+				.col-md-9.col-xs-9#canvas
 
-		.col-xs-12#timeline
+			.col-md-4.col-xs-12
+				.col-md-4.col-xs-2(style='padding-left:0')
+					h4.content Political Spectrum of Roll Calls
+					br 
+					a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
+						span.glyphicon.glyphicon-search
+						text  Search
+					br
+					#rollCallsSelected
+						a.btn.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
+							span.glyphicon.glyphicon-list 
+							text  List Selected
+						a.btn.disabled( onclick='javascript:modals.selectAllRollCalls()')
+							span.glyphicon.glyphicon-remove
+							text  Reset Selection
+				.col-md-8.col-xs-4
+					.canvas#canvasRollCalls
+
+
+				.col-md-4.col-xs-2
+					h5.content States
+				.col-md-8.col-xs-4
+					.canvas#infoStates
+
+		.col-md-12#timeline
 			#loading
 				img#loadingGIF(src='./images/ajax_loader.gif')
 

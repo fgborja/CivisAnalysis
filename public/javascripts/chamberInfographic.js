@@ -276,6 +276,7 @@ d3.chart.chamberInfographic = function() {
 			.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
 			.attr("dy", ".35em")
 			.style("text-anchor", "middle")
+			.style("font-size", "11px")
 			.text(function(d) { return (d.data.value.size > 10 )? d.data.key : ''; });
 
 		arcs.exit().remove()

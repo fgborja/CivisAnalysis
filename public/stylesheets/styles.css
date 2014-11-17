@@ -2,6 +2,10 @@ html, body {height: 100%;width: 100%}
 
 h2 {text-align: center;}
 
+a { 
+  cursor: pointer;
+}
+
 .navbar-default{
   background-color: #F1F0F0;
 }
@@ -15,6 +19,7 @@ h2 {text-align: center;}
   /*margin-top: 50px;*/
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 10px;
 }
 
 .header{

@@ -5,8 +5,32 @@ var tooltip = d3.select("body")
 	.style("opacity", 0)
 	.attr("class", "d3tooltip");
 
-// div of selection
-$('div.selected').css('visibility','hidden');
+$('a#deputies').mouseover(function () { 
+	deputyNodes.forEach( function (deputy) { 
+		deputy.hovered = true; 
+	}); 
+	deputiesScatterplot.update();
+	chamberInfographic.update();
+});
+$('a#deputies').mouseout(function () {
+	deputyNodes.forEach( function (deputy) { 
+		deputy.hovered = false;
+	}); 
+	deputiesScatterplot.update();
+	chamberInfographic.update();
+});
+$('a#rollCalls').mouseover(function () {
+	rollCallNodes.forEach( function (rollCall) {
+		rollCall.hovered = true; 
+	}); 
+	rollCallsScatterplot.update();
+});
+$('a#rollCalls').mouseout(function () {
+	rollCallNodes.forEach( function (rollCall) { 
+		rollCall.hovered = false;
+	}); 
+	rollCallsScatterplot.update();
+});
 
 // collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
 var motions = {};  	
@@ -190,14 +214,18 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
 
-				$('#main').show().animate({height: 470},1000)
+				$('#main').show().animate({height: $('body').height()/2},1000)
+				$('#main').show().animate({height: $('#canvas').height()},1000)
 				console.log("filtered", filtered);
-
 				//$('#loading').css('visibility','visible');
-				$('div.selected').css('visibility','hidden');
+				$('span#startDate').text(filtered[0].toLocaleDateString());
+				$('span#endDate').text(filtered[1].toLocaleDateString());
 
 				setNewDateRange(filtered, 
 					function(){
+						$('a#deputies').text(deputyNodes.length + ' Deputies ');
+						$('a#rollCalls').text(rollCallNodes.length + ' Roll Calls ');
+
 						// reset rates
 						deputyNodes.forEach( function(deputy) { deputy.rate = null; deputy.vote = null; deputy.selected = (true)? true : false; })
 						rollCallNodes.forEach( function(rollCall) { rollCall.selected = (true)? true : false; })
@@ -302,8 +330,8 @@ function updateRollCalls(){
 	})
 
 	if (selectedRollCalls.length == rollCallNodes.length)
-		$('div.rollCalls.selected').css('visibility','hidden');
-	else $('div.rollCalls.selected').css('visibility','visible');
+		d3.selectAll('#rollCallsSelected a').classed('disabled',true);
+	else d3.selectAll('#rollCallsSelected a').classed('disabled',false);
 
 
 	if( (selectedRollCalls.length == rollCallNodes.length) && (hoveredRollCalls.length == 0) ){
@@ -353,8 +381,8 @@ function updateDeputies(){
 	})
 
 	if(selectedDeputies.length == deputyNodes.length)
-		$('div.deputies.selected').css('visibility','hidden');
-		else $('div.deputies.selected').css('visibility','visible');
+		d3.selectAll('#deputiesSelected a').classed('disabled',true);
+	else d3.selectAll('#deputiesSelected a').classed('disabled',false);
 
 	// SET RollCall votes  ----------------------------------------------------------------------
 		rollCallNodes.forEach( function(rollCall){

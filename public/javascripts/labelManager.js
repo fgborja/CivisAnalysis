@@ -38,13 +38,27 @@ d3.chart.labelManager = function() {
 		var deputiesLabel = labels.append('g').attr('class','deputies')
 			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.x+30)+","+_dimensions.deputiesLabel.y+")"})
 			
-			deputiesLabel.append('circle')
+		var circle = deputiesLabel.append('circle')
 					.attr({
 						r:_dimensions.deputiesLabel.width/2+8,
 						fill: 'white',
 						stroke: 'black',
 						'stroke-width': '2px',
 						'stroke-opacity': 0.2
+					})
+					.on({
+						mouseover: function () {
+							circle.attr('stroke-width','4px');
+						},
+						mouseout: function () {
+							circle.attr('stroke-width','spx');
+						},
+						click: function() {
+							deputies.forEach(function (deputy) {
+								deputy.selected = true;
+							})
+							dispatch.update();
+						}
 					})
 
 		votesPieChart = d3.chart.votesPieChart({labels:false});
