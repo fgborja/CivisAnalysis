@@ -8,7 +8,7 @@ d3.chart.rollCallsScatterplot = function() {
 
 	var colWidth = $('.canvas').width();
 
-	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin-10 /*(-10??!)*/, left: pxMargin}
+	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
 	  , width = colWidth - margin.left - margin.right
 	  , height = colWidth - margin.top - margin.bottom;
 
