@@ -3,7 +3,7 @@
 ////  functions to load data from camara.leg.br and save into the MongoDB
 
 var chamberOfDeputiesManager= $.chamberOfDeputiesManager();
-var chamberOfDeputies	= $.chamberOfDeputiesClient();
+var chamberOfDeputies	= $.chamberOfDeputiesClientDB();
 
 // call the callback function(tipo,numero,ano) for each
 function forEachMotionRollCallinYear( year, callbackForEachMotionRollCalls ){
@@ -22,7 +22,7 @@ function forEachMotionRollCallinYear( year, callbackForEachMotionRollCalls ){
 				chamberOfDeputies.getMotionRollCalls(tipo,numero,ano,callbackForEachMotionRollCalls)
 				
 			}
-		}
+		} 
 		else {console.log("No data for "+year+" year!!")}
 
 	})
@@ -42,7 +42,6 @@ function updateMotionsByYear(year) {
 			if(motionRollCalls === null){ 
 				console.log(tipo+' '+numero+' '+ano);
 				chamberOfDeputiesManager.obterVotacaoProposicao(tipo,numero,ano);
-				return true;
 			}
 
 			//check MotionDetails
@@ -77,13 +76,13 @@ function getAllDeputiesIDs(year){
 	)
 }
 
-//using the filled ideCadastroMAP
+//using the filled ideCadastroMAP 
 function updateAllDeputiesInTheIdeCadastroMAP(){
 	$.each(ideCadastroMAP, function(ideCadastro){ 
 		console.log(ideCadastro)
-		var chusme = chamberOfDeputiesManager.obterDetalhesDeputado(ideCadastro)
-		if(chusme === null) console.log( ideCadastro +" é chusme!")
-	
+		chamberOfDeputies.getDeputyDetails(ideCadastro, function (deputy){
+			if(deputy == null) chamberOfDeputiesManager.obterDetalhesDeputado(ideCadastro);
+		})
 	})
 }
 
@@ -104,7 +103,7 @@ function saveMotionsWithDelay(){
 	saveEntriesOfArray(arrayMotions, function(motion){ return motion.type + motion.number + motion.year; }, 0)
 }
 function saveDeputiesToFILE(){
-	console.save(arrayDeputies,'arrayDeputies');
+	console.save(arrayDeputies,'deputies.json');
 }
 function saveRollCallsArray(){
 	arrayRollCalls.forEach( function (d) {
