@@ -1,11 +1,8 @@
 
-
+var partyBandWidth = 30;
 if(!d3.chart) d3.chart = {};
 
 d3.chart.chamberInfographic = function() {
-
-	var partyBandWidth = 30;
-
 	var chamberInfographic;
 
 	var dispatch = d3.dispatch('update');
@@ -20,7 +17,9 @@ d3.chart.chamberInfographic = function() {
 	// @param dimensions : {x: , y: , width: , height: }
 	function chart(svgContainer, dimensions) {
 		_dimensions = dimensions;
-		chamberInfographic = svgContainer.append('g').attr('transform', 'translate(' + (dimensions.x) + ',' + dimensions.y + ')')
+		chamberInfographic = svgContainer.append('g')
+			.attr('transform', 'translate(' + (dimensions.x) + ',' + dimensions.y + ')')
+			.attr('id','chamber')
 	
 		chamberInfographic.append('g').attr('class','deputies')
 		chamberInfographic.append('g').attr('class','parties')

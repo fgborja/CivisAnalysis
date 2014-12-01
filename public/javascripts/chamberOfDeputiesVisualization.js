@@ -46,22 +46,8 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	var parties = {};
 
 	// MAIN CANVAS (where all the visualization will be appended)
-	var canvasDimension = { height: $(window).height()*0.88 /*$('.canvas').width()*2.2*/, width:$('#canvas').width() };
+	var canvasDimension = { height: $(window).height()*0.77 /*$('.canvas').width()*2.2*/, width:$('#canvas').width() };
 	var canvasSVG = d3.select('#canvas').append('svg').attr(canvasDimension);
-
-	// ====================================================================================
-	// Labels   --------------------------------------------------------------------
-		var labelManager = d3.chart.labelManager();
-		labelManager(canvasSVG, 
-			{
-				x:0, y:0, 
-				partiesLabel: {x:0, y:0, width: 0, height:0 },
-				deputiesLabel: {x:(canvasDimension.width*0.50), y:canvasDimension.width/2 +20, width: canvasDimension.width, height:0 },
-				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
-			} 
-		)
-		labelManager.on('update', updateDeputies);
-	// ====================================================================================
 
 	// =====================================================================================
 	// Chamber Of Deputies Infographic -----------------------------------------------------
@@ -84,6 +70,19 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			.on('update', updateDeputies )
 	// ====================================================================================
 
+	// ====================================================================================
+	// Labels   --------------------------------------------------------------------
+		var labelManager = d3.chart.labelManager();
+		labelManager(canvasSVG, 
+			{
+				x:0, y:0, 
+				partiesLabel: {x:0, y:0, width: 0, height:0 },
+				deputiesLabel: {x:14+partyBandWidth+(canvasDimension.width*0.4), y:canvasDimension.width/2 +17, width:canvasDimension.width*0.20 , height:0 },
+				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
+			} 
+		)
+		labelManager.on('update', updateDeputies);
+	// ====================================================================================
 
 	// ====================================================================================
 	// States Infographic -----------------------------------------------------------------
@@ -187,7 +186,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			.on("timelineFilter", function(filtered) { 
 
 				//$('#main').show().animate({height: $('body').height()/2},1000)
-				$('#main').show().animate({height: '88%'/*$('#canvas').height()*/},2000)
+				$('#main').show().animate({height: '80%'/*$('#canvas').height()*/},2000)
 				console.log("filtered", filtered);
 				//$('#loading').css('visibility','visible');
 				$('span.startDate').text(filtered[0].toLocaleDateString());

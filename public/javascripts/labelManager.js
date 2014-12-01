@@ -40,7 +40,7 @@ d3.chart.labelManager = function() {
 			
 		var arc = d3.svg.arc()
 			.innerRadius(0)
-			.outerRadius(_dimensions.deputiesLabel.x/2-15)
+			.outerRadius(_dimensions.deputiesLabel.width)
 			.startAngle(-Math.PI/2) //converting from degs to radians
 			.endAngle(Math.PI/2) //just radians
 			
