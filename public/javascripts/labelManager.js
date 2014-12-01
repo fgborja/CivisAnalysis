@@ -41,11 +41,11 @@ d3.chart.labelManager = function() {
 		var circle = deputiesLabel.append('circle')
 					.attr({
 						r:_dimensions.deputiesLabel.width/2+8,
-						fill: 'white',
 						stroke: 'black',
 						'stroke-width': '2px',
 						'stroke-opacity': 0.2
 					})
+					.style('fill','transparent')
 					.on({
 						mouseover: function () {
 							circle.attr('stroke-width','4px');
@@ -64,7 +64,7 @@ d3.chart.labelManager = function() {
 		votesPieChart = d3.chart.votesPieChart({labels:false});
 		votesPieChart(deputiesLabel, {x:0, y:52, width:80, height:80} );
 
-		
+
 	}
 
 	chart.deputies = function(deputyNodes){
@@ -138,7 +138,7 @@ d3.chart.labelManager = function() {
 			g.append('text').text(text1)
 				.attr({
 					dy: cdy,
-					'font-size': 'large',
+					'font-size': 'normal',
 					fill:'grey',
 					'text-anchor': 'middle'
 				})
@@ -146,7 +146,7 @@ d3.chart.labelManager = function() {
 			g.append('text').text('colored by')
 					.attr({
 						dy: cdy +20,
-						'font-size': 'large',
+						'font-size': 'normal',
 						fill:'grey',
 						'text-anchor': 'middle'
 					})
@@ -164,7 +164,7 @@ d3.chart.labelManager = function() {
 			g.append('text').text(text3)
 					.attr({
 						dy: cdy +40,
-						'font-size': 'large',
+						'font-size': 'normal',
 						fill:'grey',
 						'text-anchor': 'middle'
 					})

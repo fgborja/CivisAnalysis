@@ -37,7 +37,7 @@ html
 		.col-md-12#main
 			.col-md-8.col-xs-12
 				#chamber.col-md-3.col-xs-3(style='padding-left:0')
-							h3.content The Brazilian Chamber of Deputies
+							h3.content(style='margin-top: 10px') The Brazilian Chamber of Deputies
 							br
 							text(style='font-size:large')
 								tspan Constitued by the 
@@ -65,15 +65,18 @@ html
 									span.glyphicon.glyphicon-remove
 									text  Reset Selection
 
+				.col-md-9.col-xs-9(style='margin-top:15px')
+					h5.col-md-6.col-xs-6 Deputies per Party				
+					h5.col-md-6.col-xs-6 Political Spectrum of Deputies				
 				.col-md-9.col-xs-9#canvas
 
-			.col-md-4.col-xs-12
+			#rightCol.col-md-4.col-xs-12(style='padding-left: 0px; margin-top:15px ')
+				h5.col-md-12.content Political Spectrum of Roll Calls 
 				.col-md-4.col-xs-2(style='padding-left:0')
-					h4.content Political Spectrum of Roll Calls
-					br 
+					
 					a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
 						span.glyphicon.glyphicon-search
-						text  Search
+						text  Search Roll Calls
 					br
 					#rollCallsSelected
 						a.btn.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
@@ -82,12 +85,12 @@ html
 						a.btn.disabled( onclick='javascript:modals.selectAllRollCalls()')
 							span.glyphicon.glyphicon-remove
 							text  Reset Selection
-				.col-md-8.col-xs-4(style="margin-top:15px")
+				.col-md-8.col-xs-4
 					.canvas#canvasRollCalls
 
 
 				.col-md-4.col-xs-2
-					h4.content States
+					h5.content Distribution of Deputies per States
 				.col-md-8.col-xs-4
 					.canvas#infoStates
 

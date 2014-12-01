@@ -77,6 +77,20 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	var canvasSVG = d3.select('#canvas').append('svg').attr(canvasDimension);
 
 
+	// ====================================================================================
+	// States Labels   --------------------------------------------------------------------
+		var labelManager = d3.chart.labelManager();
+		labelManager(canvasSVG, 
+			{
+				x:0, y:0, 
+				partiesLabel: {x:0, y:0, width: 0, height:0 },
+				deputiesLabel: {x:canvasDimension.width*0.35 +12, y:canvasDimension.height/2, width: canvasDimension.width*0.35, height:0 },
+				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
+			} 
+		)
+		labelManager.on('update', updateDeputies);
+	// ====================================================================================
+
 	// =====================================================================================
 	// Chamber Of Deputies Infographic -----------------------------------------------------
 	//
@@ -106,20 +120,6 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 		brazilianStates(d3.select('#infoStates'));
 		brazilianStates
 			.on('update', updateDeputies )
-	// ====================================================================================
-
-	// ====================================================================================
-	// States Labels   --------------------------------------------------------------------
-		var labelManager = d3.chart.labelManager();
-		labelManager(canvasSVG, 
-			{
-				x:0, y:0, 
-				partiesLabel: {x:0, y:0, width: 0, height:0 },
-				deputiesLabel: {x:canvasDimension.width*0.35 +12, y:canvasDimension.height/2, width: canvasDimension.width*0.35, height:0 },
-				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
-			} 
-		)
-		labelManager.on('update', updateDeputies);
 	// ====================================================================================
 
 	// ====================================================================================
@@ -215,7 +215,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
 
-				$('#main').show().animate({height: canvasDimension.height},1000)
+				$('#main').show().animate({height: $('#canvas').height()+50},1000)
 				console.log("filtered", filtered);
 				//$('#loading').css('visibility','visible');
 				$('span#startDate').text(filtered[0].toLocaleDateString());

@@ -6,6 +6,10 @@ a {
   cursor: pointer;
 }
 
+a.btn{
+  font-size: small;
+}
+
 .navbar-default{
   background-color: #F1F0F0;
 }
