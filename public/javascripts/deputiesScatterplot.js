@@ -62,7 +62,7 @@ d3.chart.deputiesScatterplot = function() {
 
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
-			.range([ margin.left, _dimensions.width-margin.right ]);
+			.range([ _dimensions.width-margin.left, +margin.right ]);
 
 		var scaleY = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))

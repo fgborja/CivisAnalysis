@@ -36,33 +36,83 @@ d3.chart.labelManager = function() {
 		labels.append('g').attr('class','rollCalls')
 		
 		var deputiesLabel = labels.append('g').attr('class','deputies')
-			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.x+30)+","+_dimensions.deputiesLabel.y+")"})
+			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.x)+","+_dimensions.deputiesLabel.y+")"})
 			
-		var circle = deputiesLabel.append('circle')
-					.attr({
-						r:_dimensions.deputiesLabel.width/2+8,
+		var arc = d3.svg.arc()
+			.innerRadius(0)
+			.outerRadius(_dimensions.deputiesLabel.x/2-15)
+			.startAngle(-Math.PI/2) //converting from degs to radians
+			.endAngle(Math.PI/2) //just radians
+			
+		var path = deputiesLabel // Added height and width so arc is visible
+			.append("path")
+			.attr("d", arc)
+			.attr({
 						fill: 'white',
 						stroke: 'black',
+						cursor: 'pointer',
 						'stroke-width': '2px',
 						'stroke-opacity': 0.2
 					})
-					.on({
-						mouseover: function () {
-							circle.attr('stroke-width','4px');
-						},
-						mouseout: function () {
-							circle.attr('stroke-width','spx');
-						},
-						click: function() {
-							deputies.forEach(function (deputy) {
-								deputy.selected = true;
-							})
-							dispatch.update();
-						}
+			.attr("transform", "translate(0,"+5+")")
+			.on({
+				mouseover: function () {
+					path.attr('stroke-width','4px');
+				},
+				mouseout: function () {
+					path.attr('stroke-width','spx');
+				},
+				click: function() {
+					deputies.forEach(function (deputy) {
+						deputy.selected = true;
 					})
+					dispatch.update();
+				}
+			})
+		// var circle = deputiesLabel.append('circle')
+		// 			.attr({
+		// 				r:_dimensions.deputiesLabel.x/2-15,
+		// 				fill: 'white',
+		// 				stroke: 'black',
+		// 				'stroke-width': '2px',
+		// 				'stroke-opacity': 0.2
+		// 			})
+		// 			.on({
+		// 				mouseover: function () {
+		// 					circle.attr('stroke-width','4px');
+		// 				},
+		// 				mouseout: function () {
+		// 					circle.attr('stroke-width','spx');
+		// 				},
+		// 				click: function() {
+		// 					deputies.forEach(function (deputy) {
+		// 						deputy.selected = true;
+		// 					})
+		// 					dispatch.update();
+		// 				}
+		// 			})
 
 		votesPieChart = d3.chart.votesPieChart({labels:false});
-		votesPieChart(deputiesLabel, {x:0, y:52, width:80, height:80} );
+		votesPieChart(deputiesLabel, {x:0, y:0, width:80, height:80} );
+
+		labels.append("foreignObject")
+			.attr("width", $('#canvas').width())
+			.attr("height", 100)
+			.append("xhtml:body")
+			.style('background-color','transparent')
+			//.html('<text>Distribution of <a class="deputies">513 Deputies</a> per party in the period <span class="startDate">__/__/___</span> to <span class="endDate">__/__/___</span> </text>');
+			.html('<text>Distribution of Deputies per party</text>');
+
+		labels.append("foreignObject")
+			.attr("width", $('#canvas').width())
+			.attr("height", 100)
+			.attr("y", $('#canvas').height()/2 -15)
+			.append("xhtml:body")
+			.style('background-color','transparent')
+			//.html('<text>Distribution of <a class="deputies">513 Deputies</a> per party in the period <span class="startDate">__/__/___</span> to <span class="endDate">__/__/___</span> </text>');
+			.html('<text>Political Spectrum of Deputies</text>');
+
+
 	}
 
 	chart.deputies = function(deputyNodes){
@@ -119,7 +169,7 @@ d3.chart.labelManager = function() {
 	function deputiesLabel() {
 		votesPieChart.visible(false);
 
-		var cdy =-35; //(flags.rollCalls.selected != flags.rollCalls.total)? -25 : -15;
+		var cdy =-50; //(flags.rollCalls.selected != flags.rollCalls.total)? -25 : -15;
 
 		labels.select('.deputies .texts').remove();
 
@@ -136,36 +186,36 @@ d3.chart.labelManager = function() {
 			g.append('text').text(text1)
 				.attr({
 					dy: cdy,
-					'font-size': 'large',
+					//'font-size': 'large',
 					fill:'grey',
 					'text-anchor': 'middle'
 				})
 
-			g.append('text').text('colored by')
-					.attr({
-						dy: cdy +20,
-						'font-size': 'large',
-						fill:'grey',
-						'text-anchor': 'middle'
-					})
+		// 	g.append('text').text('colored by')
+		// 			.attr({
+		// 				dy: cdy +20,
+		// 				//'font-size': 'large',
+		// 				fill:'grey',
+		// 				'text-anchor': 'middle'
+		// 			})
 
-		var text3 = ( (flags.rollCalls.selected != flags.rollCalls.total) || flags.rollCalls.hovered )?
-					(
-						(flags.rollCalls.hovered || (flags.rollCalls.selected==1) )? 
-						'their vote in the Roll Call'
-						:
-						'their votes in the Roll Calls'
-					)
-					:
-					'their party color';
+		// var text3 = ( (flags.rollCalls.selected != flags.rollCalls.total) || flags.rollCalls.hovered )?
+		// 			(
+		// 				(flags.rollCalls.hovered || (flags.rollCalls.selected==1) )? 
+		// 				'their vote in the Roll Call'
+		// 				:
+		// 				'their votes in the Roll Calls'
+		// 			)
+		// 			:
+		// 			'their party color';
 
-			g.append('text').text(text3)
-					.attr({
-						dy: cdy +40,
-						'font-size': 'large',
-						fill:'grey',
-						'text-anchor': 'middle'
-					})
+		// 	g.append('text').text(text3)
+		// 			.attr({
+		// 				dy: cdy +40,
+		// 				//'font-size': 'large',
+		// 				fill:'grey',
+		// 				'text-anchor': 'middle'
+		// 			})
 			
 		// paint the color label	
 		if( (flags.rollCalls.selected != flags.rollCalls.total) || flags.rollCalls.hovered ){
@@ -181,48 +231,49 @@ d3.chart.labelManager = function() {
 				votesPieChart.update();
 				votesPieChart.on('update', dispatch.update )
 
-			}else{
-				var gg = g.append('g').attr("transform", function(d){return "translate("+(0.8 *(-_dimensions.deputiesLabel.width/2))+","+cdy+")"})
-				// many roll calls selected
-				var width = 0.8 * (_dimensions.deputiesLabel.width/CONGRESS_DEFINE.votingColorGradient.length);
-				CONGRESS_DEFINE.votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
-					gg.append('rect').attr({
-							r : radius,
-							x: i*width,
-							y:  60,
-							width : width,
-							height: 10,
-							fill: color,
-							stroke: 'lighblue',
-							'stroke-width': '1px'
-						})
-				})
+			}
+			// else{
+			// 	var gg = g.append('g').attr("transform", function(d){return "translate("+(0.8 *(-_dimensions.deputiesLabel.width/2))+","+cdy+")"})
+			// 	// many roll calls selected
+			// 	var width = 0.8 * (_dimensions.deputiesLabel.width/CONGRESS_DEFINE.votingColorGradient.length);
+			// 	CONGRESS_DEFINE.votingColorGradient.forEach( function(color,i){// console.log(color +' '+i) 
+			// 		gg.append('rect').attr({
+			// 				r : radius,
+			// 				x: i*width,
+			// 				y:  60,
+			// 				width : width,
+			// 				height: 10,
+			// 				fill: color,
+			// 				stroke: 'lighblue',
+			// 				'stroke-width': '1px'
+			// 			})
+			// 	})
 
-				gg.append('text').text('Approves')
-					.attr({
-						dx: +_dimensions.deputiesLabel.width/2,
-						dy:80,
-						'font-size': 'small',
-						fill:'grey',
-					})
+			// 	gg.append('text').text('Approves')
+			// 		.attr({
+			// 			dx: +_dimensions.deputiesLabel.width/2,
+			// 			dy:80,
+			// 			'font-size': 'small',
+			// 			fill:'grey',
+			// 		})
 
-				gg.append('text').text('Disapproves')
-					.attr({
-						dx: 0,
-						dy:80,
-						'font-size': 'small',
-						fill:'grey',
-					})
+			// 	gg.append('text').text('Disapproves')
+			// 		.attr({
+			// 			dx: 0,
+			// 			dy:80,
+			// 			'font-size': 'small',
+			// 			fill:'grey',
+			// 		})
 			
 
-				g.append('text').text('the selected motions')
-					.attr({
-						dy: 65,
-						'font-size': 'small',
-						fill:'grey',
-						'text-anchor': 'middle'
-					})
-			}
+			// 	g.append('text').text('the selected motions')
+			// 		.attr({
+			// 			dy: 65,
+			// 			'font-size': 'small',
+			// 			fill:'grey',
+			// 			'text-anchor': 'middle'
+			// 		})
+			// }
 		}
 	}
 

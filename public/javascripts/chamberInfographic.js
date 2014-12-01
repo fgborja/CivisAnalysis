@@ -175,8 +175,8 @@ d3.chart.chamberInfographic = function() {
 
 		circles.transition(2000)
 				.attr({
-					cy: function(d,i){ return _dimensions.width- (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
-					cx: function(d,i){ return _dimensions.width - (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
+					cy: function(d,i){ return _dimensions.width- (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
+					cx: function(d,i){ return _dimensions.width - (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
 					r:  function(d){ return (d.hovered)? radiusHover : radius },
 					fill: function(d){ 
 						if(d.vote != null){
@@ -208,11 +208,11 @@ d3.chart.chamberInfographic = function() {
 			.sort(null)
 			.value(function(d) { return d.value.size; })
 			// LEFT
-			.startAngle(Math.PI *2 +0.02)
-			.endAngle( Math.PI -0.02);
+			// .startAngle(Math.PI *2 +0.02)
+			// .endAngle( Math.PI -0.02);
 			// UP
-			// .startAngle(-Math.PI/2 +0.02)
-			// .endAngle( Math.PI/2 -0.02);
+			.startAngle(-Math.PI/2 -0.02)
+			.endAngle( Math.PI/2 +0.02);
 
 		var arcs = chamberInfographic
 					.select('.parties')
@@ -291,8 +291,11 @@ d3.chart.chamberInfographic = function() {
 		var pie = d3.layout.pie()
 			.sort(null)
 			.value(function(d) { return d.size; })
-			.startAngle(Math.PI *2 +0.02)
-			.endAngle( Math.PI -0.02);
+			//.startAngle(Math.PI *2 +0.02)
+			//.endAngle( Math.PI -0.02);
+			// UP
+			.startAngle(-Math.PI/2 -0.02)
+			.endAngle( Math.PI/2 +0.02);
 
 		var arcs = chamberInfographic
 					.select('.alliances')

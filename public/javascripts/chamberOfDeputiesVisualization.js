@@ -5,33 +5,6 @@ var tooltip = d3.select("body")
 	.style("opacity", 0)
 	.attr("class", "d3tooltip");
 
-$('a#deputies').mouseover(function () { 
-	deputyNodes.forEach( function (deputy) { 
-		deputy.hovered = true; 
-	}); 
-	deputiesScatterplot.update();
-	chamberInfographic.update();
-});
-$('a#deputies').mouseout(function () {
-	deputyNodes.forEach( function (deputy) { 
-		deputy.hovered = false;
-	}); 
-	deputiesScatterplot.update();
-	chamberInfographic.update();
-});
-$('a#rollCalls').mouseover(function () {
-	rollCallNodes.forEach( function (rollCall) {
-		rollCall.hovered = true; 
-	}); 
-	rollCallsScatterplot.update();
-});
-$('a#rollCalls').mouseout(function () {
-	rollCallNodes.forEach( function (rollCall) { 
-		rollCall.hovered = false;
-	}); 
-	rollCallsScatterplot.update();
-});
-
 // collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
 var motions = {};  	
 
@@ -50,7 +23,7 @@ var phonebook = {
 		};
 
 var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCalls, phonebook.arrayDeputies, function(){
-	$('#main').animate({height: 0},1000,function(){ $('#main').hide()})
+	$('#main').animate({height: '0%'},1000,function(){ $('#main').hide()})
 
 	timeline
 		.data(arrayRollCalls)
@@ -59,7 +32,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 
 // ======================================================================================================================
 // LAUNCH APP ===========================================================================================================
-	var radius = 3.7;
+	var radius = 3.5;
 	var radiusHover = radius*2;
 
 	// deputies and rollCalls found in the date range 
@@ -73,15 +46,28 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	var parties = {};
 
 	// MAIN CANVAS (where all the visualization will be appended)
-	var canvasDimension = { height:$('.canvas').width()*2.2, width:$('#canvas').width() };
+	var canvasDimension = { height: $(window).height()*0.88 /*$('.canvas').width()*2.2*/, width:$('#canvas').width() };
 	var canvasSVG = d3.select('#canvas').append('svg').attr(canvasDimension);
 
+	// ====================================================================================
+	// Labels   --------------------------------------------------------------------
+		var labelManager = d3.chart.labelManager();
+		labelManager(canvasSVG, 
+			{
+				x:0, y:0, 
+				partiesLabel: {x:0, y:0, width: 0, height:0 },
+				deputiesLabel: {x:(canvasDimension.width*0.50), y:canvasDimension.width/2 +20, width: canvasDimension.width, height:0 },
+				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
+			} 
+		)
+		labelManager.on('update', updateDeputies);
+	// ====================================================================================
 
 	// =====================================================================================
 	// Chamber Of Deputies Infographic -----------------------------------------------------
 	//
 		var chamberInfographic = d3.chart.chamberInfographic();
-		chamberInfographic( canvasSVG ,{x:15, y:0, width: canvasDimension.width*0.335, height:canvasDimension.height });
+		chamberInfographic( canvasSVG ,{x:10, y:20, width: canvasDimension.width*0.40, height:canvasDimension.width });
 
 		chamberInfographic
 			.on('update', updateDeputies )
@@ -92,7 +78,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// Deputies Scatterplot ----------------------------------------------------------------
 	//
 		var deputiesScatterplot = d3.chart.deputiesScatterplot();
-		deputiesScatterplot(canvasSVG, {x:canvasDimension.width*0.6+2, y:0, width: canvasDimension.width*0.4, height: canvasDimension.height, radius: radius} );
+		deputiesScatterplot(canvasSVG, {x:10, y:canvasDimension.height/2, width: canvasDimension.width-15, height: canvasDimension.height/2.5, radius: radius} );
 
 		deputiesScatterplot
 			.on('update', updateDeputies )
@@ -106,20 +92,6 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 		
 		brazilianStates
 			.on('update', updateDeputies )
-	// ====================================================================================
-
-	// ====================================================================================
-	// States Labels   --------------------------------------------------------------------
-		var labelManager = d3.chart.labelManager();
-		labelManager(canvasSVG, 
-			{
-				x:0, y:0, 
-				partiesLabel: {x:0, y:0, width: 0, height:0 },
-				deputiesLabel: {x:canvasDimension.width*0.35 +12, y:canvasDimension.height/2, width: canvasDimension.width*0.35, height:0 },
-				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
-			} 
-		)
-		labelManager.on('update', updateDeputies);
 	// ====================================================================================
 
 	// ====================================================================================
@@ -214,17 +186,17 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
 
-				$('#main').show().animate({height: $('body').height()/2},1000)
-				$('#main').show().animate({height: $('#canvas').height()},1000)
+				//$('#main').show().animate({height: $('body').height()/2},1000)
+				$('#main').show().animate({height: '88%'/*$('#canvas').height()*/},2000)
 				console.log("filtered", filtered);
 				//$('#loading').css('visibility','visible');
-				$('span#startDate').text(filtered[0].toLocaleDateString());
-				$('span#endDate').text(filtered[1].toLocaleDateString());
+				$('span.startDate').text(filtered[0].toLocaleDateString());
+				$('span.endDate').text(filtered[1].toLocaleDateString());
 
 				setNewDateRange(filtered, 
 					function(){
-						$('a#deputies').text(deputyNodes.length + ' Deputies ');
-						$('a#rollCalls').text(rollCallNodes.length + ' Roll Calls ');
+						$('a.deputies').text(deputyNodes.length + ' Deputies ');
+						$('a.rollCalls').text(rollCallNodes.length + ' Roll Calls ');
 
 						// reset rates
 						deputyNodes.forEach( function(deputy) { deputy.rate = null; deputy.vote = null; deputy.selected = (true)? true : false; })
@@ -846,3 +818,31 @@ function filterDeputies ( deputiesInTheDateRange, rollCallInTheDateRange) {
 	var filterFunction = filter513DeputiesMorePresent;
 	return filterFunction();
 }
+
+
+$('a.deputies').mouseover(function () { 
+	deputyNodes.forEach( function (deputy) { 
+		deputy.hovered = true; 
+	}); 
+	deputiesScatterplot.update();
+	chamberInfographic.update();
+});
+$('a.deputies').mouseout(function () {
+	deputyNodes.forEach( function (deputy) { 
+		deputy.hovered = false;
+	}); 
+	deputiesScatterplot.update();
+	chamberInfographic.update();
+});
+$('a.rollCalls').mouseover(function () {
+	rollCallNodes.forEach( function (rollCall) {
+		rollCall.hovered = true; 
+	}); 
+	rollCallsScatterplot.update();
+});
+$('a.rollCalls').mouseout(function () {
+	rollCallNodes.forEach( function (rollCall) { 
+		rollCall.hovered = false;
+	}); 
+	rollCallsScatterplot.update();
+});

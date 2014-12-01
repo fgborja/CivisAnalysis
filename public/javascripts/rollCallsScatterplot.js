@@ -39,7 +39,7 @@ d3.chart.rollCallsScatterplot = function() {
 		
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
-			.range([ 0, width ]);
+			.range([ width, 0 ]);
 
 		var scaleY = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))

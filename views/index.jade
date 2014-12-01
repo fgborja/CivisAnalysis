@@ -13,14 +13,14 @@ html
 
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
 
-	body
+	body#mainBody
 		// FIXED NAV-BAR AT THE TOP
 		navbar.navbar-default.navbar-fixed-top
 			div.container
 				// HEADER
 				ul.nav.navbar-left
 					li
-						h4 CivisAnalysis
+						h4 CivisAnalysis - The Brazilian Chamber of Deputies
 				// SOCIAL SHARES!
 				ul.nav.navbar-nav.navbar-right.nav-pills#socialshare
 					li
@@ -35,22 +35,20 @@ html
 
 		div.header
 		.col-md-12#main
-			.col-md-8.col-xs-12
-				#chamber.col-md-3.col-xs-3(style='padding-left:0')
+			.col-md-4.col-xs-12#canvas(style='padding:initial')
+			#chamber.col-md-4.col-xs-12
 							h3.content The Brazilian Chamber of Deputies
 							br
 							text(style='font-size:large')
 								tspan Constitued by the 
-								a#deputies 513 Deputies 
+								a.deputies 513 Deputies 
 								tspan more present in the 
-								a#rollCalls 5 Roll Calls 
-								tspan wich take place in the period
-								br
+								a.rollCalls 5 Roll Calls 
+								tspan wich take place in the period 
 								tspan of 
-								span#startDate  __/__/___ 
-								br
+								span.startDate  __/__/___ 
 								tspan  to 
-								span#endDate  __/__/___ 
+								span.endDate  __/__/___ 
 							br
 							br
 							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
@@ -65,9 +63,12 @@ html
 									span.glyphicon.glyphicon-remove
 									text  Reset Selection
 
-				.col-md-9.col-xs-9#canvas
-
 			.col-md-4.col-xs-12
+				.col-md-4.col-xs-2
+					h4.content States
+				.col-md-8.col-xs-4
+					.canvas#infoStates
+
 				.col-md-4.col-xs-2(style='padding-left:0')
 					h4.content Political Spectrum of Roll Calls
 					br 
@@ -84,12 +85,6 @@ html
 							text  Reset Selection
 				.col-md-8.col-xs-4
 					.canvas#canvasRollCalls
-
-
-				.col-md-4.col-xs-2
-					h5.content States
-				.col-md-8.col-xs-4
-					.canvas#infoStates
 
 		.col-md-12#timeline
 			#loading

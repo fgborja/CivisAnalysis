@@ -528,7 +528,7 @@ d3.chart.timeline = function() {
 					height:20,
 					cursor : 'pointer',
 					href:"#",
-					'data-container':'body',
+					'data-container':'#mainBody',
 					'data-content':alliancePopover, 
 					'data-html': true,
 					rel:"popover", 
