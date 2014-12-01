@@ -36,11 +36,11 @@ d3.chart.labelManager = function() {
 		labels.append('g').attr('class','rollCalls')
 		
 		var deputiesLabel = labels.append('g').attr('class','deputies')
-			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.x)+","+_dimensions.deputiesLabel.y+")"})
+			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.cx)+","+_dimensions.deputiesLabel.cy+")"})
 			
 		var arc = d3.svg.arc()
 			.innerRadius(0)
-			.outerRadius(_dimensions.deputiesLabel.width)
+			.outerRadius(_dimensions.deputiesLabel.r)
 			.startAngle(-Math.PI/2) //converting from degs to radians
 			.endAngle(Math.PI/2) //just radians
 			

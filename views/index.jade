@@ -20,7 +20,7 @@ html
 				// HEADER
 				ul.nav.navbar-left
 					li
-						h4 CivisAnalysis - The Brazilian Chamber of Deputies
+						h4 CivisAnalysis
 				// SOCIAL SHARES!
 				ul.nav.navbar-nav.navbar-right.nav-pills#socialshare
 					li
@@ -35,7 +35,7 @@ html
 
 		div.header
 		.col-md-12#main
-			.col-md-4.col-xs-12#canvas(style='padding:initial')
+			.col-md-5.col-xs-12#canvas(style='margin-top:20px')
 			#chamber.col-md-4.col-xs-12
 							h3.content The Brazilian Chamber of Deputies
 							br
@@ -51,6 +51,7 @@ html
 								span.endDate  __/__/___ 
 							br
 							br
+							// DEPUTIES!!
 							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
 								span.glyphicon.glyphicon-search 
 								text  Search Deputies
@@ -62,28 +63,27 @@ html
 								a.btn.disabled( onclick='javascript:modals.selectAllDeputies()')
 									span.glyphicon.glyphicon-remove
 									text  Reset Selection
+							br
+							// ROLL CALLS!!
+							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
+								span.glyphicon.glyphicon-search
+								text  Search Roll Calls
+							br
+							#rollCallsSelected
+								a.btn.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
+									span.glyphicon.glyphicon-list 
+									text  List Selected
+								a.btn.disabled( onclick='javascript:modals.selectAllRollCalls()')
+									span.glyphicon.glyphicon-remove
+									text  Reset Selection
 
-			.col-md-4.col-xs-12
-				.col-md-4.col-xs-2
-					h4.content States
-				.col-md-8.col-xs-4
+			.col-md-3.col-xs-12(style='margin-top:20px')
+				h5.col-md-12 Distribution of Deputies per State					
+				.col-md-12.col-xs-4
 					.canvas#infoStates
 
-				.col-md-4.col-xs-2(style='padding-left:0')
-					h4.content Political Spectrum of Roll Calls
-					br 
-					a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')
-						span.glyphicon.glyphicon-search
-						text  Search
-					br
-					#rollCallsSelected
-						a.btn.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_ListSelected()')
-							span.glyphicon.glyphicon-list 
-							text  List Selected
-						a.btn.disabled( onclick='javascript:modals.selectAllRollCalls()')
-							span.glyphicon.glyphicon-remove
-							text  Reset Selection
-				.col-md-8.col-xs-4
+				h5.col-md-12 Political Spectrum of Roll Calls
+				.col-md-12.col-xs-4
 					.canvas#canvasRollCalls
 
 		.col-md-12#timeline

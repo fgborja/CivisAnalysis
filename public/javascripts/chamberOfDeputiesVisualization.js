@@ -46,14 +46,15 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	var parties = {};
 
 	// MAIN CANVAS (where all the visualization will be appended)
-	var canvasDimension = { height: $(window).height()*0.77 /*$('.canvas').width()*2.2*/, width:$('#canvas').width() };
+	var canvasDimension = { height: $(window).height()*0.80 /*$('.canvas').width()*2.2*/, width:$('#canvas').width() };
 	var canvasSVG = d3.select('#canvas').append('svg').attr(canvasDimension);
 
 	// =====================================================================================
 	// Chamber Of Deputies Infographic -----------------------------------------------------
 	//
+		var chamberRadius = (canvasDimension.height/2 < canvasDimension.width)? canvasDimension.width/5 : canvasDimension.height/6;
 		var chamberInfographic = d3.chart.chamberInfographic();
-		chamberInfographic( canvasSVG ,{x:10, y:20, width: canvasDimension.width*0.40, height:canvasDimension.width });
+		chamberInfographic( canvasSVG ,{cx:canvasDimension.width/2, cy:canvasDimension.height/2-20, r: chamberRadius   });
 
 		chamberInfographic
 			.on('update', updateDeputies )
@@ -64,7 +65,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// Deputies Scatterplot ----------------------------------------------------------------
 	//
 		var deputiesScatterplot = d3.chart.deputiesScatterplot();
-		deputiesScatterplot(canvasSVG, {x:10, y:canvasDimension.height/2, width: canvasDimension.width-15, height: canvasDimension.height/2.5, radius: radius} );
+		deputiesScatterplot(canvasSVG, {x:10, y:canvasDimension.height/2+30, width: canvasDimension.width-15, height: $('.canvas').width(), radius: radius} );
 
 		deputiesScatterplot
 			.on('update', updateDeputies )
@@ -77,7 +78,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			{
 				x:0, y:0, 
 				partiesLabel: {x:0, y:0, width: 0, height:0 },
-				deputiesLabel: {x:14+partyBandWidth+(canvasDimension.width*0.4), y:canvasDimension.width/2 +17, width:canvasDimension.width*0.20 , height:0 },
+				deputiesLabel: {cx:canvasDimension.width/2, cy:canvasDimension.height/2-20, r:chamberRadius-5 },
 				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
 			} 
 		)

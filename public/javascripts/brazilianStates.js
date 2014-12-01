@@ -40,7 +40,7 @@ d3.chart.brazilianStates = function() {
 	var deputies;
 	var dispatch = d3.dispatch("update");
 
-	var colWidth = $('.canvas').width();
+	var colWidth = $('#canvas').height()/2-50;
 
 	var pxMargin = 0;
 	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin-10 /*(-10??!)*/, left: pxMargin}

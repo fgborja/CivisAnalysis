@@ -18,7 +18,7 @@ d3.chart.chamberInfographic = function() {
 	function chart(svgContainer, dimensions) {
 		_dimensions = dimensions;
 		chamberInfographic = svgContainer.append('g')
-			.attr('transform', 'translate(' + (dimensions.x) + ',' + dimensions.y + ')')
+			.attr('transform', 'translate(' + (dimensions.cx) + ',' + dimensions.cy + ')')
 			.attr('id','chamber')
 	
 		chamberInfographic.append('g').attr('class','deputies')
@@ -68,7 +68,7 @@ d3.chart.chamberInfographic = function() {
 		}
 
 
-		deputyNodes.sort( function(a,b){ 
+		deputyNodes.sort( function(b,a){ 
 			if( sortByAlliance && (alliances !== null)){
 				if(partiesMap[a.party].allianceRank != partiesMap[b.party].allianceRank) 
 					 return partiesMap[a.party].allianceRank - partiesMap[b.party].allianceRank;
@@ -153,14 +153,14 @@ d3.chart.chamberInfographic = function() {
 		})
 	}
 
+	var circlePerAngle = 9;
 	function updateDeputies(){
 
-		var circlePerAngle = 9;
 		function calcAngle(i){return Math.floor(i / circlePerAngle) / Math.floor( (deputyNodes.length - 1) / circlePerAngle) * Math.PI; }
 
 		var circles = chamberInfographic
 						.select('.deputies')
-						.attr('transform', 'translate(' + (partyBandWidth+4) + ',' + (_dimensions.height/2 -_dimensions.width) + ')')
+						//.attr('transform', 'translate(' + (_dimensions.r) + ',' + (_dimensions.r) + ')')
 						.selectAll('circle')
 						.data(deputyNodes, function(d){ return d.deputyID})
 			
@@ -174,8 +174,8 @@ d3.chart.chamberInfographic = function() {
 
 		circles.transition(2000)
 				.attr({
-					cy: function(d,i){ return _dimensions.width- (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
-					cx: function(d,i){ return _dimensions.width - (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
+					cy: function(d,i){ return -(_dimensions.r + i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
+					cx: function(d,i){ return (_dimensions.r + i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
 					r:  function(d){ return (d.hovered)? radiusHover : radius },
 					fill: function(d){ 
 						if(d.vote != null){
@@ -194,14 +194,16 @@ d3.chart.chamberInfographic = function() {
 				})	
 	}
 
+	var circleBandWidth = circlePerAngle * radius*2.3;
 	function updateParties(){
+
 		var arc = d3.svg.arc()
-			.outerRadius(_dimensions.width+partyBandWidth)
-			.innerRadius(_dimensions.width);
+			.outerRadius(_dimensions.r+circleBandWidth+partyBandWidth)
+			.innerRadius(_dimensions.r+circleBandWidth);
 
 		var innerArc = d3.svg.arc()
-			.outerRadius(_dimensions.width+partyBandWidth-2)
-			.innerRadius(_dimensions.width+2);
+			.outerRadius(_dimensions.r+circleBandWidth+partyBandWidth-2)
+			.innerRadius(_dimensions.r+circleBandWidth+2);
 
 		var pie = d3.layout.pie()
 			.sort(null)
@@ -215,7 +217,7 @@ d3.chart.chamberInfographic = function() {
 
 		var arcs = chamberInfographic
 					.select('.parties')
-					.attr("transform", "translate(" + (_dimensions.width+partyBandWidth+4) +"," + (_dimensions.height/2)  + ")")
+					//.attr("transform", "translate(" + 0 +"," + (0)  + ")")
 					.selectAll(".arc")
 					.data(pie(parties), function(d){return d.data.key})
 			
@@ -270,13 +272,13 @@ d3.chart.chamberInfographic = function() {
 						.data( function(d){ return [d] });
 
 		texts.enter().append('text')
+			.style("font-size", "11px")
+			.style("text-anchor", "middle")
+			.text(function(d) { return (d.data.value.size > 10 )? d.data.key : ''; });
 
 		texts.transition()
-			.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-			.attr("dy", ".35em")
-			.style("text-anchor", "middle")
-			.style("font-size", "11px")
-			.text(function(d) { return (d.data.value.size > 10 )? d.data.key : ''; });
+			.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; });		
+			
 
 		arcs.exit().remove()
 	};
@@ -284,8 +286,8 @@ d3.chart.chamberInfographic = function() {
 	function updateAlliance (){
 
 		var arc = d3.svg.arc()
-			.outerRadius(_dimensions.width+partyBandWidth+15)
-			.innerRadius(_dimensions.width+partyBandWidth+5);
+			.outerRadius(_dimensions.r+circleBandWidth+partyBandWidth+15)
+			.innerRadius(_dimensions.r+circleBandWidth+partyBandWidth+5);
 
 		var pie = d3.layout.pie()
 			.sort(null)
@@ -298,7 +300,7 @@ d3.chart.chamberInfographic = function() {
 
 		var arcs = chamberInfographic
 					.select('.alliances')
-					.attr("transform", "translate(" + (_dimensions.width+partyBandWidth+4) +"," + (_dimensions.height/2)  + ")")
+					//.attr("transform", "translate(" + (_dimensions.r+partyBandWidth+4) +"," + (_dimensions.r/2)  + ")")
 					.selectAll(".arc")
 					.data(pie(alliances), function(d,i){return i})
 			

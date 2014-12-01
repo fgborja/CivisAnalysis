@@ -15,7 +15,9 @@ d3.chart.votesPieChart = function(configOptions) {
 
 	var pie = d3.layout.pie()
 		.sort(null)
-		.value(function (d) { return d.value; });
+		.value(function (d) { return d.value; })
+		.startAngle(-Math.PI/2) //converting from degs to radians
+		.endAngle(Math.PI/2);
 
 	function chart(svgContainer, dimensions) {
 
@@ -51,6 +53,7 @@ d3.chart.votesPieChart = function(configOptions) {
 		var arc = d3.svg.arc()
 			.innerRadius(0)
 			.outerRadius(radius);
+			
 
 		var path = svg.selectAll("path")
 			.data(piedata, function(d){return d.data.key})
@@ -124,6 +127,7 @@ d3.chart.votesPieChart = function(configOptions) {
 					"text-anchor":"middle",
 					cursor : 'pointer',
 				})
+				.style('font-size','x-small')
 				.on( interactions );
 
 			texts.transition()
