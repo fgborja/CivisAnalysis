@@ -6,13 +6,12 @@ d3.chart.rollCallsScatterplot = function() {
 	var data;
 	var dispatch = d3.dispatch('update');
 
-	var colWidth = $('.canvas').width();
-
-	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
-	  , width = colWidth - margin.left - margin.right
-	  , height = colWidth - margin.top - margin.bottom;
+	var margin, width,height;
 
 	function chart(container) {
+		margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
+	  	, width = width - margin.left - margin.right
+	  	, height = width - margin.top - margin.bottom;
 
 		scatterplot = container.append('svg:svg')
 			.attr('class', 'chart  rollCall')

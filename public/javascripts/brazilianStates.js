@@ -40,24 +40,21 @@ d3.chart.brazilianStates = function() {
 	var deputies;
 	var dispatch = d3.dispatch("update");
 
-	var colWidth = $('.canvas').width();
+	var width;
+	var height;
 
-	var pxMargin = 0;
-	var margin = {top: pxMargin, right: pxMargin, bottom: pxMargin-10 /*(-10??!)*/, left: pxMargin}
-	  , width = colWidth - margin.left - margin.right
-	  , height = colWidth - margin.top - margin.bottom;
+	function chart(container) {
+		height = width;
 
-	var projection = d3.geo.albers()
+		projection = d3.geo.albers()
 		.center([-4, -15])
 		.rotate([+50, 0])
 		.parallels([0, -40])
-		.scale(colWidth+100)
+		.scale(width*1.3)
 		.translate([width / 2, height / 2]);
 
-	var path = d3.geo.path()
-		.projection(projection);
-
-	function chart(container) {
+		path = d3.geo.path()
+			.projection(projection);
 
 		svg = container.append("svg")
 			.attr("width", width)
@@ -429,6 +426,12 @@ d3.chart.brazilianStates = function() {
 			+'<em>'+selectedRate+'</em>'
 			+'<br/><em>'+ 'Click to select' +'</em>';
 			
+	}
+
+	chart.width = function(value) {
+		if(!arguments.length) return width;
+		width = value;
+		return chart;
 	}
 
 	return d3.rebind(chart, dispatch, "on");

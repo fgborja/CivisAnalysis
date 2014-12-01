@@ -63,6 +63,8 @@ d3.chart.labelManager = function() {
 
 		votesPieChart = d3.chart.votesPieChart({labels:false});
 		votesPieChart(deputiesLabel, {x:0, y:52, width:80, height:80} );
+
+		
 	}
 
 	chart.deputies = function(deputyNodes){

@@ -73,7 +73,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	var parties = {};
 
 	// MAIN CANVAS (where all the visualization will be appended)
-	var canvasDimension = { height:$('.canvas').width()*2.2, width:$('#canvas').width() };
+	var canvasDimension = { height: Math.min($(window).height()*0.77,$('#canvas').width()*0.8) , width:$('#canvas').width() };
 	var canvasSVG = d3.select('#canvas').append('svg').attr(canvasDimension);
 
 
@@ -81,7 +81,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// Chamber Of Deputies Infographic -----------------------------------------------------
 	//
 		var chamberInfographic = d3.chart.chamberInfographic();
-		chamberInfographic( canvasSVG ,{x:15, y:0, width: canvasDimension.width*0.335, height:canvasDimension.height });
+		chamberInfographic( canvasSVG ,{x:15, y:0, width: canvasDimension.width*0.333, height:canvasDimension.height });
 
 		chamberInfographic
 			.on('update', updateDeputies )
@@ -102,8 +102,8 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// ====================================================================================
 	// States Infographic -----------------------------------------------------------------
 		var brazilianStates = d3.chart.brazilianStates();
+		brazilianStates.width(canvasDimension.height*0.5)
 		brazilianStates(d3.select('#infoStates'));
-		
 		brazilianStates
 			.on('update', updateDeputies )
 	// ====================================================================================
@@ -128,6 +128,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	//
 	// init
 		var rollCallsScatterplot 	= d3.chart.rollCallsScatterplot();
+		rollCallsScatterplot.width(canvasDimension.height*0.5)
 		// set html container
 		rollCallsScatterplot(d3.select('#canvasRollCalls'));
 	//
@@ -214,8 +215,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
 
-				$('#main').show().animate({height: $('body').height()/2},1000)
-				$('#main').show().animate({height: $('#canvas').height()},1000)
+				$('#main').show().animate({height: canvasDimension.height},1000)
 				console.log("filtered", filtered);
 				//$('#loading').css('visibility','visible');
 				$('span#startDate').text(filtered[0].toLocaleDateString());
