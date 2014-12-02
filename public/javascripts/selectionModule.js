@@ -1,47 +1,35 @@
-(function() {
-	function selectionModule() {
+(function($) {
+	$.selectionModule = function(){
 		
 		var selectedDeputies = {};
-		var selectedRollCalls= {};
 
-		function selectDeputy (deputyID){
+		function setSelectDeputy (deputyID){
 			selectedDeputies[deputyID]=true;
 		}
-		function deselectDeputy (deputyID){
-			selectedDeputies[deputyID]=false;		
+		function isDeputySelected (deputyID){
+			if(selectedDeputies[deputyID] === undefined) return false;
+			else return true;	
 		}
-		function queryIfDeputySelected (deputyID){
-			return selectedDeputies[deputyID];
+		function resetSelection () {
+			selectedDeputies = {};
 		}
-
-		function selectRollCall (key){
-			selectedRollCalls[key]=true;
-		}
-		function deselectRollCall (key){
-			selectedRollCalls[key]=false;
-		}
-		function queryIfRollCallSelected (key){
-			return selectedRollCalls[key];
+		function selectionSize () {
+			return Object.size(selectedDeputies);
 		}
 
-		return selectionMod = {
-				selectDeputy			:   selectDeputy,
-				deselectDeputy			:  	deselectDeputy,
-				selectRollCall 			: 	selectRollCall,
-				deselectRollCall		:   deselectRollCall,
-				queryIfDeputySelected 	: 	queryIfDeputySelected,
-				queryIfRollCallSelected : 	queryIfRollCallSelected
+		return {
+				setSelectDeputy			:   setSelectDeputy,
+				isDeputySelected		:  	isDeputySelected,
+				resetSelection 			:   resetSelection,
+				selectionSize			: 	selectionSize
 		};
 	}
-
-	if (typeof define === "function" && define.amd) define(function() { return selectionModule; });
-	else if (typeof module === "object" && module.exports) module.exports = selectionModule;
-	else this.selectionModule = selectionModule;
-})();
+})(jQuery);
 
 
 
-/// selectors TOOLS TO MANAGE THE SELECTION OF NODES
+/// selectors TOOLS TO MANAGE THE SELECTION OF NODES 
+//  Brush/Filter the scatterplots
 // '.main' '.selectorRect'
 function selectors( class_selector,dispatchSelected){
 	var main = d3.select('.chart'+'.'+class_selector);

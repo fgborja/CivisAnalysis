@@ -20,7 +20,7 @@ html
 				// HEADER
 				ul.nav.navbar-left
 					li
-						h4 CivisAnalysis
+						h4 CivisAnalysis: The Brazilian Chamber of Deputies
 				// SOCIAL SHARES!
 				ul.nav.navbar-nav.navbar-right.nav-pills#socialshare
 					li
@@ -34,51 +34,44 @@ html
 						<div width='60px' class="g-plus" data-action="share" data-annotation="bubble" data-href="http://www.inf.ufrgs.br/~fgborja/civisanalysis/"></div>
 
 		div.header
-		.col-md-12#main
+		.col-md-12#main(style='margin-top:5px')
 			.col-md-8.col-xs-12
 				#chamber.col-md-3.col-xs-3(style='padding-left:0')
-							h3.content(style='margin-top: 10px') The Brazilian Chamber of Deputies
-							br
-							text(style='font-size:large')
-								tspan Constitued by the 
+							text(style='font-size:initial')
+								tspan Data: recorded votes of most present 
 								a#deputies 513 Deputies 
-								tspan more present in the 
+								tspan#totalDeputies  (out of XXX) in   	
 								a#rollCalls 5 Roll Calls 
-								tspan wich take place in the period
-								br
-								tspan of 
+								tspan from 
 								span#startDate  __/__/___ 
-								br
 								tspan  to 
 								span#endDate  __/__/___ 
+
+															
 							br
 							br
 							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
 								span.glyphicon.glyphicon-search 
 								text  Search Deputies
-							br
-							#deputiesSelected
-								a.btn.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
-									span.glyphicon.glyphicon-list 
-									text  List Selected
-								a.btn.disabled( onclick='javascript:modals.selectAllDeputies()')
-									span.glyphicon.glyphicon-remove
-									text  Reset Selection
-							//a.btn#lockbtn( onclick='javascript:modals.lockDeputies()')
-									
+							a.btn.btn-deputiesSelected.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
+								span.glyphicon.glyphicon-list 
+								text  List Selected
+							a.btn.btn-deputiesSelected.disabled( onclick='javascript:modals.selectAllDeputies()')
+								span.glyphicon.glyphicon-remove
+								text  Reset Selection					
 
 							a.btn#btn-lockDeputies
 								span.glyphicon.glyphicon-lock
 								text  Lock Deputies
 
 
-				.col-md-9.col-xs-9(style='margin-top:15px')
-					h5.col-md-6.col-xs-6 Distribution of Deputies per Party				
-					h5.col-md-6.col-xs-6 Political Spectrum of Deputies				
+				.col-md-9.col-xs-9
+					text.col-md-6.col-xs-6 Distribution of Deputies per Party				
+					text.col-md-6.col-xs-6 Political Spectrum of Deputies				
 				.col-md-9.col-xs-9#canvas
 
-			#rightCol.col-md-4.col-xs-12(style='padding-left: 0px; margin-top:15px ')
-				h5.col-md-12.content Political Spectrum of Roll Calls 
+			#rightCol.col-md-4.col-xs-12(style='padding-left: 0px')
+				text.col-md-12.content Political Spectrum of Roll Calls 
 				.col-md-4.col-xs-2(style='padding-left:0')
 					
 					a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setRollCallModal_SearchAll()')

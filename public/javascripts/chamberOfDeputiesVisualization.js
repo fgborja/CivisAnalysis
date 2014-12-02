@@ -5,37 +5,6 @@ var tooltip = d3.select("body")
 	.style("opacity", 0)
 	.attr("class", "d3tooltip");
 
-$('a#deputies').mouseover(function () { 
-	deputyNodes.forEach( function (deputy) { 
-		deputy.hovered = true; 
-	}); 
-	deputiesScatterplot.update();
-	chamberInfographic.update();
-});
-$('a#deputies').mouseout(function () {
-	deputyNodes.forEach( function (deputy) { 
-		deputy.hovered = false;
-	}); 
-	deputiesScatterplot.update();
-	chamberInfographic.update();
-});
-$('a#rollCalls').mouseover(function () {
-	rollCallNodes.forEach( function (rollCall) {
-		rollCall.hovered = true; 
-	}); 
-	rollCallsScatterplot.update();
-});
-$('a#rollCalls').mouseout(function () {
-	rollCallNodes.forEach( function (rollCall) { 
-		rollCall.hovered = false;
-	}); 
-	rollCallsScatterplot.update();
-});
-
-$('#btn-lockDeputies').click(function() {
-	$(this).toggleClass('btn-danger');  
-})
-
 // collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
 var motions = {};  	
 
@@ -164,19 +133,26 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 					function(){
 						$('a#deputies').text(deputyNodes.length + ' Deputies ');
 						$('a#rollCalls').text(rollCallNodes.length + ' Roll Calls ');
+						$('tspan#totalDeputies').text( 
+							(Object.size(deputiesInTheDateRange) > 0)?
+							' (out of '+ Object.size(deputiesInTheDateRange) + ') in '
+							:
+							' in '
+						);
 
 						var keepSelection = $('#btn-lockDeputies').hasClass('btn-danger');
-						// reset selections out of the time-frame
-						phonebook.arrayDeputies.forEach(function (deputy) {
-							if(deputiesInTheDateRange[deputy.deputyID] == undefined) deputy.selected=false;
-						})
 						// reset rates
 						deputyNodes.forEach( function(deputy) { 
 							deputy.rate = null; 
 							deputy.vote = null; 
 							if(deputy.selected === undefined) deputy.selected = false;
-							deputy.selected = (keepSelection)?  deputy.selected : true; 
+
+							deputy.selected = (keepSelection)?  
+								selectionModule.isDeputySelected(deputy.deputyID) 
+								: 
+								true; 
 						})
+
 						rollCallNodes.forEach( function(rollCall) { rollCall.selected = (true)? true : false; })
 
 						// set parties
@@ -329,9 +305,22 @@ function updateDeputies(){
 		if(deputy.hovered) hoveredDeputies.push(deputy);
 	})
 
-	if(selectedDeputies.length == deputyNodes.length)
-		d3.selectAll('#deputiesSelected a').classed('disabled',true);
-	else d3.selectAll('#deputiesSelected a').classed('disabled',false);
+	// IF the deputies are locked a new selection will unlock the selection
+	if(d3.select('#btn-lockDeputies').classed('btn-danger',true)){
+		// check if there is a new selection
+		deputyNodes.forEach(function (deputy) {
+			// if there is any disparity between the selections
+			if( selectionModule.isDeputySelected(deputy.deputyID) !== deputy.selected )
+				// unlock deputies
+				d3.select('#btn-lockDeputies').classed('btn-danger',false);
+		})
+	}
+
+	// IF all Deputies are selected disable buttons (reset,list,lock)
+	if(selectedDeputies.length == deputyNodes.length){
+		d3.selectAll('.btn-deputiesSelected').classed('disabled',true);
+	}
+	else d3.selectAll('.btn-deputiesSelected').classed('disabled',false);
 
 	// SET RollCall votes  ----------------------------------------------------------------------
 		rollCallNodes.forEach( function(rollCall){
@@ -795,3 +784,45 @@ function filterDeputies ( deputiesInTheDateRange, rollCallInTheDateRange) {
 	var filterFunction = filter513DeputiesMorePresent;
 	return filterFunction();
 }
+
+
+// INIT HTML + JS COMPONENTS
+$('a#deputies').mouseover(function () { 
+	deputyNodes.forEach( function (deputy) { 
+		deputy.hovered = true; 
+	}); 
+	deputiesScatterplot.update();
+	chamberInfographic.update();
+});
+$('a#deputies').mouseout(function () {
+	deputyNodes.forEach( function (deputy) { 
+		deputy.hovered = false;
+	}); 
+	deputiesScatterplot.update();
+	chamberInfographic.update();
+});
+$('a#rollCalls').mouseover(function () {
+	rollCallNodes.forEach( function (rollCall) {
+		rollCall.hovered = true; 
+	}); 
+	rollCallsScatterplot.update();
+});
+$('a#rollCalls').mouseout(function () {
+	rollCallNodes.forEach( function (rollCall) { 
+		rollCall.hovered = false;
+	}); 
+	rollCallsScatterplot.update();
+});
+
+var selectionModule = $.selectionModule();
+$('#btn-lockDeputies').click(function() {
+	$(this).toggleClass('btn-danger');
+
+	if(d3.select('#btn-lockDeputies').classed('btn-danger')){
+		selectionModule.resetSelection();
+
+		deputyNodes.forEach(function (deputy) {
+			if(deputy.selected) selectionModule.setSelectDeputy(deputy.deputyID)
+		})
+	}
+})
