@@ -32,6 +32,10 @@ $('a#rollCalls').mouseout(function () {
 	rollCallsScatterplot.update();
 });
 
+$('#btn-lockDeputies').click(function() {
+	$(this).toggleClass('btn-danger');  
+})
+
 // collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
 var motions = {};  	
 
@@ -135,71 +139,6 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// interactions
 		rollCallsScatterplot
 			.on('update', updateRollCalls )
-			/*
-			.on('selected', function (selectedRollCalls){
-
-				deputyNodes.forEach(function (deputy) { deputy.rate = null; deputy.vote = null; })
-
-				if(selectedRollCalls.length == 1){ rollCallsScatterplot.dispatchHovered(selectedRollCalls[0]); return; }
-							
-				if(selectedRollCalls.length == rollCallNodes.length) {
-					// ALL RollCalls selected - reset roll call rates
-					$('div.rollCalls.selected').css('visibility','hidden');
-
-					// reset party
-					for ( var party in parties) parties[party].rate = null;
-					// reset states	
-					brazilianStates.resetRollCallRates();
-				}
-				else {			
-					$('div.rollCalls.selected').css('visibility','visible');
-					
-					calcDeputyNodesRates(selectedRollCalls);
-					updatePartyRollCalls(selectedRollCalls);
-
-					calcStatesRates(selectedRollCalls, brazilianStates.getStates() )
-					brazilianStates.setRollCallRates();
-				}
-
-				deputiesScatterplot.update();
-				chamberInfographic.update();
-			})
-
-			.on('hover', function(rollCall){
-				if(rollCall!=null){
-						deputyNodes.forEach(function (deputy) { deputy.vote = null; })
-
-						calcStatesRates([rollCall], brazilianStates.getStates() ); 
-						
-						// set the votes
-						rollCall.votes.forEach( function (deputyVote) {
-							deputiesInTheDateRange[deputyVote.deputyID].vote = deputyVote.vote;
-						})
-						// who is in the plot and did not voted - set vote to 'null'
-						deputyNodes.forEach( function (deputy) {
-							if(deputy.vote == null) deputy.vote = 'null';
-						})
-
-						updatePartyRollCalls([rollCall]);
-
-						// highlight the rates of the rollCall in the states
-						calcStatesRates([rollCall], brazilianStates.getStates() )
-						brazilianStates.setRollCallRates();
-						// highlight the votes of deputies
-						//deputiesGraph.highlightRollCall( rollCall );
-						// highlight the votes of deputies
-						//deputiesScatterplot.highlightRollCall( rollCall );
-
-						deputiesScatterplot.update();
-						chamberInfographic.update();
-						// highlight the votes of parties
-						//partiesInfographic.setRollCallRates([rollCall]);
-				} else {
-					// reset rollCallsScatterplot
-					rollCallsScatterplot.dispatchSelected();
-				}
-			})
-*/
 	// ====================================================================================
 
 
@@ -226,8 +165,18 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 						$('a#deputies').text(deputyNodes.length + ' Deputies ');
 						$('a#rollCalls').text(rollCallNodes.length + ' Roll Calls ');
 
+						var keepSelection = $('#btn-lockDeputies').hasClass('btn-danger');
+						// reset selections out of the time-frame
+						phonebook.arrayDeputies.forEach(function (deputy) {
+							if(deputiesInTheDateRange[deputy.deputyID] == undefined) deputy.selected=false;
+						})
 						// reset rates
-						deputyNodes.forEach( function(deputy) { deputy.rate = null; deputy.vote = null; deputy.selected = (true)? true : false; })
+						deputyNodes.forEach( function(deputy) { 
+							deputy.rate = null; 
+							deputy.vote = null; 
+							if(deputy.selected === undefined) deputy.selected = false;
+							deputy.selected = (keepSelection)?  deputy.selected : true; 
+						})
 						rollCallNodes.forEach( function(rollCall) { rollCall.selected = (true)? true : false; })
 
 						// set parties
