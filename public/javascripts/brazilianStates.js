@@ -235,7 +235,7 @@ d3.chart.brazilianStates = function() {
 	chart.resetRollCallRates = function (){
 		//setLabelDefault();
 		$.each( chart.getStates(), function(){ this.rate = null; })
-		//setStatesStyle();
+		setStatesStyle();
 	}
 
 	// 
