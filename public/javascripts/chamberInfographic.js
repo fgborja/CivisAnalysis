@@ -178,22 +178,26 @@ d3.chart.chamberInfographic = function() {
 				.attr({
 					cy: function(d,i){ return _dimensions.width- (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
 					cx: function(d,i){ return _dimensions.width - (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
-					r:  function(d){ return (d.hovered)? radiusHover : radius },
 					class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 					id: function(d) { return "deputy-" + d.deputyID; }
 				})	
-		circles.style('fill',function(d){ 
-						if(d.vote != null){
-							return CONGRESS_DEFINE.votoStringToColor[d.vote];
-						}
-						if(d.rate != null){
-							if (d.rate == "noVotes")
-								return 'grey' 
-							else return CONGRESS_DEFINE.votingColor(d.rate)
-						} else{ 
-							return CONGRESS_DEFINE.getPartyColor(d.party)
-						} 
-					})
+		
+		circles
+			.attr({r:  function(d){ return (d.hovered)? radiusHover : radius }})
+			.style('fill',function(d){ 
+				if(d.vote != null){
+					return CONGRESS_DEFINE.votoStringToColor[d.vote];
+				}
+				if(d.rate != null){
+					if (d.rate == "noVotes")
+						return 'grey' 
+					else return CONGRESS_DEFINE.votingColor(d.rate)
+				} else{ 
+					return CONGRESS_DEFINE.getPartyColor(d.party)
+				} 
+			})
+
+		circles.order(); // sort elements in the svg
 	}
 
 	function updateParties(){
@@ -221,18 +225,19 @@ d3.chart.chamberInfographic = function() {
 					.selectAll(".arc")
 					.data(pie(parties), function(d){return d.data.key})
 			
-		var enterArcs =
-			arcs.enter().append("g")
-				.attr("class", "arc")
-				.attr( { 
-					id: function(d){return d.data.key},
-					cursor : 'pointer'
-				})
-				.on("mouseover", mouseoverParty)
-				.on("mousemove", mousemoveParty)
-				.on("mouseout", mouseoutParty)
-				.on("click", clickParty);	
-				
+		arcs.enter().append("g")
+			.attr("class", "arc")
+			.attr( { 
+				id: function(d){return d.data.key},
+				cursor : 'pointer'
+			})
+			.on("mouseover", mouseoverParty)
+			.on("mousemove", mousemoveParty)
+			.on("mouseout", mouseoutParty)
+			.on("click", clickParty)
+
+		arcs.exit().remove()
+
 		var paths = arcs.selectAll('path.main')
 						.data( function(d){ return [d] });
 
@@ -280,8 +285,6 @@ d3.chart.chamberInfographic = function() {
 
 		texts.transition().delay(100).duration(1000)
 			.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; });
-
-		arcs.exit().remove()
 	};
 
 	function updateAlliance (){

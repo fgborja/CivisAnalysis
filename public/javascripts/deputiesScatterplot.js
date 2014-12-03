@@ -115,10 +115,13 @@ d3.chart.deputiesScatterplot = function() {
 		.attr({
 			cx: function (d) { return scaleX(d.scatterplot[0]); },
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
-			r: function(d){ return (d.hovered)? _dimensions.radius*2 : _dimensions.radius },
 			class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
+		})
+		
+		circles.attr({
+			r: function(d){ return (d.hovered)? _dimensions.radius*2 : _dimensions.radius },
 		})
 		
 		circles.style('fill',setDeputyFill )

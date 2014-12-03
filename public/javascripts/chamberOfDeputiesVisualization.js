@@ -247,6 +247,9 @@ function updatePartyRollCalls(rollCalls){
 }
 
 function updateRollCalls(){
+	$('#rollCallInfo').html('')
+	$('#rollCallInfo').attr({style:"opacity:0"})
+
 	var selectedRollCalls = [];
 	var hoveredRollCalls = [];
 	rollCallNodes.forEach(function (deputy) { 
@@ -268,6 +271,7 @@ function updateRollCalls(){
 		 brazilianStates.resetRollCallRates();
 	}
 	else {
+		// ONLY ONE ROLL CALL SELECTED
 		if( (hoveredRollCalls.length==1) || (selectedRollCalls.length==1) ){ 
 
 			deputyNodes.forEach( function (deputy) { deputy.vote = 'null'; })
@@ -278,6 +282,20 @@ function updateRollCalls(){
 				deputiesInTheDateRange[deputyVote.deputyID].vote = deputyVote.vote;
 			})
 			
+			$('#rollCallInfo').html(
+				'<div class="panel panel-default" style="margin-top:5px; ">'+
+				  '<div class="panel-heading">'+
+				  	"Roll Call - "+rollCall.type+' '+rollCall.number+'/'+rollCall.year+" : "+ rollCall.datetime.toLocaleString()+
+				  '</div>'+
+				  '<div class="panel-body" style="overflow-y:scroll; height: '+(rollCallsScatterplot.height()-2)+'px; font-size: small;">'+
+				   	((rollCall.summary != '')?"Status: "+rollCall.summary+'<br/>':'')+
+				   	"Amendment: "+motions[rollCall.type+rollCall.number+rollCall.year].amendment +'<br/><br/>'+
+				   	"Tags: "+motions[rollCall.type+rollCall.number+rollCall.year].tags +
+				  '</div>'+
+				'</div>'
+			)
+			$('#rollCallInfo').animate({opacity: 1},200)
+
 			selectedRollCalls = [rollCall];
 		} else{ 
 			deputyNodes.forEach( function (deputy) { deputy.rate = null; deputy.vote = null; })

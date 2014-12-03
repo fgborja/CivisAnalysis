@@ -95,10 +95,13 @@ d3.chart.rollCallsScatterplot = function() {
 			.attr({
 				cx: function (d) { return scaleX(d.scatterplot[0]); },
 				cy: function (d) { return scaleY(d.scatterplot[1]); },
-				r: function(d){ return (d.hovered)? radiusHover : radius },
 				class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 				id: function (d) { return 'rollCall-'+d.rollCallID }
 			})
+			
+		circles.attr({
+			r: function(d){ return (d.hovered)? radiusHover : radius }
+		})
 
 		circles.style('fill', setRollCallFill )
 
@@ -124,7 +127,7 @@ d3.chart.rollCallsScatterplot = function() {
 
 		dispatch.update();
 
-		tooltip.html(d.type+' '+d.number+'/'+d.year+"<br/>Amendment: "+motions[d.type+d.number+d.year].amendment +'<br/></em>'+ d.summary+"</em>"+ "<br/><em>Click to select</em>");
+		tooltip.html(d.type+' '+d.number+'/'+d.year+"<br/><em>Click to select</em>");
 		return tooltip
 				.style("visibility", "visible")
 				.style("opacity", 1);
@@ -133,7 +136,7 @@ d3.chart.rollCallsScatterplot = function() {
 	// mouse OUT circle voting
 	function mouseOutVoting(d){ 
 		d.hovered = false;
-			
+
 		dispatch.update();
 			
 		return tooltip.style("visibility", "hidden");
