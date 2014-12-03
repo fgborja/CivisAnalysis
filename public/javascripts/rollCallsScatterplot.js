@@ -88,9 +88,10 @@ d3.chart.rollCallsScatterplot = function() {
 							.on("mousemove", mousemoveVoting)
 							.on("mouseout", mouseOutVoting)
 							.on("click", mouseClickVoting)
+							.attr('r',0)
 
 		circles
-			.transition()
+			.transition().delay(100).duration(1000)
 			.attr({
 				cx: function (d) { return scaleX(d.scatterplot[0]); },
 				cy: function (d) { return scaleY(d.scatterplot[1]); },
@@ -98,9 +99,10 @@ d3.chart.rollCallsScatterplot = function() {
 				class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 				id: function (d) { return 'rollCall-'+d.rollCallID }
 			})
-			.style('fill', setRollCallFill )
 
-		circles.exit().transition().remove();				
+		circles.style('fill', setRollCallFill )
+
+		circles.exit().transition().duration(1000).attr('r',0).remove();				
 	}
 
 	function setRollCallFill (d){

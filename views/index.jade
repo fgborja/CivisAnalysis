@@ -36,7 +36,7 @@ html
 		div.header
 		.col-md-12#main(style='margin-top:5px')
 			.col-md-8.col-xs-12
-				#chamber.col-md-3.col-xs-3(style='padding-left:0')
+				#chamber.col-md-3.col-xs-3(style='initial')
 							text(style='font-size:initial')
 								tspan Data: recorded votes of most present 
 								a#deputies 513 Deputies 
@@ -47,22 +47,22 @@ html
 								tspan  to 
 								span#endDate  __/__/___ 
 
-															
 							br
 							br
-							a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
-								span.glyphicon.glyphicon-search 
-								text  Search Deputies
-							a.btn.btn-deputiesSelected.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
-								span.glyphicon.glyphicon-list 
-								text  List Selected
-							a.btn.btn-deputiesSelected.disabled( onclick='javascript:modals.selectAllDeputies()')
-								span.glyphicon.glyphicon-remove
-								text  Reset Selection					
+							.btn-group-vertical(role="group")
+								a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
+									span.glyphicon.glyphicon-search 
+									text  Search Deputies
+								a.btn.btn-deputiesSelected.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
+									span.glyphicon.glyphicon-list 
+									text  List Selected
+								a.btn.btn-deputiesSelected.disabled( onclick='javascript:modals.selectAllDeputies()')
+									span.glyphicon.glyphicon-remove
+									text  Reset Selection					
 
-							a.btn#btn-lockDeputies
-								span.glyphicon.glyphicon-lock
-								text  Lock Deputies
+								a.btn#btn-lockDeputies
+									span.glyphicon.glyphicon-lock
+									text  Lock Deputies
 
 
 				.col-md-9.col-xs-9

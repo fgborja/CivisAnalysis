@@ -170,15 +170,19 @@ d3.chart.chamberInfographic = function() {
 			.on("mousemove", mousemoveDeputy)
 			.on("mouseout", mouseoutDeputy)
 			.on("click", mouseClickDeputy)
+			.attr('r',0)
 				
-		circles.exit().transition().remove();
+		circles.exit().transition().attr('r',0).remove();
 
-		circles.transition(2000)
+		circles.transition().delay(100).duration(1000)
 				.attr({
 					cy: function(d,i){ return _dimensions.width- (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.cos(calcAngle(i)); },
 					cx: function(d,i){ return _dimensions.width - (_dimensions.width-7 - i % circlePerAngle * radius*2.3) * Math.sin(calcAngle(i)); },
 					r:  function(d){ return (d.hovered)? radiusHover : radius },
-					fill: function(d){ 
+					class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
+					id: function(d) { return "deputy-" + d.deputyID; }
+				})	
+		circles.style('fill',function(d){ 
 						if(d.vote != null){
 							return CONGRESS_DEFINE.votoStringToColor[d.vote];
 						}
@@ -189,10 +193,7 @@ d3.chart.chamberInfographic = function() {
 						} else{ 
 							return CONGRESS_DEFINE.getPartyColor(d.party)
 						} 
-					},
-					class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
-					id: function(d) { return "deputy-" + d.deputyID; }
-				})	
+					})
 	}
 
 	function updateParties(){
@@ -237,9 +238,10 @@ d3.chart.chamberInfographic = function() {
 
 		paths.enter().append('path').attr('class','main')
 		
-		paths.transition()
+		paths.transition().delay(100).duration(1000)
 			.attr("d", arc)
-			.style("fill", function(d) { 
+			
+		paths.style("fill", function(d) { 
 				if(d.data.value.rate != null){
 					if (d.data.value.rate == "noVotes")
 						return 'grey' 
@@ -254,7 +256,7 @@ d3.chart.chamberInfographic = function() {
 						.data( function(d){ return [d] });
 		innerPaths.enter().append('path').attr('class','inner')
 		
-		innerPaths.transition()
+		innerPaths.transition().delay(100).duration(1000)
 			.attr("d", function(d){ 
 				var newD = {
 					startAngle: d.startAngle - ( (d.startAngle - d.endAngle) * (d.data.value.selected/d.data.value.size) +0.01 ),
@@ -271,13 +273,13 @@ d3.chart.chamberInfographic = function() {
 						.data( function(d){ return [d] });
 
 		texts.enter().append('text')
-
-		texts.transition()
-			.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
 			.attr("dy", ".35em")
 			.style("text-anchor", "middle")
 			.style("font-size", "11px")
 			.text(function(d) { return (d.data.value.size > 10 )? d.data.key : ''; });
+
+		texts.transition().delay(100).duration(1000)
+			.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; });
 
 		arcs.exit().remove()
 	};
@@ -313,7 +315,7 @@ d3.chart.chamberInfographic = function() {
 
 		paths.enter().append('path').attr('class','main')
 		
-		paths.transition()
+		paths.transition().delay(100).duration(1000)
 			.attr("d", arc)
 			.style("fill", function(d) { return CONGRESS_DEFINE.getPartyColor(d.data.partiesObjs[0].key) })
 			.attr('visibility', function(d){ return (d.data.partiesObjs.length>1)? 'visible': 'hidden'; })

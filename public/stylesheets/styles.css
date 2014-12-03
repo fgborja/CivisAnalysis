@@ -10,6 +10,7 @@ a.btn{
   font-size: small;
   padding-top: 1px;
   padding-bottom: 1px;
+  text-align: initial;
 }
 
 .navbar-default{

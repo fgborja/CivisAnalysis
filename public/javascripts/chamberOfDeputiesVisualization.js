@@ -306,7 +306,7 @@ function updateDeputies(){
 	})
 
 	// IF the deputies are locked a new selection will unlock the selection
-	if(d3.select('#btn-lockDeputies').classed('btn-danger',true)){
+	if(d3.select('#btn-lockDeputies').classed('btn-danger')){
 		// check if there is a new selection
 		deputyNodes.forEach(function (deputy) {
 			// if there is any disparity between the selections

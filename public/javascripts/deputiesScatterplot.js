@@ -108,9 +108,10 @@ d3.chart.deputiesScatterplot = function() {
 			.on("mousemove", mousemoveDeputy)
 			.on("mouseout", mouseoutDeputy)
 			.on("click", mouseClickDeputy)
+			.attr('r',0)
 
 		circles
-		.transition()
+		.transition().delay(100).duration(1000)
 		.attr({
 			cx: function (d) { return scaleX(d.scatterplot[0]); },
 			cy: function (d) { return scaleY(d.scatterplot[1]); },
@@ -119,10 +120,11 @@ d3.chart.deputiesScatterplot = function() {
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
-		.style('fill',setDeputyFill )
+		
+		circles.style('fill',setDeputyFill )
 
 		
-		circles.exit().transition().remove();
+		circles.exit().transition().duration(1000).attr('r',0).remove();
 
 		g.selectAll("circle").sort( function (x,y) {
 			if(x !== undefined)
