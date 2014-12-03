@@ -13,6 +13,10 @@ a.btn{
   text-align: initial;
 }
 
+a.btn.highlight{
+  font-weight: bold;
+}
+
 .navbar-default{
   background-color: #F1F0F0;
 }

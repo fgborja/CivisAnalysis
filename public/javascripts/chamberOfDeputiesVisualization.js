@@ -89,7 +89,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// ====================================================================================
 	// States Infographic -----------------------------------------------------------------
 		var brazilianStates = d3.chart.brazilianStates();
-		brazilianStates.width(canvasDimension.height*0.5)
+		brazilianStates.width($('#chamber').width()/*canvasDimension.height*0.5*/)
 		brazilianStates(d3.select('#infoStates'));
 		brazilianStates
 			.on('update', updateDeputies )

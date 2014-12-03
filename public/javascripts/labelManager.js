@@ -49,9 +49,11 @@ d3.chart.labelManager = function() {
 					.on({
 						mouseover: function () {
 							circle.attr('stroke-width','4px');
+							d3.select('#btn-resetDeputies').classed('highlight',true);
 						},
 						mouseout: function () {
 							circle.attr('stroke-width','spx');
+							d3.select('#btn-resetDeputies').classed('highlight',false);
 						},
 						click: function() {
 							deputies.forEach(function (deputy) {

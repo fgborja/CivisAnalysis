@@ -73,9 +73,15 @@ d3.chart.brazilianStates = function() {
 				deputies.forEach( function (deputy) { deputy.selected = true });
 				dispatch.update(); 
 			})
+			.on('mouseover', function(){
+				d3.select('#btn-resetDeputies').classed('highlight',true);
+			})
+			.on('mouseout', function(){
+				d3.select('#btn-resetDeputies').classed('highlight',false);
+			})
 			.attr("fill","white")
 
-		setLabelDefault();
+		//setLabelDefault();
 
 		// path of states
 		d3.json("./images/topoBRA_ADM1.json", function(error, BRA_adm1) {
@@ -212,7 +218,7 @@ d3.chart.brazilianStates = function() {
 	}
 	
 	chart.highlightRollCall = function(rollCall, mouseover){
-		if(data[0].rate == null) setLabelDefault(); else setLabelGradient();
+		//if(data[0].rate == null) setLabelDefault(); else setLabelGradient();
 		
 		svg.selectAll('.states').attr('fill',function(d){/*console.log(d.rate);*/ return 'darkgrey'})
 		setStatesStyle();
@@ -227,14 +233,14 @@ d3.chart.brazilianStates = function() {
 	}
 
 	chart.resetRollCallRates = function (){
-		setLabelDefault();
+		//setLabelDefault();
 		$.each( chart.getStates(), function(){ this.rate = null; })
-		setStatesStyle();
+		//setStatesStyle();
 	}
 
 	// 
 	chart.setRollCallRates = function () {
-			setLabelGradient()
+			//setLabelGradient()
 			setStatesStyle();
 		}
 

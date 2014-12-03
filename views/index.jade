@@ -36,7 +36,7 @@ html
 		div.header
 		.col-md-12#main(style='margin-top:5px')
 			.col-md-8.col-xs-12
-				#chamber.col-md-3.col-xs-3(style='initial')
+				#chamber.col-md-3.col-xs-3(style='padding: initial')
 							text(style='font-size:initial')
 								tspan Data: recorded votes of most present 
 								a#deputies 513 Deputies 
@@ -56,13 +56,17 @@ html
 								a.btn.btn-deputiesSelected.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
 									span.glyphicon.glyphicon-list 
 									text  List Selected
-								a.btn.btn-deputiesSelected.disabled( onclick='javascript:modals.selectAllDeputies()')
+								a.btn.btn-deputiesSelected.disabled#btn-resetDeputies( onclick='javascript:modals.selectAllDeputies()')
 									span.glyphicon.glyphicon-remove
 									text  Reset Selection					
 
 								a.btn#btn-lockDeputies
 									span.glyphicon.glyphicon-lock
 									text  Lock Deputies
+							br
+							br
+							h5.content Distribution of Deputies per States
+							#infoStates
 
 
 				.col-md-9.col-xs-9
@@ -87,12 +91,6 @@ html
 							text  Reset Selection
 				.col-md-8.col-xs-4
 					.canvas#canvasRollCalls
-
-
-				.col-md-4.col-xs-2
-					h5.content Distribution of Deputies per States
-				.col-md-8.col-xs-4
-					.canvas#infoStates
 
 		.col-md-12#timeline
 			#loading
