@@ -320,7 +320,7 @@ d3.chart.chamberInfographic = function() {
 		
 		paths.transition().delay(100).duration(1000)
 			.attr("d", arc)
-			.style("fill", function(d) { return CONGRESS_DEFINE.getPartyColor(d.data.partiesObjs[0].key) })
+			.style("fill", function(d) { if(d.data.partiesObjs[0]) return CONGRESS_DEFINE.getPartyColor(d.data.partiesObjs[0].key) })
 			.attr('visibility', function(d){ return (d.data.partiesObjs.length>1)? 'visible': 'hidden'; })
 
 	};
