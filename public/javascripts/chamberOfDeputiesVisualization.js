@@ -287,14 +287,13 @@ function updateRollCalls(){
 				  '<div class="panel-heading">'+
 				  	"Roll Call - "+rollCall.type+' '+rollCall.number+'/'+rollCall.year+" : "+ rollCall.datetime.toLocaleString()+
 				  '</div>'+
-				  '<div class="panel-body" style="overflow-y:scroll; height: '+(rollCallsScatterplot.height()-2)+'px; font-size: small;">'+
+				  '<div class="panel-body" style="overflow-y:scroll; height: '+(rollCallsScatterplot.height()-5)+'px; font-size: small;">'+
 				   	((rollCall.summary != '')?"Status: "+rollCall.summary+'<br/>':'')+
 				   	"Amendment: "+motions[rollCall.type+rollCall.number+rollCall.year].amendment +'<br/><br/>'+
 				   	"Tags: "+motions[rollCall.type+rollCall.number+rollCall.year].tags +
 				  '</div>'+
 				'</div>'
 			)
-			$('#rollCallInfo').animate({opacity: 1},200)
 
 			selectedRollCalls = [rollCall];
 		} else{ 
@@ -313,6 +312,7 @@ function updateRollCalls(){
 	chamberInfographic.update();
 	rollCallsScatterplot.update();
 	labelManager.update();
+	$('#rollCallInfo').animate({opacity: 1},200)
 }
 
 function updateDeputies(){

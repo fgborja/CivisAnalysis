@@ -91,12 +91,20 @@ d3.chart.labelManager = function() {
 
 	chart.update = function(){ 
 		flags.rollCalls.hovered = null;
+		flags.deputies.hovered = null;
 
 		var deputiesSelected = [];
+		var hoverCount = 0;
 		deputies.forEach( function (deputy) {
 			if(deputy.selected) deputiesSelected.push(deputy);
+			if(deputy.hovered) {
+				flags.deputies.hovered = deputy;
+				hoverCount++;
+			};
 		})
 		flags.deputies.selected = deputiesSelected.length;
+		if(hoverCount>1) flags.deputies.hovered = null;
+		if( (deputiesSelected.length == 1) && (flags.deputies.hovered == null) ) flags.deputies.hovered = deputiesSelected[0];
 
 		var rollCallsSelected = [];
 		rollCalls.forEach( function (rollCall) {
@@ -231,7 +239,65 @@ d3.chart.labelManager = function() {
 	}
 
 	function rollCallsLabel() {
-		labels.select('.rollCalls')
+		//labels.select('.rollCalls')
+		if( flags.rollCalls.hovered || (flags.rollCalls.selected==1) ){
+				// DO NOTHING
+		}else{
+			$('#rollCallInfo').html(
+				'<div class="panel panel-default" style="color:grey; margin-top:5px; font-size: normal;height: '+(rollCallsScatterplot.height()+37)+'px;">'+
+					'<div class="panel-body style="" ><div>'+
+						flags.rollCalls.selected +
+						((flags.rollCalls.total == flags.rollCalls.selected)?
+							' Roll Calls in the spectrum '
+							:
+							' Roll Calls selected '
+						) + 
+						'colored '+
+						(
+							(flags.deputies.hovered)? 
+							(
+								'by the votes of Deputy: '+
+								flags.deputies.hovered.name+'</br>'
+								//'Possible Votes: '
+							)
+							:
+							(
+								'by the votes of '+
+								((flags.deputies.total == flags.deputies.selected)?
+									'all Deputies in the Chamber'
+									:
+									'the '+flags.deputies.selected+' selected Deputies'
+								)
+							)
+						)+'</div>'+
+					'</div>'+
+				'</div>'
+			)
+
+			// var svg = d3.select('#rollCallInfo .panel-body div')
+			// 	.append('svg')
+			// 	.attr('height', rollCallsScatterplot.height()-30)		
+			
+			// var votes = ["Sim","Não","Abstenção","Obstrução","Art. 17","null"];
+			// if(flags.deputies.hovered){
+			// 	votes.forEach( function (vote,i) {
+			// 		svg.append('circle')
+			// 			.attr({
+			// 				r:radius*2,
+			// 				fill:CONGRESS_DEFINE.votoStringToColor[vote],
+			// 				cx:30,
+			// 				cy:i*20+15,
+			// 			})
+			// 		svg.append('text').attr('fill','grey')
+			// 			.text(vote)
+			// 			.attr({
+			// 				x:30+radius*2.5,
+			// 				y:i*20+15+radius,
+			// 			})
+			// 	});
+			// }
+			// else{} 
+		}
 	}
 
 	return d3.rebind(chart, dispatch, "on");
