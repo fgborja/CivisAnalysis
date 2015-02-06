@@ -2,6 +2,12 @@ module.exports = function(grunt) {
  
 	// configure the tasks
 	grunt.initConfig({
+
+		// Project settings
+	    config: {
+	        // Configurable paths
+	        app: 'public'
+	    },
  
 		clean: {
 			build: {
@@ -25,6 +31,16 @@ module.exports = function(grunt) {
 		},
 
 		watch: {
+			livereload: {
+	            options: {
+	                livereload: '<%= connect.options.livereload %>'
+	            },
+	            files: [
+	                '<%= config.app %>/{,*/}*.html',
+	                '<%= config.app %>/stylesheets/{,*/}*.css',
+	                '<%= config.app %>/javascripts/**/*.js'
+	            ]
+	        },
 			stylesheets: {
 				files: 'public/**/*.css',
 				//tasks: [ 'stylesheets' ]
@@ -37,17 +53,28 @@ module.exports = function(grunt) {
 				files: 'views/**/*.jade',
 				tasks: [ 'jade' ]
 			},
+			index: {
+				files: 'public/*.html',
+			},
 		},
 
-		connect: {
-			server: {
-				options: {
-					port: 4000,
-					base: 'public',
-					hostname: '*'
-				}
-			}
-		}
+		// The actual grunt server settings
+	    connect: {
+	        options: {
+	            port: 9000,
+	            livereload: 35729,
+	            hostname: 'localhost'
+	        },
+	        livereload: {
+	            options: {
+	                open: true,
+	                base: [
+	                    '.tmp',
+	                    '<%= config.app %>'
+	                ]
+	            }
+	        },
+	    },
 	 
 	});
  
@@ -64,9 +91,11 @@ module.exports = function(grunt) {
 		[ 'clean:build', 'jade' ]
 	);
 
-	grunt.registerTask(
-		'default', 
-		'Watches the project for changes, automatically builds them and runs a server.', 
-		[ 'build', 'connect', 'watch' ]
-	);
+	grunt.registerTask('serve', function (target) {
+    grunt.task.run([
+        'connect:livereload',
+        'watch'
+        ]);
+    });
+
 };
