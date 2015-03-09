@@ -118,13 +118,14 @@
 			var scaleX =1,
 				scaleY =1;
 			//function isInQuadrant3rd(x,y){ return ((y > bisectorY) && ( x < bisectorX))? 1 : 0;  }
-			if(governmentParty == 'PT'){
-				if(partyPositionAverage[0] < bisectorX) scaleX=-1;
-				if(partyPositionAverage[1] < bisectorY) scaleY=-1;
-			} else {
+			// if(governmentParty == 'PT'){ // to set PSDB--PT spectrum 
+			// 	if(partyPositionAverage[0] < bisectorX) scaleX=-1;
+			// 	if(partyPositionAverage[1] < bisectorY) scaleY=-1;
+			// } else {
+				// to set Gov-Opos spectrum
 				if(partyPositionAverage[0] > bisectorX) scaleX=-1;
-				if(partyPositionAverage[1] > bisectorY) scaleY=-1;
-			}
+				if(partyPositionAverage[1] < bisectorY) scaleY=-1;
+			// }
 			
 			// multiply
 			deputyNodes.forEach( function(d){ 

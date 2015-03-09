@@ -295,9 +295,9 @@ function calcThePartyTracesByLegislature( ){
 
 			// store parties trace
 			var parties = calcPartiesSizeAndCenter(deputyNodes);
-			$.each(parties, function(party){
-				if(filter[party] === undefined) { delete parties[party] }
-			});
+			// $.each(parties, function(party){
+			// 	if(filter[party] === undefined) { delete parties[party] }
+			// });
 
 			$.each(parties, function(party){
 				if(partyTrace[party] === undefined) partyTrace[party] = {};
@@ -323,15 +323,28 @@ function calcThePartyTracesByYear( periodOfYears ){
 	function calcOneYearRecursive(year) { 
 
 		if(year > endYear){  return; }
+		var period = [];
+		period[0] = new Date(year,0,1);
+		period[1] = new Date(year+periodOfYears,0,1);
 
-		updateDataforDateRange( new Date(year,0,1), new Date(year+periodOfYears,0,1), function(){
+		updateDataforDateRange( period , function(){
+
+			var filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
+			var SVDdata = calcSVD(filteredDeputies,rollCallInTheDateRange);
+			// Deputies array
+			deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
+			// RollCalls array
+			rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
+			// Adjust the SVD result to the political spectrum
+			scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,period[1]);
 
 			// store parties trace
 			var parties = calcPartiesSizeAndCenter(deputyNodes);
-			$.each(parties, function(party){
-				if(filter[party] === undefined) { delete parties[party] }
-			});
+			// $.each(parties, function(party){
+			// 	if(filter[party] === undefined) { delete parties[party] }
+			// });
 
+			//console.log(parties)
 			$.each(parties, function(party){
 				if(partyTrace[party] === undefined) partyTrace[party] = {};
 
@@ -352,75 +365,6 @@ function calcThePartyTracesByYear( periodOfYears ){
 }
 calcThePartyTracesByYear(2); // calc by two years
 
-function addTraceSVG(){
-
-	var svg = 
-		d3.select('#timeline').append('svg').attr({id:'traces',width:1188,height:500})
-		
-	var yearColumms = svg.append('g').attr({transform:'translate(30,0)'});
-
-	function scaleX_middleOfYear(year) { return (timelineBarChart.scaleByX(new Date(year+1,0)) - timelineBarChart.scaleByX(new Date(year,0)))/2 + timelineBarChart.scaleByX(new Date(year,0)) }
-
-	d3.range(1991,2015).forEach(function(year){ 
-		yearColumms.append('path').attr({
-			d: 'M '+scaleX_middleOfYear(year)+' 10 V 500',
-			stroke:'grey',
-			'stroke-dasharray':"10,10"
-		})    
-	})
-	//yearColumms.append('text').text('Anti-Regime').attr({x:0,y:495, 'font-size':'10px'})
-	//yearColumms.append('text').text('Pro-Regime').attr({x:0,y:20, 'font-size':'10px'})
-
-}
-
-function addDeputyTrace(){
-		var scaleYearExtents ={};
-		$.each(yearPartyExtent, function(year){
-			scaleYearExtents[year] = d3.scale.linear()
-										.domain(this)
-										.range([460,70]);
-										//.range([60, 440]);
-		})
-
-		function scale_middleOfLegislature(i){
-			return (timelineBarChart.scaleByX(legislatures[i].end) - timelineBarChart.scaleByX(legislatures[i].start))/2 + timelineBarChart.scaleByX(legislatures[i].start);
-		}
-}
-
-function drawPartyFlows (party, scaleX_middleOf) {
-
-	var lineFunction = d3.svg.line()
-		.x(function (d) { return d.x })
-		.y(function (d) { return d.y })
-		.interpolate("cardinal");
-
-	var dataPath = [];
-
-	d3.entries( party).forEach( function (d) {
-		dataPath.push( {
-			x: scaleX_middleOf (Number.parseInt(d.key)+1), 
-			y: scaleYearExtents[d.key](d.value.center[1]) + d.value.size/2
-		});
-	});
-
-	d3.entries( party ).reverse().forEach( function (d) {
-		dataPath.push( {
-			x: scaleX_middleOf(Number.parseInt(d.key)+1), 
-			y: scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2
-		});
-	});
-
-
-	var lineGraph = yearColumms.append("path")
-						.attr('class', 'chusme')
-						.attr("d", lineFunction( dataPath ) + "Z")
-						.attr("stroke", 'white' )
-						.attr("stroke-width", 2)
-						.attr("fill", CONGRESS_DEFINE.getPartyColor(party))
-						.attr("opacity", 0.6);
-
-
-}
 
 function mergeObjects(obj1,obj2){
 	var obj3 = {};
@@ -436,9 +380,15 @@ partyTrace['PP'] = mergeObjects(partyTrace['PPB'],partyTrace['PP'])
 delete partyTrace['PFL'];
 delete partyTrace['PL'];
 delete partyTrace['PPB'];
-delete partyTrace['PPR']; // ??
+//delete partyTrace['PPR']; // ??
+//delete partyTrace['PDS']; // ??
 
-$.each( partyTrace, function(){ drawPartyFlows(this, scaleX_middleOfYear)})
+var saveTrace = {
+	"extents": yearPartyExtent,
+    "traces": partyTrace
+}
+console.save(saveTrace,'trace.json')
+// $.each( partyTrace, function(){ drawPartyFlows(this, scaleX_middleOfYear)})
 
 
 

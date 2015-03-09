@@ -116,7 +116,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	//
 	// init
 		var timeline = d3.chart.timeline();
-		timeline(d3.select('#timeline'), $('#timeline').width(), 500);
+		timeline(d3.select('#timeline'), $('#timeline').width(), 800);
 	//
 	// interactions
 		timeline

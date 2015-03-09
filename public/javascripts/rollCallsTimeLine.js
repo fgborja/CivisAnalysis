@@ -110,22 +110,21 @@ d3.chart.timeline = function() {
 		  .attr("x", x(extent[0]))
 		  .attr("width", x(extent[1]) - x(extent[0]));
 	  //dimension.filterRange(extent);
-	  //console.log(extent)
 	  
 	var labels = svg.selectAll('.dateLabel')
 		.data(extent)
-	  	
+		
 	labels.enter()
-  		.append('text')
-  			.attr({
-  				'class':'dateLabel',
-  				opacity: 0.8
-  			});
+		.append('text')
+			.attr({
+				'class':'dateLabel',
+				opacity: 0.8
+			});
 
 	labels.transition()
 		.attr({
 			y: function(d,i){ return (i)? histogramHeight : histogramHeight/3; },
-		  	x: function(d,i){ return ((i)? +35 : -40) + x(d);} 
+			x: function(d,i){ return ((i)? +35 : -40) + x(d);} 
 		})
 		.text( function(d){return d.toLocaleDateString();})
 	});
@@ -142,7 +141,6 @@ d3.chart.timeline = function() {
 		svg.select('.glyphicon.selected').classed('selected',false);
 		//!!!!!!!!!!
 		dispatch.timelineFilter(brush.extent())
-		//console.log()
 	});
 
 	function updateRollCallHistogram (){
@@ -212,8 +210,389 @@ d3.chart.timeline = function() {
 			}
 	}
 
+	function scaleX_middleOfBiennial(year) { return x(new Date(year,12)) }
 	function setPartiesTraces(y){
+		calcPartiesStepsUncluttered(height-90);
+		calcPartiesStepsCluttered(height-90);
 
+		// Add the traced (stroke-dasharray) lines from top to bottom
+		var biennialColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
+
+		d3.range(1991,2015).forEach(function(year){ 
+			if((year+1)%2)
+				biennialColumms.append('path').attr({
+					d: 'M '+scaleX_middleOfBiennial(year)+' 10 V '+(height),
+					stroke:'grey',
+					'stroke-dasharray':"10,10"
+				})    
+		})
+
+		svg.append('g').attr('class','parties').attr({transform:'translate('+margin.left+','+(y+35)+')'})
+		chart.drawParties('uncluttered')
+	}
+	chart.drawParties  = function(type){
+		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
+
+		parties.forEach( function(party){		
+			var partyAtYear = party.value;
+			party.traces = []; 
+			for(var year=1991; year<2015; year+=2){
+				if( (partyAtYear[year] !== undefined) && (partyAtYear[year+2] !== undefined) ){
+					party.traces.push({first:partyAtYear[year],second:partyAtYear[year+2],firstDate:year,secondDate:year+2})
+				}//else{ console.log('no',year,year+2) }
+			}
+		})
+
+		var partiesG = svg.select('g.parties')
+						.selectAll('.party')
+						.data( parties, function(d){ return d.key} );
+
+		partiesG.enter().append('g').attr({'class':'party'})
+			.on('mouseover',function(d){ var p={}; p[d.key] = true; chart.partiesMouseover(p); })
+			.on('mouseout',chart.partiesMouseout)
+
+		partiesG.exit().transition().attr('opacity',0).remove();
+		
+		drawPartiesSteps(type);
+		drawPartiesTraces(type);
+	}
+	function calcPartiesStepsUncluttered(height){
+		// ------------------------------------------------------------
+		// get parties for each period (biennial)
+		periods = {};
+			// for each two years starting from 1991
+			for (var i = 1991; i < 2015; i+=2 ) {
+				// for each period create an array of parties
+				periods[i] = { parties:[] };
+				for( party in CONGRESS_DEFINE.partiesTraces.traces){
+					// if the party did not exist(undefined) - do not push in the party array
+					if(CONGRESS_DEFINE.partiesTraces.traces[party][i] !== undefined){
+						CONGRESS_DEFINE.partiesTraces.traces[party][i].party = party; //(garbage)
+						periods[i].parties.push( CONGRESS_DEFINE.partiesTraces.traces[party][i] );
+					}
+				}
+			};
+		// for each period
+		for( var period in periods){  
+			var partiesInPeriod = periods[period].parties;
+			
+			// sort parties by their 1D spectrum[1]
+			partiesInPeriod.sort(function(a, b) {
+				return (b.center[1]+1) - (a.center[1]+1);  
+			})
+			
+			// calc the distance between adjacent parties in the 1D 
+			var distances = [];
+			// sum of distances
+			var sumDistances = 0;
+			// sum deputies
+			var sumDeputies = 0;
+
+			for (var i = 0; i < partiesInPeriod.length-1; i++) {
+				// distance in spectrum betwen party i and i+1
+				distances[i] = (partiesInPeriod[i].center[1]+1 - partiesInPeriod[i+1].center[1]+1)-2
+
+				sumDistances+=distances[i];
+				sumDeputies+=partiesInPeriod[i].size;
+			};
+			sumDeputies+=partiesInPeriod[partiesInPeriod.length-1].size;
+			// save half of the spectrum to show the parties
+			var partiesPixels = (sumDeputies/513) * (0.5 * (height));
+			var pixelPerDeputy = ( partiesPixels / sumDeputies ); // the amount of pixel that each deputy represent ( - 513 deputies in the brazilian camber)
+
+			// remant pixels for the distances between parties
+			var remnantPixels = height - partiesPixels;
+			// calc the factor in wich should be multilied the distances to get the sum of pixels == remnantPixels 
+			var distanceFactor = ( remnantPixels / sumDistances ); 
+			// sum(distancesInPixels) == factor*sumDistances == sum(distances[i]*factor)
+			var distancesInPixels = distances.map(function(dist){ return dist*distanceFactor })
+
+			var pixelPosition = 0;
+			// set the pixels positions
+			for (var i = 0; i < partiesInPeriod.length; i++) {
+				var party = partiesInPeriod[i];
+				party.uncluttered = {};
+				party.uncluttered.x0 = pixelPosition;
+				party.uncluttered.height = (party.size * pixelPerDeputy);
+
+				pixelPosition += distancesInPixels[i] +party.uncluttered.height;
+			}
+		}
+	}
+	function calcPartiesStepsCluttered(height){
+		// ------------------------------------------------------------
+		// get parties for each period (biennial)
+		periods = {};
+			// for each two years starting from 1991
+			for (var i = 1991; i < 2015; i+=2 ) {
+				// for each period create an array of parties
+				periods[i] = { parties:[] };
+				for( party in CONGRESS_DEFINE.partiesTraces.traces){
+					// if the party did not exist(undefined) - do not push in the party array
+					if(CONGRESS_DEFINE.partiesTraces.traces[party][i] !== undefined){
+						CONGRESS_DEFINE.partiesTraces.traces[party][i].party = party; //(garbage)
+						periods[i].parties.push( CONGRESS_DEFINE.partiesTraces.traces[party][i] );
+					}
+				}
+			};
+		// for each period 
+		// - we need to know the size (in pixels) of the extreme parties of the spectrum
+		//   to place them inside the height
+		for( var period in periods){  
+			var partiesInPeriod = periods[period].parties;
+			// sort parties by their 1D spectrum[1]
+			partiesInPeriod.sort(function(a, b) {
+				return (b.center[1]+1) - (a.center[1]+1);  
+			})
+			
+			// sum deputies
+			var sumDeputies = 0;
+
+			for (var i = 0; i < partiesInPeriod.length; i++) {
+				//console.log(period, partiesInPeriod[i])
+				sumDeputies+=partiesInPeriod[i].size;
+			};
+			// save half of the spectrum to show the parties
+			var partiesPixels = (sumDeputies/513) * (0.5 * (height));
+			var pixelPerDeputy = ( partiesPixels / sumDeputies ); // the amount of pixel that each deputy represent ( - 513 deputies in the brazilian camber)
+
+			var scaleParties = d3.scale.linear()
+										.domain([
+											// the the political spectrum domain of the period
+											CONGRESS_DEFINE.partiesTraces.extents[period][1],
+											CONGRESS_DEFINE.partiesTraces.extents[period][0]
+										])
+										.range([
+											// the (width-height)/2 of first party in the spectrum
+											partiesInPeriod[0].size/2 * pixelPerDeputy,
+											// height + the (width-height)/2 of last party in the spectrum
+											height - ( partiesInPeriod[partiesInPeriod.length-1].size/2 * pixelPerDeputy )
+										]);
+
+			// set the pixels positions
+			for (var i = 0; i < partiesInPeriod.length; i++) {
+				var party = partiesInPeriod[i];
+				party.cluttered = {};
+
+				party.cluttered.x0 = scaleParties(party.center[1]) - (party.size * pixelPerDeputy)/2;
+				party.cluttered.height = (party.size * pixelPerDeputy);
+
+				//.attr("y", function (d) { return scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2} )
+
+			}
+		}
+	}
+
+	// type == ['uncluttered','cluttered']
+	function drawPartiesSteps(type){
+
+		var steps = svg.selectAll('.parties .party')
+						.selectAll('.steps')
+						.data( function(d){return [d.value]})
+
+		steps.enter().append('g').attr({'class':'steps'})
+		
+		var step = steps.selectAll('.step').data( function(d){return d3.entries(d) } )
+			
+		step.enter()
+			.append('rect').attr('class','step');
+
+		step.transition(3000)
+			.attr('class','step')
+			.attr("x", function (d) { return scaleX_middleOfBiennial(Number.parseInt(d.key)+1) -10} )
+			.attr("y", function (d) { return d.value[type].x0 })
+			.attr("height", function (d) { return d.value[type].height })
+			.attr("width", 20 )
+			.attr("opacity", 1 )
+			.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.value.party); } )
+	}
+
+	function drawPartiesTraces(type){
+		var traces = svg.selectAll('.parties .party')
+						.selectAll('.traces')
+						.data( function(d){return [d.traces]})
+
+		traces.enter().append('g').attr({'class':'traces'})
+								
+		var trace = traces.selectAll('.trace')
+						.data( function(d){ return d3.values(d) } );
+						
+		trace.enter().append('path').attr('class','trace');
+
+		trace.transition(3000)
+ 			.attr("d", function(d){ return drawPartyTrace(d,type)} )
+			.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.first.party); } )
+			.attr("opacity", 0.1);
+
+		function drawPartyTrace(trace,type){
+
+			var lineFunction = d3.svg.line()
+				.x(function (d) { return d.x })
+				.y(function (d) { return d.y })
+				.interpolate("linear");
+
+			var dataPath = [];
+			dataPath.push({x:scaleX_middleOfBiennial(trace.firstDate+1)+10,y:trace.first[type].x0});
+			dataPath.push({x:scaleX_middleOfBiennial(trace.secondDate+1)-10,y:trace.second[type].x0});
+			dataPath.push({x:scaleX_middleOfBiennial(trace.secondDate+1)-10,y:trace.second[type].x0 + trace.second[type].height});
+			dataPath.push({x:scaleX_middleOfBiennial(trace.firstDate+1)+10,y:trace.first[type].x0 + trace.first[type].height});
+			
+			return lineFunction( dataPath ) + "Z";
+		}
+	}
+
+	function drawPartiesSteps1(y){
+		var yearColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
+
+		function scaleX_middleOfBiennial(year) { return x(new Date(year,12)) }
+
+		d3.range(1991,2015).forEach(function(year){ 
+			if((year+1)%2)
+				yearColumms.append('path').attr({
+					d: 'M '+scaleX_middleOfBiennial(year)+' 10 V '+(height),
+					stroke:'grey',
+					'stroke-dasharray':"10,10"
+				})    
+		})
+
+		var scaleYearExtents = {};
+		$.each(CONGRESS_DEFINE.partiesTraces.extents, function(year){
+			scaleYearExtents[year] = d3.scale.linear()
+										.domain(this)
+										.range([(height-y)-margin.bottom,80]);
+										//.range([60, 440]);
+		})
+
+		// PARTIES--------------
+		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
+						.sort( function(a,b){ return b.value[1991].center[1] - a.value[1991].center[1];  });
+		var y1=0; 
+		// parties.forEach( function(d){ d.y0 = y1; y1+=d.value[1991].size; d.y1=y1;  })
+		parties.forEach( function(d){ d.y0 = y1; y1+= 30; d.y1=y1;  }) // constant size
+			
+		var scaleLabels = d3.scale.linear()
+						.domain( [0, parties[parties.length-1].y1 ] )
+						.range([65,(height-y)+15]);
+		//----------------------
+
+		var traces =  svg.append('g').attr({'class':'traces',transform:'translate('+margin.left+','+y+')'})
+							.selectAll('.trace')
+								.data( parties )
+								.enter()
+								.append('g').attr('class','trace')
+
+		// PARTIES LABELS					
+		var labels = traces.selectAll('g.lbl')
+			.data( function(d){ return [d]})
+			.enter()
+			.append("g")
+				.attr('class','lbl')
+				.on('mouseover', function(d){ var c ={}; c[d.key]=true; chart.partiesHovered(c); })
+				.on('mouseout', chart.partiesMouseout );
+
+		labels.selectAll('path')
+			.data( function(d){ return [d]})
+			.enter()
+			.append("path")
+				.attr('class','lbl')
+				.attr("d", drawPartyLabel )
+				.attr("stroke", function(d){ return 'grey'/*CONGRESS_DEFINE.getPartyColor(d.key);*/ } )
+				.attr("stroke-width", 2)
+				.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.key); })
+				//.style("fill", 'transparent')
+				.attr('stroke-dasharray',"5,2")
+				.attr("opacity", 0.3);
+
+		function drawPartyLabel (party) {
+				var lineFunction = d3.svg.line()
+					.x(function (d) { return d.x })
+					.y(function (d) { return d.y })
+					.interpolate("linear");
+				var dataPath = [];
+
+				dataPath.push( {x: scaleX_middleOfBiennial(1990), y: scaleLabels( party.y0 ) });
+				dataPath.push( {x: scaleX_middleOfBiennial(1991), y: scaleLabels( party.y0 ) });
+
+				dataPath.push( {x: scaleX_middleOfBiennial(1992), y: scaleYearExtents[1991](party.value[1991].center[1]) - party.value[1991].size/2 +2.2});
+				dataPath.push( {x: scaleX_middleOfBiennial(1992), y: scaleYearExtents[1991](party.value[1991].center[1]) + party.value[1991].size/2 -2});
+				
+				dataPath.push( {x: scaleX_middleOfBiennial(1991), y: scaleLabels( party.y1 )-8 });
+				dataPath.push( {x: scaleX_middleOfBiennial(1990), y: scaleLabels( party.y1 )-8 });
+
+				return lineFunction( dataPath ) + "Z";
+		}
+
+		labels.selectAll('text')
+			.data( function(d){ return [d]})
+			.enter()
+			.append('text')
+				.attr({
+					'class':'lbl',
+					x:scaleX_middleOfBiennial(1990) + 3, 
+					y: function(d){ return scaleLabels( d.y1 ) - 17} ,
+					'font-size': "12px"
+				})
+				.text(function(d){return d.key})
+
+		// PARTIES TRACES/FLOW
+		traces.selectAll('path.flow')
+			.data( function(d){ return [d]})
+			.enter()
+			.append("path")
+				.attr('class','flow')
+				.attr("d", drawPartyFlow )
+				.attr("stroke", 'white' )
+				.attr("stroke-width", 2)
+				.style("fill", 'lightgrey')
+				.attr("opacity", 0.5)
+
+			function drawPartyFlow (party) {
+				var lineFunction = d3.svg.line()
+					.x(function (d) { return d.x })
+					.y(function (d) { return d.y })
+					.interpolate("cardinal");
+
+				var dataPath = [];
+
+				d3.entries( party.value ).forEach( function (d) {
+					dataPath.push( {
+						x: scaleX_middleOfBiennial (Number.parseInt(d.key)+1), 
+						y: scaleYearExtents[d.key](d.value.center[1]) + d.value.size/2
+					});
+				});
+
+				d3.entries( party.value ).reverse().forEach( function (d) {
+					dataPath.push( {
+						x: scaleX_middleOfBiennial(Number.parseInt(d.key)+1), 
+						y: scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2
+					});
+				});
+				return lineFunction( dataPath ) + "Z";
+			}
+
+		// PARTIES TRACES PARTY-RECT
+		traces.selectAll('.partySteps')
+			.data( function(d){ return [d]})
+			.enter()
+			.append("g")
+				.attr('class','.partySteps')
+				.selectAll('.step')
+					.data( function(d){ var entries = d3.entries(d.value); entries.forEach(function(i){ i.party=d.key }); return entries; })
+					.enter()
+					.append("rect")
+						.attr('class','step')
+						.attr("x", function (d) { return scaleX_middleOfBiennial(Number.parseInt(d.key)+1) -10} )
+						.attr("y", function (d) { return scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2} )
+						.attr("height", function (d) { return d.value.size} )
+						.attr("width", 20 )
+						.attr("stroke", 'white' )
+						.attr("stroke-width", 2)
+						.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.party); } )
+						.attr("opacity", 0.8)
+	
+	}
+
+	function drawPartiesFlows(y){
 		var yearColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
 
 		function scaleX_middleOfYear(year) { return (x(new Date(year+1,0)) -  x(new Date(year,0)))/2 + x(new Date(year,0)) }
@@ -237,7 +616,7 @@ d3.chart.timeline = function() {
 
 		// PARTIES--------------
 		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
-		 				.sort( function(a,b){ return b.value[1991].center[1] - a.value[1991].center[1];  });
+						.sort( function(a,b){ return b.value[1991].center[1] - a.value[1991].center[1];  });
 		var y1=0; 
 		// parties.forEach( function(d){ d.y0 = y1; y1+=d.value[1991].size; d.y1=y1;  })
 		parties.forEach( function(d){ d.y0 = y1; y1+= 30; d.y1=y1;  }) // constant size
@@ -266,7 +645,7 @@ d3.chart.timeline = function() {
 				//.style("fill", 'transparent')
 				.attr('stroke-dasharray',"5,2")
 				.attr("opacity", 0.3)
-				.on('mouseover', function(d){ var c ={}; c[d.key]=true; chart.partiesHovered(c); });
+				.on('mouseover', function(d){ var c ={}; c[d.key]=true; chart.partiesHovered(c); })
 
 		traces.selectAll('text')
 			.data( function(d){ return [d]})
@@ -344,19 +723,24 @@ d3.chart.timeline = function() {
 		// 		.attr('stroke-dasharray',"10,10")
 		// 		.style("fill", 'white'})
 		// 		.attr("opacity", 0.6);
-
 	}
 
 	// sort the traces - the hovered parties to front
-	chart.partiesHovered = function (parties){
-		if(parties !== null){
-			svg.selectAll('.trace').sort(function (party, b) { // select the parent and sort the path's
-				if(parties[party.key]!== undefined){
-					if (parties[party.key]) return 1;  // --> party hovered to front          
+	chart.partiesMouseover = function (p){
+		if(p !== null){
+			svg.selectAll('.party').sort(function (party, b) { // select the parent and sort the path's
+				if(p[party.key]!== undefined){
+					if (p[party.key]) return 1;  // --> party hovered to front          
 					else return -1;                             
 				} else return -1;
-			});
+			})
+			.transition().attr('opacity',function (party) {
+				return (p[party.key]!== undefined)? 1 : 0.2; 
+			})
 		}
+	}
+	chart.partiesMouseout = function () {
+		svg.selectAll('.party').transition().attr('opacity',1);
 	}
 
 	chart.margin = function(_) {
@@ -532,7 +916,7 @@ d3.chart.timeline = function() {
 					'data-content':alliancePopover, 
 					'data-html': true,
 					rel:"popover", 
-					'data-placement': function (d,i) { if(i>5) return 'left'; else return 'top';}, 
+					'data-placement': function (d,i) { if(i>5) return 'left'; else return 'bottom';}, 
 					'data-original-title': function(d){ return 'Brazilian Presidential Election of '+d.name}, 
 					'data-trigger':"hover",
 					'data-viewport': '#timeline'
