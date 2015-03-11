@@ -121,7 +121,10 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	//
 	// init
 		var timeline = d3.chart.timeline();
-		timeline(d3.select('#timeline'), $('#timeline').width(), 800);
+		timeline(d3.select('#timeline'), 
+					$('#timeline').width(), //width
+					$(window).height()*0.9  // height
+				);
 	//
 	// interactions
 		timeline
@@ -214,7 +217,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 						chamberInfographic.update();
 					}
 
-						d3.selectAll('.traces .trace path').style('fill', function (d) { return CONGRESS_DEFINE.getPartyColor(d.key) })
+						d3.selectAll('.step').style('fill', function (d) { return CONGRESS_DEFINE.getPartyColor(d.value.party) })
 
 				// Set the alliance to the partiesInfographic - movment
 				//partiesInfographic.setAlliance(alliances)

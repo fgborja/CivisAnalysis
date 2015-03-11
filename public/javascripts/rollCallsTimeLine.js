@@ -9,21 +9,24 @@ d3.chart.timeline = function() {
 		svg,
 		g,
 		width,height,
-		margin = {top: 0, right: 15, bottom: 30, left: 30},
+		margin = {top: 0, right: 15, bottom: 30, left: 15},
 		histogramHeight = 30,
 		x,
 		y = d3.scale.linear().range([histogramHeight, 0]),
-		id = 0,
 		brush = d3.svg.brush(),
 		brushDirty,
 		dimension,
 		group;
+
+		var timelineDim = {};
 
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
 	function chart(div,svgwidth,svgheight) {
 		width = svgwidth - margin.left - margin.right,
 		height = svgheight - margin.top - margin.bottom;
+
+		timelineDim.height = height*0.7;
 
 		g = div.select("g");
 
@@ -35,14 +38,16 @@ d3.chart.timeline = function() {
 				.attr("height", svgheight)
 				
 			g =	svg.append("g")
-					.attr("transform", "translate(" + margin.left + ",0)");
+					.attr("transform", "translate(" + margin.left + ","+margin.top+")");
 
 			svg.append("clipPath")
 				.attr("id", "clip-timeline")
 				.append("rect")
 					.attr("width", width)
-					.attr("height", height);
+					.attr("height", timelineDim.height);
 		}
+
+		
 
 		
 	}
@@ -63,7 +68,7 @@ d3.chart.timeline = function() {
 
 			appendElections(histogramHeight+45);
 
-			setPartiesTraces(histogramHeight+43)
+			setPartiesTraces(histogramHeight+45)
 		}
 	}
 
@@ -189,7 +194,7 @@ d3.chart.timeline = function() {
 
 			// Initialize the brush component with pretty resize handles.
 			gBrush = g.append("g").attr("class", "brush").call(brush);
-			gBrush.selectAll("rect").attr("height", height+histogramHeight);
+			gBrush.selectAll("rect").attr("height", timelineDim.height+histogramHeight);
 			gBrush.selectAll(".resize").append("path").attr("d", resizePath);
 
 			// Only redraw the brush if set externally.
@@ -212,8 +217,8 @@ d3.chart.timeline = function() {
 
 	function scaleX_middleOfBiennial(year) { return x(new Date(year,12)) }
 	function setPartiesTraces(y){
-		calcPartiesStepsUncluttered(height-90);
-		calcPartiesStepsCluttered(height-90);
+		calcPartiesStepsUncluttered(timelineDim.height-90);
+		calcPartiesStepsCluttered(timelineDim.height-90);
 
 		// Add the traced (stroke-dasharray) lines from top to bottom
 		var biennialColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
@@ -221,7 +226,7 @@ d3.chart.timeline = function() {
 		d3.range(1991,2015).forEach(function(year){ 
 			if((year+1)%2)
 				biennialColumms.append('path').attr({
-					d: 'M '+scaleX_middleOfBiennial(year)+' 10 V '+(height),
+					d: 'M '+scaleX_middleOfBiennial(year)+' 10 V '+(timelineDim.height-histogramHeight),
 					stroke:'grey',
 					'stroke-dasharray':"10,10"
 				})    
