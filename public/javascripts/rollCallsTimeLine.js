@@ -10,7 +10,7 @@ d3.chart.timeline = function() {
 		g,
 		width,height,
 		margin = {top: 0, right: 15, bottom: 30, left: 30},
-		histogramHeight = 40,
+		histogramHeight = 30,
 		x,
 		y = d3.scale.linear().range([histogramHeight, 0]),
 		id = 0,
@@ -18,7 +18,7 @@ d3.chart.timeline = function() {
 		brushDirty,
 		dimension,
 		group;
-		
+
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
 	function chart(div,svgwidth,svgheight) {
@@ -123,8 +123,8 @@ d3.chart.timeline = function() {
 
 	labels.transition()
 		.attr({
-			y: function(d,i){ return (i)? histogramHeight : histogramHeight/3; },
-			x: function(d,i){ return ((i)? +35 : -40) + x(d);} 
+			x: function(d,i){ return ((i)? +35 : -40) + x(d);},
+			y: function(d,i){ return (i)? histogramHeight : histogramHeight/2; }
 		})
 		.text( function(d){return d.toLocaleDateString();})
 	});
