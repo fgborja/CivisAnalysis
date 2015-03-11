@@ -1,27 +1,33 @@
 if(!d3.chart) d3.chart = {};
 
 d3.chart.rollCallsScatterplot = function() {
-	var pxMargin = 10;
-	var scatterplot, g;
+	var g;
 	var data;
 	var dispatch = d3.dispatch('update');
 
-	var margin, width,height;
-
+	var _dimensions = {};
+	var margin;
+	var width,height;
 	function chart(container) {
-		margin = {top: pxMargin, right: pxMargin, bottom: pxMargin, left: pxMargin}
-	  	, width = width - margin.left - margin.right
-	  	, height = width - margin.top - margin.bottom;
+		height = width;
+		margin = {top: radius+5, right: radius+5, bottom: radius+5, left: radius+5};
+		_dimensions.width = width - margin.left - margin.right;
+	  	_dimensions.height = height - margin.top - margin.bottom;
 
-		scatterplot = container.append('svg:svg')
-			.attr('class', 'chart  rollCall')
-
+		scatterplot = container.append('svg').attr({width:_dimensions.width+1,height:_dimensions.width+1});
 
 		g = scatterplot.append('g')
-			.attr('class', 'main');
+			.attr({
+				'class' 	: 'chart rollCall',
+			});
+
+		g.append('rect').attr({
+			'class':'gchart',
+		});
 
 		g.append('rect')
 			.attr('class', 'selectorRect')
+			.attr('opacity', '0');
 
 		g.append("g")
 	    .classed("axis x", true)
@@ -35,27 +41,29 @@ d3.chart.rollCallsScatterplot = function() {
 	chart.on = dispatch.on;
 
 	chart.update = function(){
+
+		g.transition().attr({
+			transform 	:'translate('+ (_dimensions.x+margin.left) +','+ (_dimensions.y+margin.top) +')',
+			width 		: _dimensions.width,
+			height 		: _dimensions.height
+		})
 		
 		var scaleX = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
-			.range([ 0, width ]);
+			.range([ margin.left, _dimensions.width-margin.right ]);
 
 		var scaleY = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
-			.range([ height, 0 ]);
+			.range([ _dimensions.height-margin.bottom, margin.top ]);
 
-		scatterplot
-			.attr('width', width + margin.right + margin.left)
-			.attr('height', height + margin.top + margin.bottom)
-			
-		g
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-			.attr('width', width)
-			.attr('height', height);
+		g.select('.gchart').attr({
+			width 		: _dimensions.width,
+			height 		: _dimensions.height
+		});
 
 		g.select(".selectorRect")
-			.attr('width', width)
-			.attr('height', height)
+			.attr('width', _dimensions.width)
+			.attr('height', _dimensions.height)
 			.attr('fill', 'white');
 	
 		// draw the x axis ------------------------------------------------------------------------------------------
@@ -64,7 +72,7 @@ d3.chart.rollCallsScatterplot = function() {
 		.orient('bottom');
 
 		var xg = g.select(".axis.x")
-		.attr('transform', 'translate(0,' + height + ')')
+		.attr('transform', 'translate(0,' + _dimensions.height + ')')
 		.transition()
 		.call(xAxis);
 		// ---------------------------------------------------------------------------------------------------------
@@ -79,9 +87,8 @@ d3.chart.rollCallsScatterplot = function() {
 		.transition()
 		.call(yAxis);
 		// ---------------------------------------------------------------------------------------------------------
-
 		var circles = g.selectAll("circle")
-			.data(data, function(rollCall){ return rollCall.rollCallID; });
+			.data(data, function(rollCall,i){ return (rollCall===undefined)? 1 : rollCall.rollCallID; });
 
 		circles.enter().append("circle")
 							.on("mouseover", mouseOverVoting)

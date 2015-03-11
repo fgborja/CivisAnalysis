@@ -13,7 +13,7 @@ var CONGRESS_DEFINE = {
 	// PL + PRONA ==> PR
 	legislatures : [
 		{name:'49ª Legislature', regimeParty:'PFL',  period:[new Date(1991,1,1) ,new Date(1995,0,31)]},
-		{name:'50ª Legislature', regimeParty:'PSDB', period:[new Date(1995,1,1) ,new Date(1999,0,31)]},
+		{name:'50ª Legislature', regimeParty:'PFL', period:[new Date(1995,1,1) ,new Date(1999,0,31)]},
 		{name:'51ª Legislature', regimeParty:'PSDB', period:[new Date(1999,1,1) ,new Date(2003,0,31)]},
 		{name:'52ª Legislature', regimeParty:'PT',   period:[new Date(2003,1,1) ,new Date(2007,0,31)]},
 		{name:'53ª Legislature', regimeParty:'PT',   period:[new Date(2007,1,1) ,new Date(2011,0,31)]},
@@ -21,13 +21,13 @@ var CONGRESS_DEFINE = {
 	],
 
 	presidents : [
-	  {name: 'Collor (PRN)'     , period:[new Date(1991,0,1),  new Date(1992,11,29)]},
-	  {name: 'Itamar (PMDB)'    , period:[new Date(1992,11,29),new Date(1995,0,1)]},
-	  {name: 'FHC (PSDB) 1ºMan.', period:[new Date(1995,0,1),  new Date(1999,0,1)]},
-	  {name: 'FHC (PSDB) 2ºMan.', period:[new Date(1999,0,1),  new Date(2003,0,1)]},
-	  {name: 'Lula (PT) 1ºMan.' , period:[new Date(2003,0,1),  new Date(2007,0,1)]},
-	  {name: 'Lula (PT) 2ºMan.' , period:[new Date(2007,0,1),  new Date(2011,0,1)]},
-	  {name: 'Dilma (PT) 1ºMan.', period:[new Date(2011,0,1),  new Date(2015,0,1)]}
+	  {name: 'Collor (PRN)'     , party:'PRN', period:[new Date(1991,0,1),  new Date(1992,11,29)]},
+	  {name: 'Itamar (PMDB)'    , party:'PMDB', period:[new Date(1992,11,29),new Date(1995,0,1)]},
+	  {name: 'FHC (PSDB) 1ºMan.', party:'PSDB', period:[new Date(1995,0,1),  new Date(1999,0,1)]},
+	  {name: 'FHC (PSDB) 2ºMan.', party:'PSDB', period:[new Date(1999,0,1),  new Date(2003,0,1)]},
+	  {name: 'Lula (PT) 1ºMan.' , party:'PT', period:[new Date(2003,0,1),  new Date(2007,0,1)]},
+	  {name: 'Lula (PT) 2ºMan.' , party:'PT', period:[new Date(2007,0,1),  new Date(2011,0,1)]},
+	  {name: 'Dilma (PT) 1ºMan.', party:'PT', period:[new Date(2011,0,1),  new Date(2015,0,1)]}
 	],
 
 	//- organization:

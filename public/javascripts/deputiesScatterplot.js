@@ -68,7 +68,7 @@ d3.chart.deputiesScatterplot = function() {
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
 			.range([ _dimensions.height-margin.bottom, margin.top ]);
 
-		g.select('rect').attr({
+		g.select('.gchart').attr({
 			width 		: _dimensions.width,
 			height 		: _dimensions.height
 		});

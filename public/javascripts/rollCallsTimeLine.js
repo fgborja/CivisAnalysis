@@ -17,8 +17,8 @@ d3.chart.timeline = function() {
 		brush = d3.svg.brush(),
 		brushDirty,
 		dimension,
-		group,
-		round;
+		group;
+		
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
 	function chart(div,svgwidth,svgheight) {
@@ -805,7 +805,7 @@ d3.chart.timeline = function() {
 	//return d3.rebind(chart, brush, "on");
 	return d3.rebind(chart, dispatch, "on");
 
-	function appendRangeButtons(ranges, y, fill){
+	function appendRangeButtons(ranges, y, fillClass){
 
 		var gb = svg.append('g').attr('transform','translate('+margin.left+','+y+')') 
 
@@ -820,11 +820,12 @@ d3.chart.timeline = function() {
 				y:3,
 				x:function (d) { return x(d.period[0])},
 				width:function (d) { return x(d.period[1]) - x(d.period[0])}, 
-				fill: fill,
+				'class': fillClass,
 				stroke: 'white',
 				'stroke-width': 1,
 				cursor : 'pointer' 	
 			})
+			.style('fill',function(d){ if(d.party!==undefined){ return CONGRESS_DEFINE.getConstantPartyColor(d.party)}});
 
 		gRects.append('text')
 			.text( function(d){return d.name} )
@@ -843,38 +844,34 @@ d3.chart.timeline = function() {
 
 	function appendGreyRangeButtons(ranges, y ){
 
-		var gRects = appendRangeButtons(ranges, y,'#ccc');
+		var gRects = appendRangeButtons(ranges, y,'background');
 
 		gRects
 			.on('mouseover', function(){
-				d3.select(this).select('rect').attr('fill','steelblue')
+				d3.select(this).select('rect')
+					.attr('class','foreground')
+					.style('opacity',function(d){ if(d.party!==undefined){ return 1 }})
 			})
 			.on('mouseout', function(){
 				if(d3.select(this)  )
-				d3.select(this).select('rect').attr('fill','#ccc')
+				d3.select(this).select('rect').attr('class','background')
+				.style('opacity',function(d){ if(d.party!==undefined){ return 0.5 }})
 			})	
 			.on('mousedown', function(d){ presetDateRangeButtonSelected(d); })
+			.select('rect').style('opacity',function(d){ if(d.party!==undefined){ return 0.5 }})
+
 	
 	}
 
 	function appendClipedRangeButtons(ranges, y ){
 
-		var gRects = appendRangeButtons(ranges, y,'steelblue');
+		var gRects = appendRangeButtons(ranges, y,'foreground');
 
 		gRects.selectAll('rect').attr("clip-path", "url(#clip-timeline)");	
 		gRects.selectAll('text').attr("clip-path", "url(#clip-timeline)");	
 
 		gRects
-			.on('mousedown', function(d){ presetDateRangeButtonSelected(d); })
-			// TODO highlight the grey button => when the mouse is over on a partialy cliped button 
-			// .on('mouseover', function(){
-			// 	d3.select(this).select('rect').attr('fill','steelblue')
-			// })
-			// .on('mouseout', function(){
-			// 	if(d3.select(this)  )
-			// 	d3.select(this).select('rect').attr('fill','#ccc')
-			// })	
-			
+			.on('mousedown', function(d){ presetDateRangeButtonSelected(d); })			
 	}
 
 	function presetDateRangeButtonSelected(d){

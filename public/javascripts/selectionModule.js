@@ -85,8 +85,8 @@ function selectors( class_selector,dispatchSelected){
 		selectorElement = main.insert("circle",'#selectorScreen')
 			.attr({
 				r:10,
-				cx:mouse[0]+10,
-				cy:mouse[1]+10,
+				cx:mouse[0],
+				cy:mouse[1],
 				'class' : "selection"
 			})	
 
@@ -97,7 +97,7 @@ function selectors( class_selector,dispatchSelected){
 				cx = parseInt( selectorElement.attr( "cx"));
 				cy = parseInt( selectorElement.attr( "cy"));
 				
-				r = Math.sqrt(Math.pow(p[0]-cx,2)+Math.pow(p[1]-cy,2)) +10;	
+				r = Math.sqrt(Math.pow(p[0]-cx,2)+Math.pow(p[1]-cy,2));	
 
 				selectorElement.attr('r',r);			 
 
@@ -108,7 +108,7 @@ function selectors( class_selector,dispatchSelected){
 					y       : parseInt( selectorElement.attr( "cy")),
 					r   	: parseInt( selectorElement.attr( "r")),
 					isPointInside  : function(cx,cy){
-						return ( ( Math.pow( this.x-10-cx ,2) + Math.pow( this.y-10-cy ,2) ) <= Math.pow(this.r,2) ) 
+						return ( ( Math.pow( this.x-cx ,2) + Math.pow( this.y-cy ,2) ) <= Math.pow(this.r,2) ) 
 					}
 				};
 				

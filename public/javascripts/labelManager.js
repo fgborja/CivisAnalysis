@@ -244,7 +244,7 @@ d3.chart.labelManager = function() {
 				// DO NOTHING
 		}else{
 			$('#rollCallInfo').html(
-				'<div class="panel panel-default" style="color:grey; margin-top:5px; font-size: normal;height: '+(rollCallsScatterplot.height()+37)+'px;">'+
+				'<div class="panel panel-default" style="color:grey; margin-top:5px; font-size: normal;height: '+(rollCallsScatterplot.height())+'px;">'+
 					'<div class="panel-body style="" ><div>'+
 						flags.rollCalls.selected +
 						((flags.rollCalls.total == flags.rollCalls.selected)?

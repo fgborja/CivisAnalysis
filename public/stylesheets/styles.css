@@ -135,16 +135,16 @@ a.btn.highlight{
   max-width: 800px !important;
 }
 
-.background.bar {
-  fill: #ccc;
+#timeline .background {
+  fill: lightgrey;
 }
 
-.foreground.bar {
-  fill: steelblue;
+#timeline  .foreground {
+  fill: darkgrey;
 }
 
 .brush rect.extent {
-  fill: steelblue;
+  fill: darkgrey;
   fill-opacity: .125;
 }
 
