@@ -123,7 +123,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 		var timeline = d3.chart.timeline();
 		timeline(d3.select('#timeline'), 
 					$('#timeline').width(), //width
-					$(window).height()*0.9  // height
+					$(window).height()*0.6  // height
 				);
 	//
 	// interactions
@@ -195,14 +195,13 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 				);
 			})
 			// Set the alliance!
-			.on("setAlliances", function(alliances) { 
-
+			.on("setAlliances", function(d) { 
 				// SET THE PARTIES COLORS ACORDING TO EACH ALLIANCE
-					if(alliances==null) CONGRESS_DEFINE.getPartyColor = CONGRESS_DEFINE.getConstantPartyColor;
+					if(d==null) CONGRESS_DEFINE.getPartyColor = CONGRESS_DEFINE.getConstantPartyColor;
 					else {
 						var partiesColigationColor = {};
-						$.each(alliances, function(i){
-							$.each(alliances[i].parties, function(party){ return partiesColigationColor[alliances[i].parties[party]]= CONGRESS_DEFINE.getPartyColor( alliances[i].parties[0] )  })
+						$.each(d.alliances, function(i){
+							$.each(d.alliances[i].parties, function(party){ return partiesColigationColor[d.alliances[i].parties[party]]= CONGRESS_DEFINE.getPartyColor( d.alliances[i].parties[0] )  })
 						});
 						CONGRESS_DEFINE.getPartyColor = function(party){ 
 							if(partiesColigationColor[party] !== undefined ) 
@@ -213,11 +212,45 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 					
 					if(deputiesScatterplot.data() !== undefined){
 						deputiesScatterplot.update();
-						chamberInfographic.setAlliances(alliances)
+						chamberInfographic.setAlliances(d)
 						chamberInfographic.update();
 					}
 
-						d3.selectAll('.step').style('fill', function (d) { return CONGRESS_DEFINE.getPartyColor(d.value.party) })
+					d3.selectAll('.step').style('fill', function (d) { return CONGRESS_DEFINE.getPartyColor(d.value.party) })
+
+				if(d != null){
+					var tableContent = '';
+					$.each(d.alliances, function(i){
+						tableContent += '<div class="col-md-3 alliance" style="word-wrap: break-word;">';
+						tableContent += 
+							'<div class="col-md-12 no-padding">'+
+							'<div class="col-md-2 no-padding"><h4><span class="color-preview" style="background-color: '+ CONGRESS_DEFINE.getConstantPartyColor(d.alliances[i].parties[0])+';"></span></h4></div>'+
+							'<h4>'+d.alliances[i].name+'</h4>'+
+							'</div>';
+						tableContent += '<div class="col-md-12>">';
+						tableContent += '<div>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</div>';
+						tableContent += '<div>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</div>';
+						tableContent += '<div>'+d.alliances[i].president+ '</div>';
+						tableContent += '<div>'+ $.map(d.alliances[i].parties, function(party){ return party}) +'</div>';
+						// tableContent += '<td>' + this.email + '</td>';
+						// tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
+						tableContent += '</div>';			
+						tableContent += '</div>';			
+					});
+					console.log(d)
+					var html = 
+					'<div id="content" style="display: none;">' +
+						'<h3>Brazilian Presidential Election of '+d.name+'</h3>'+
+						tableContent +
+					'</div>';
+
+					$('#timelineInfo').append(html)
+					$('#timelineInfo #content').show('slow')
+				}else{
+					$('#timelineInfo').children().hide('fast', function(d) {
+						$(this).remove();
+					})
+				}
 
 				// Set the alliance to the partiesInfographic - movment
 				//partiesInfographic.setAlliance(alliances)

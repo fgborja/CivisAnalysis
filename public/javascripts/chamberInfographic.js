@@ -47,7 +47,7 @@ d3.chart.chamberInfographic = function() {
 
 	chart.setAlliances = function(electoralAlliances){
 		if(!arguments.length) return alliances;
-		alliances = electoralAlliances;
+		alliances = (electoralAlliances !== null)? electoralAlliances.alliances : null;
 		return chart;
 	}
 

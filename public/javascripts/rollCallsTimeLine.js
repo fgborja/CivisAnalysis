@@ -18,7 +18,10 @@ d3.chart.timeline = function() {
 		dimension,
 		group;
 
+		var rangeButtonsHeight = 15;
 		var timelineDim = {};
+		var partyStepWidth = 15,
+			percentageToParties = 0.5;
 
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
@@ -26,7 +29,7 @@ d3.chart.timeline = function() {
 		width = svgwidth - margin.left - margin.right,
 		height = svgheight - margin.top - margin.bottom;
 
-		timelineDim.height = height*0.7;
+		timelineDim.height = height-15 - histogramHeight-rangeButtonsHeight*3;//*0.7;
 
 		g = div.select("g");
 
@@ -66,9 +69,9 @@ d3.chart.timeline = function() {
 			appendClipedRangeButtons(CONGRESS_DEFINE.legislatures, histogramHeight+15 );
 			appendClipedRangeButtons(CONGRESS_DEFINE.presidents, histogramHeight+30 );
 
-			appendElections(histogramHeight+45);
+			setPartiesTraces(histogramHeight+rangeButtonsHeight*3+10)
 
-			setPartiesTraces(histogramHeight+45)
+			appendElections(timelineDim.height+25+histogramHeight+rangeButtonsHeight*3);
 		}
 	}
 
@@ -217,24 +220,28 @@ d3.chart.timeline = function() {
 
 	function scaleX_middleOfBiennial(year) { return x(new Date(year,12)) }
 	function setPartiesTraces(y){
-		calcPartiesStepsUncluttered(timelineDim.height-90);
-		calcPartiesStepsCluttered(timelineDim.height-90);
+		var traceMargin = 5;
+		var partyTraces = svg.append('g').attr({id:'partyTraces',transform:'translate('+margin.left+','+(y+traceMargin)+')'});
+
+		calcPartiesStepsUncluttered(timelineDim.height);
+		calcPartiesStepsCluttered(timelineDim.height);
 
 		// Add the traced (stroke-dasharray) lines from top to bottom
-		var biennialColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
+		var biennialColumms = partyTraces.append('g');
 
 		d3.range(1991,2015).forEach(function(year){ 
 			if((year+1)%2)
 				biennialColumms.append('path').attr({
-					d: 'M '+scaleX_middleOfBiennial(year)+' 10 V '+(timelineDim.height-histogramHeight),
+					d: 'M '+scaleX_middleOfBiennial(year)+' '+2+' V '+(timelineDim.height+10),
 					stroke:'grey',
 					'stroke-dasharray':"10,10"
 				})    
 		})
 
-		svg.append('g').attr('class','parties').attr({transform:'translate('+margin.left+','+(y+35)+')'})
+		partyTraces.append('g').attr('class','parties').attr({transform:'translate(0,'+traceMargin+')'});
 		chart.drawParties('uncluttered')
 	}
+
 	chart.drawParties  = function(type){
 		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
 
@@ -302,7 +309,7 @@ d3.chart.timeline = function() {
 			};
 			sumDeputies+=partiesInPeriod[partiesInPeriod.length-1].size;
 			// save half of the spectrum to show the parties
-			var partiesPixels = (sumDeputies/513) * (0.5 * (height));
+			var partiesPixels = (sumDeputies/513) * (percentageToParties * (height));
 			var pixelPerDeputy = ( partiesPixels / sumDeputies ); // the amount of pixel that each deputy represent ( - 513 deputies in the brazilian camber)
 
 			// remant pixels for the distances between parties
@@ -358,7 +365,7 @@ d3.chart.timeline = function() {
 				sumDeputies+=partiesInPeriod[i].size;
 			};
 			// save half of the spectrum to show the parties
-			var partiesPixels = (sumDeputies/513) * (0.5 * (height));
+			var partiesPixels = (sumDeputies/513) * (percentageToParties * (height));
 			var pixelPerDeputy = ( partiesPixels / sumDeputies ); // the amount of pixel that each deputy represent ( - 513 deputies in the brazilian camber)
 
 			var scaleParties = d3.scale.linear()
@@ -404,10 +411,10 @@ d3.chart.timeline = function() {
 
 		step.transition(3000)
 			.attr('class','step')
-			.attr("x", function (d) { return scaleX_middleOfBiennial(Number.parseInt(d.key)+1) -10} )
+			.attr("x", function (d) { return scaleX_middleOfBiennial(Number.parseInt(d.key)+1) -partyStepWidth/2} )
 			.attr("y", function (d) { return d.value[type].x0 })
 			.attr("height", function (d) { return d.value[type].height })
-			.attr("width", 20 )
+			.attr("width", partyStepWidth )
 			.attr("opacity", 1 )
 			.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.value.party); } )
 	}
@@ -437,10 +444,10 @@ d3.chart.timeline = function() {
 				.interpolate("linear");
 
 			var dataPath = [];
-			dataPath.push({x:scaleX_middleOfBiennial(trace.firstDate+1)+10,y:trace.first[type].x0});
-			dataPath.push({x:scaleX_middleOfBiennial(trace.secondDate+1)-10,y:trace.second[type].x0});
-			dataPath.push({x:scaleX_middleOfBiennial(trace.secondDate+1)-10,y:trace.second[type].x0 + trace.second[type].height});
-			dataPath.push({x:scaleX_middleOfBiennial(trace.firstDate+1)+10,y:trace.first[type].x0 + trace.first[type].height});
+			dataPath.push({x:scaleX_middleOfBiennial(trace.firstDate+1)+partyStepWidth/2,y:trace.first[type].x0});
+			dataPath.push({x:scaleX_middleOfBiennial(trace.secondDate+1)-partyStepWidth/2,y:trace.second[type].x0});
+			dataPath.push({x:scaleX_middleOfBiennial(trace.secondDate+1)-partyStepWidth/2,y:trace.second[type].x0 + trace.second[type].height});
+			dataPath.push({x:scaleX_middleOfBiennial(trace.firstDate+1)+partyStepWidth/2,y:trace.first[type].x0 + trace.first[type].height});
 			
 			return lineFunction( dataPath ) + "Z";
 		}
@@ -821,7 +828,7 @@ d3.chart.timeline = function() {
 
 		gRects.append('rect')
 			.attr({ 
-				height:15,
+				height:rangeButtonsHeight,
 				y:3,
 				x:function (d) { return x(d.period[0])},
 				width:function (d) { return x(d.period[1]) - x(d.period[0])}, 
@@ -908,88 +915,78 @@ d3.chart.timeline = function() {
 				.append('text')
 				.attr({    
 					class:"glyphicon",
-					x:function (d) { return x(d.dates[0]) },
+					x:function (d) { return Math.max(x(d.dates[0]),0) },
 					y:20,
 					width:20,
 					height:20,
 					cursor : 'pointer',
 					href:"#",
 					'data-container':'body',
-					'data-content':alliancePopover, 
+					'data-content':electionPopover, 
 					'data-html': true,
 					rel:"popover", 
-					'data-placement': function (d,i) { if(i>5) return 'left'; else return 'bottom';}, 
-					'data-original-title': function(d){ return 'Brazilian Presidential Election of '+d.name}, 
+					'data-placement': function (d,i) { if(i>5) return 'bottom'; else return 'bottom';}, 
+					//'data-original-title': function(d){ return 'Brazilian Presidential Election of '+d.name}, 
 					'data-trigger':"hover",
 					'data-viewport': '#timeline'
 				}).text('')
 				//
 
-		function alliancePopover( d ){
-			var partiesColigationColor = {};
-			var tableContent = '';
-			// For each item in our JSON, add a table row and cells to the content string
-			$.each(d.alliances, function(i){
-				tableContent += '<tr>';
-				tableContent += '<td> <span class="color-preview" style="background-color: '+ CONGRESS_DEFINE.getConstantPartyColor(d.alliances[i].parties[0])+';"></span> </td>';
-				tableContent += '<td>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</td>';
-				tableContent += '<td>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</td>';
-				tableContent += '<td>'+d.alliances[i].president+ '</td>';
-				tableContent += '<td>'+d.alliances[i].name+'</td>';
-				tableContent += '<td>'+ $.map(d.alliances[i].parties, function(party){ return party}) +'</td>';
-				// tableContent += '<td>' + this.email + '</td>';
-				// tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
-				tableContent += '</tr>';			
-			});
-			
-			var html = '<div id="propList">'+
-					'<table>'+
-						'<thead>'+
-							'<tr>'+ 
-								'<th>#</th>'+
-								'<th>1st Round</th>'+
-								'<th>2nd</th>'+
-								'<th>Nominee</th>'+
-								'<th>Electoral Alliance</th>'+
-								'<th>Allied Parties</th>'+
-							'</tr>'+
-						'</thead>'+
-						'<tbody>'+
-							tableContent +
-						'</tbody>'+
-					'</table>'+
-				'</div>'
-				+ '<em>Click to set alliances</em>'
-			;
+		function electionPopover( d ){
+			var html =  '<h4>'+'Brazilian Presidential Election of '+d.name+'</h1><em>Click get more info</em>';
 			return html;
 		}
-		// POPOVER!
+		// // POPOVER!
 		$('text.glyphicon').popover({ trigger: "hover" });
 
 		// set on/off alliance
 		allianceIcons.on('click', function(d){
-			var element = d3.select(this)
 
-			if( element.classed('selected') ){
-				
-				element.classed('selected',false)
-				dispatch.setAlliances(null);
+
+			var electionIcon = d3.select(this)
+
+			if( electionIcon.classed('selected') ){
+			// if the election is already selected 
+				// deselect
+					electionIcon.classed('selected',false)
+					dispatch.setAlliances(null);
+					setAlliance(null);
 			}else{
-				tooltip.style('visibility','hidden')
-				gb.selectAll('text').classed('selected',false)
+			// if the election is not selected
+				// first reset previous elections 
+					gb.selectAll('text').classed('selected',false)
+					dispatch.setAlliances(null);
+					setAlliance(null);
 
-				dispatch.setAlliances(null);
-
-				element.classed('selected',true)
-
-				dispatch.setAlliances(d.alliances);
+				// set the selected election 
+					electionIcon.classed('selected',true)
+					dispatch.setAlliances(d);
+					setAlliance(d)
 			
 			}
 		})
 
 	}
 
+	function setAlliance(d){
+		if( !(svg.select('#partyTraces .alliance-rect').empty()) ) 
+			svg.select('#partyTraces .alliance-rect').remove();
 
+		if(d!=null){
+			var x = scaleX_middleOfBiennial(d.name)
+			console.log(d,x)
+			svg.select('#partyTraces').append('rect').attr({
+				'class': 'alliance-rect',
+				x:x-partyStepWidth*0.75,
+				y: (histogramHeight-rangeButtonsHeight*3) +10,
+				height:timelineDim.height +18,
+				width:partyStepWidth*1.5,
+				stroke:'grey',
+				fill:'none',
+				'stroke-dasharray':"5,5"
+			})
+		}
+	}
 	//
 }
 
