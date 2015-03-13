@@ -231,13 +231,12 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 						tableContent += '<div>'+(d.alliances[i].result[0]*100).toFixed(2)+' %</div>';
 						tableContent += '<div>'+ ((d.alliances[i].result[1] === undefined)? '-' : (d.alliances[i].result[1]*100).toFixed(2) +'%')+ '</div>';
 						tableContent += '<div>'+d.alliances[i].president+ '</div>';
-						tableContent += '<div>'+ $.map(d.alliances[i].parties, function(party){ return party}) +'</div>';
+						tableContent += '<div>'+ $.map(d.alliances[i].parties, function(party){ return ' '+party}) +'</div>';
 						// tableContent += '<td>' + this.email + '</td>';
 						// tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
 						tableContent += '</div>';			
 						tableContent += '</div>';			
 					});
-					console.log(d)
 					var html = 
 					'<div id="content" style="display: none;">' +
 						'<h3>Brazilian Presidential Election of '+d.name+'</h3>'+

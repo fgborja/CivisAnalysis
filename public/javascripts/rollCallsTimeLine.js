@@ -69,9 +69,9 @@ d3.chart.timeline = function() {
 			appendClipedRangeButtons(CONGRESS_DEFINE.legislatures, histogramHeight+15 );
 			appendClipedRangeButtons(CONGRESS_DEFINE.presidents, histogramHeight+30 );
 
-			setPartiesTraces(histogramHeight+rangeButtonsHeight*3+10)
-
-			appendElections(timelineDim.height+25+histogramHeight+rangeButtonsHeight*3);
+			appendElections(histogramHeight+rangeButtonsHeight*3);
+			
+			setPartiesTraces(10+histogramHeight+rangeButtonsHeight*3+10)
 		}
 	}
 
@@ -978,7 +978,7 @@ d3.chart.timeline = function() {
 			svg.select('#partyTraces').append('rect').attr({
 				'class': 'alliance-rect',
 				x:x-partyStepWidth*0.75,
-				y: (histogramHeight-rangeButtonsHeight*3) +10,
+				y: (histogramHeight-rangeButtonsHeight*3) +14,
 				height:timelineDim.height +18,
 				width:partyStepWidth*1.5,
 				stroke:'grey',
