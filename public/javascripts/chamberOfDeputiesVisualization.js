@@ -62,7 +62,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 			{
 				x:0, y:0, 
 				partiesLabel: {x:0, y:0, width: 0, height:0 },
-				deputiesLabel: {x:canvasViewBox.width*0.35 +12, y:canvasViewBox.height/2, width: canvasViewBox.width*0.35, height:0 },
+				deputiesLabel: {x:canvasViewBox.width*0.5 -30, y:canvasViewBox.height/2-30, width: canvasViewBox.width*0.35, height:0 },
 				RollCallsLabel: {x:0, y:0, width: 0, height:0 }
 			} 
 		)
@@ -73,7 +73,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// Chamber Of Deputies Infographic -----------------------------------------------------
 	//
 		var chamberInfographic = d3.chart.chamberInfographic();
-		chamberInfographic( canvasSVG ,{x:15, y:0, width: canvasViewBox.width*0.333, height:canvasViewBox.height });
+		chamberInfographic( canvasSVG ,{direction:'horizontal' ,x:14, y:97, width: canvasViewBox.width-200, height: canvasViewBox.height*0.53 });
 
 		chamberInfographic
 			.on('update', updateDeputies )
@@ -84,7 +84,8 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// Deputies Scatterplot ----------------------------------------------------------------
 	//
 		var deputiesScatterplot = d3.chart.deputiesScatterplot();
-		deputiesScatterplot(canvasSVG, {x:canvasViewBox.width*0.6+2, y:0, width: canvasViewBox.width*0.4, height: canvasViewBox.height, radius: radius} );
+		var deputiesScatterplotDimensions = {direction:'horizontal', x:10, y:canvasViewBox.height*0.62, width: canvasViewBox.width-14, height: canvasViewBox.height*0.4, radius: radius};
+		deputiesScatterplot(canvasSVG, deputiesScatterplotDimensions);
 
 		deputiesScatterplot
 			.on('update', updateDeputies )

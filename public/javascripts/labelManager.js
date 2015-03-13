@@ -38,30 +38,30 @@ d3.chart.labelManager = function() {
 		var deputiesLabel = labels.append('g').attr('class','deputies')
 			.attr("transform", function(d){return "translate("+(_dimensions.deputiesLabel.x+30)+","+_dimensions.deputiesLabel.y+")"})
 			
-		var circle = deputiesLabel.append('circle')
-					.attr({
-						r:_dimensions.deputiesLabel.width/2+8,
-						stroke: 'black',
-						'stroke-width': '2px',
-						'stroke-opacity': 0.2
-					})
-					.style('fill','transparent')
-					.on({
-						mouseover: function () {
-							circle.attr('stroke-width','4px');
-							d3.select('#btn-resetDeputies').classed('highlight',true);
-						},
-						mouseout: function () {
-							circle.attr('stroke-width','spx');
-							d3.select('#btn-resetDeputies').classed('highlight',false);
-						},
-						click: function() {
-							deputies.forEach(function (deputy) {
-								deputy.selected = true;
-							})
-							dispatch.update();
-						}
-					})
+		// var circle = deputiesLabel.append('circle')
+		// 			.attr({
+		// 				r:_dimensions.deputiesLabel.width/2+8,
+		// 				stroke: 'black',
+		// 				'stroke-width': '2px',
+		// 				'stroke-opacity': 0.2
+		// 			})
+		// 			.style('fill','transparent')
+		// 			.on({
+		// 				mouseover: function () {
+		// 					circle.attr('stroke-width','4px');
+		// 					d3.select('#btn-resetDeputies').classed('highlight',true);
+		// 				},
+		// 				mouseout: function () {
+		// 					circle.attr('stroke-width','spx');
+		// 					d3.select('#btn-resetDeputies').classed('highlight',false);
+		// 				},
+		// 				click: function() {
+		// 					deputies.forEach(function (deputy) {
+		// 						deputy.selected = true;
+		// 					})
+		// 					dispatch.update();
+		// 				}
+		// 			})
 
 		votesPieChart = d3.chart.votesPieChart({labels:false});
 		votesPieChart(deputiesLabel, {x:0, y:52, width:80, height:80} );
