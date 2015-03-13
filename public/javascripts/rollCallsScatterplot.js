@@ -41,9 +41,8 @@ d3.chart.rollCallsScatterplot = function() {
 	chart.on = dispatch.on;
 
 	chart.update = function(){
-
 		g.transition().attr({
-			transform 	:'translate('+ (_dimensions.x+margin.left) +','+ (_dimensions.y+margin.top) +')',
+			//transform 	:'translate('+ (_dimensions.x+margin.left) +','+ (_dimensions.y+margin.top) +')',
 			width 		: _dimensions.width,
 			height 		: _dimensions.height
 		})

@@ -146,6 +146,7 @@ d3.chart.timeline = function() {
 		}
 		// clear selected alliance
 		dispatch.setAlliances(null);
+		setAlliance(null);
 		svg.select('.glyphicon.selected').classed('selected',false);
 		//!!!!!!!!!!
 		dispatch.timelineFilter(brush.extent())
@@ -784,18 +785,6 @@ d3.chart.timeline = function() {
 		return chart;
 	};
 
-	chart.timelineFilter = function(_) {
-		if (_) {
-			brush.extent(_);
-			dimension.filterRange(_);
-		} else {
-			brush.clear();
-			dimension.filterAll();
-		}
-		brushDirty = true;
-		return chart;
-	};
-
 	chart.group = function(_) {
 		if (!arguments.length) return group;
 		group = _;
@@ -887,9 +876,11 @@ d3.chart.timeline = function() {
 	}
 
 	function presetDateRangeButtonSelected(d){
+		// clear date on brush
 		svg.selectAll('.dateLabel').remove();
 		// clear selected alliance
 		dispatch.setAlliances(null);
+		setAlliance(null);
 		svg.select('.glyphicon.selected').classed('selected',false);
 		
 		
@@ -969,12 +960,12 @@ d3.chart.timeline = function() {
 	}
 
 	function setAlliance(d){
-		if( !(svg.select('#partyTraces .alliance-rect').empty()) ) 
+		if( !(svg.select('#partyTraces .alliance-rect').empty()) ){ 
 			svg.select('#partyTraces .alliance-rect').remove();
+		}
 
 		if(d!=null){
 			var x = scaleX_middleOfBiennial(d.name)
-			console.log(d,x)
 			svg.select('#partyTraces').append('rect').attr({
 				'class': 'alliance-rect',
 				x:x-partyStepWidth*0.75,
