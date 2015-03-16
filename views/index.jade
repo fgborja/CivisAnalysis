@@ -108,6 +108,8 @@ html
 
 		span.glyphicon.glyphicon-eye-close( onmouseover='javascript:timeline.drawParties("cluttered")',onmouseout='javascript:timeline.drawParties("uncluttered")')
 
+		input(type='range', min=0, max=100, value=50, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties('uncluttered')")
+
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")
 			.modal-dialog.modal-lg

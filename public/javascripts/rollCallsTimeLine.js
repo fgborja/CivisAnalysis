@@ -20,8 +20,7 @@ d3.chart.timeline = function() {
 
 		var rangeButtonsHeight = 15;
 		var timelineDim = {};
-		var partyStepWidth = 15,
-			percentageToParties = 0.5;
+		var partyStepWidth = 15;
 
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
@@ -223,10 +222,7 @@ d3.chart.timeline = function() {
 	function setPartiesTraces(y){
 		var traceMargin = 5;
 		var partyTraces = svg.append('g').attr({id:'partyTraces',transform:'translate('+margin.left+','+(y+traceMargin)+')'});
-
-		calcPartiesStepsUncluttered(timelineDim.height);
-		calcPartiesStepsCluttered(timelineDim.height);
-
+		
 		// Add the traced (stroke-dasharray) lines from top to bottom
 		var biennialColumms = partyTraces.append('g');
 
@@ -238,12 +234,18 @@ d3.chart.timeline = function() {
 					'stroke-dasharray':"10,10"
 				})    
 		})
-
+		
 		partyTraces.append('g').attr('class','parties').attr({transform:'translate(0,'+traceMargin+')'});
+
+
 		chart.drawParties('uncluttered')
 	}
 
+	chart.pixelPercentageToParties = 0.5;
 	chart.drawParties  = function(type){
+		calcPartiesStepsUncluttered(timelineDim.height,chart.pixelPercentageToParties);
+		calcPartiesStepsCluttered(timelineDim.height,chart.pixelPercentageToParties);
+
 		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
 
 		parties.forEach( function(party){		
@@ -269,7 +271,7 @@ d3.chart.timeline = function() {
 		drawPartiesSteps(type);
 		drawPartiesTraces(type);
 	}
-	function calcPartiesStepsUncluttered(height){
+	function calcPartiesStepsUncluttered(height,pixelPercentageToParties){
 		// ------------------------------------------------------------
 		// get parties for each period (biennial)
 		periods = {};
@@ -310,7 +312,7 @@ d3.chart.timeline = function() {
 			};
 			sumDeputies+=partiesInPeriod[partiesInPeriod.length-1].size;
 			// save half of the spectrum to show the parties
-			var partiesPixels = (sumDeputies/513) * (percentageToParties * (height));
+			var partiesPixels = (sumDeputies/513) * (pixelPercentageToParties * (height));
 			var pixelPerDeputy = ( partiesPixels / sumDeputies ); // the amount of pixel that each deputy represent ( - 513 deputies in the brazilian camber)
 
 			// remant pixels for the distances between parties
@@ -332,7 +334,7 @@ d3.chart.timeline = function() {
 			}
 		}
 	}
-	function calcPartiesStepsCluttered(height){
+	function calcPartiesStepsCluttered(height,pixelPercentageToParties){
 		// ------------------------------------------------------------
 		// get parties for each period (biennial)
 		periods = {};
@@ -366,7 +368,7 @@ d3.chart.timeline = function() {
 				sumDeputies+=partiesInPeriod[i].size;
 			};
 			// save half of the spectrum to show the parties
-			var partiesPixels = (sumDeputies/513) * (percentageToParties * (height));
+			var partiesPixels = (sumDeputies/513) * (pixelPercentageToParties * (height));
 			var pixelPerDeputy = ( partiesPixels / sumDeputies ); // the amount of pixel that each deputy represent ( - 513 deputies in the brazilian camber)
 
 			var scaleParties = d3.scale.linear()
