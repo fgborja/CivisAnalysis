@@ -1,34 +1,91 @@
 //=============================================================================
 // Deputies - Modal
-function setDeputyModal_SearchAll(){
-	setDeputyModal_Init();
-	setDeputyModal_setTable(deputyNodes);
+function setDeputyModal_SELECT(){
+	setDeputyModal_SelectInit();
 }
 
-function setDeputyModal_ListSelected(){
-	setDeputyModal_Init();
+function setDeputyModal_LIST_SELECTED(){
+	setDeputyModal_LIST_Init();
 	var selectedDeputies = [];
 	deputyNodes.forEach( function (deputy) { if(deputy.selected) selectedDeputies.push(deputy) });
 	setDeputyModal_setTable(selectedDeputies);
 }
 
-function setDeputyModal_Init(){
+function setDeputyModal_SelectInit(){
 	d3.select('.modal-title').text('Deputies - search & select')
 	$('.modal-body').children().remove();
-	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th>Name</th><th>Party</th><th>State</th><th id="select"></th></tr><thead/></table>')
 
-	$('.modal-body th#select').append(
-		'<div class="dropdown">' 
-			+'<span class="btn dropdown-toggle" type="button" id="selectMenu" data-toggle="dropdown">'
-			+	'Select ' 
-			+	'<span class="caret"></span>'
-			+'</span>'
-		  	+'<ul class="dropdown-menu" role="menu" aria-labelledby="selectMenu">'
-		    	+'<li role="presentation"><a id="selectAll" class="btn glyphicon glyphicon-check" role="menuitem" tabindex="-1"> All </a></li>'
-		    	+'<li role="presentation"><a id="selectNone" class="btn glyphicon glyphicon-unchecked"  role="menuitem" tabindex="-1"> None</a></li>'
-		 	+'</ul>'
-	 	+'</div>'
-	);
+	$('.modal-body').append('<select id="select-to" class="selectized" placeholder="Pick Deputies..." multiple="multiple" tabindex="-1" style="display: none; height="200px""></select>')
+
+	var $select = $('#select-to').selectize({
+	    persist: false,
+	    maxItems: null,
+	    valueField: 'deputyID',
+	    labelField: 'name',
+	    searchField: ['name', 'party', 'district'],
+	    options: deputyNodes,
+	    render: {
+	        item: function(item, escape) {
+	            return '<div>' +
+	                (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+	                (item.party ? '<span class="party"> - ' + escape(item.party) + '</span>' : '') +
+	                (item.district ? '<span class="party"> - ' + escape(item.district) + '</span>' : '') +
+	            '</div>';
+	        },
+	        option: function(item, escape) {
+	            return '<div>' +
+	                '<span class="">' + escape(item.name) + '</span>' +
+	                '<span class="caption"> - ' +  escape(item.party) +' - '+ escape(item.district) +'</span>' +
+	            '</div>';
+	        }
+	    },
+	    createFilter: function(input) {
+	        var match, regex;
+	        console.log()
+	        // name
+	        regex = new RegExp('^([^<]*)$', 'i');
+	        match = input.match(regex);
+	        if (match) return !this.options.hasOwnProperty(match[2]);
+
+	        return false;
+	    }
+	});
+	// add button to confirm selection
+	$('.modal-body').append('<button id="selectBtn" class="btn btn-default">Select Deputies</button>')
+	// when select buttton is clicked
+	$('#selectBtn').on('click', function(){ 
+		var selectedDeputiesIDs = $select[0].selectize.getValue();
+
+		if( selectedDeputiesIDs.length != 0 ){
+			modals.unselectAllDeputies();
+			selectedDeputiesIDs.forEach(function(deputyID){
+				phonebook.getDeputyObj(deputyID).selected = true;
+			})
+		}
+		// update selected
+		updateDeputies();
+		// close modal
+		$('.modal').modal('toggle');
+	})
+}
+
+function setDeputyModal_LIST_Init(){
+	d3.select('.modal-title').text('Deputies - search & select')
+	$('.modal-body').children().remove();
+	$('.modal-body').append('<table id="table" calss="display"><thead><tr><th id="select"></th><th>Name</th><th>Party</th><th>State</th></tr><thead/></table>')
+
+	// $('.modal-body th#select').append(
+	// 	'<div class="dropdown">' 
+	// 		+'<span class="btn dropdown-toggle" type="button" id="selectMenu" data-toggle="dropdown">'
+	// 		+	'Select ' 
+	// 		+	'<span class="caret"></span>'
+	// 		+'</span>'
+	// 	  	+'<ul class="dropdown-menu" role="menu" aria-labelledby="selectMenu">'
+	// 	    	+'<li role="presentation"><a id="selectAll" class="btn glyphicon glyphicon-check" role="menuitem" tabindex="-1"> All </a></li>'
+	// 	    	+'<li role="presentation"><a id="selectNone" class="btn glyphicon glyphicon-unchecked"  role="menuitem" tabindex="-1"> None</a></li>'
+	// 	 	+'</ul>'
+	//  	+'</div>'
+	// );
 
 	$('.modal').on('hidden.bs.modal', function () {
 		updateDeputies();
@@ -40,22 +97,22 @@ function setDeputyModal_setTable(data){
 	var oTable  = $('#table').DataTable( {
 		data 	: data,
 		columns : [
-			{ data: 'name' },
-			{ data: 'party'},
-			{ data: 'district'},
 			{
 				//'class'	  : 	'checkbox',	
                 data:           null,
                 orderable:      false,
                 defaultContent: ''
-            }
+            },
+			{ data: 'name' },
+			{ data: 'party'},
+			{ data: 'district'}
 		],
 		createdRow: function ( row, deputy, index ) {
 			// create the checkbox button
             var btn;
             if ( deputy.selected ) {
-            	btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-check"></span>');
-            } else{ btn = $('td', row).eq(3).append(' <span class="btn glyphicon glyphicon-unchecked"></span>'); }
+            	btn = $('td', row).eq(0).append(' <span class="btn glyphicon glyphicon-check"></span>');
+            } else{ btn = $('td', row).eq(0).append(' <span class="btn glyphicon glyphicon-unchecked"></span>'); }
 
             btn = btn.children('span');
             btn.click(function(d) {

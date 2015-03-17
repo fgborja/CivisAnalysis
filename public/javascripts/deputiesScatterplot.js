@@ -61,12 +61,12 @@ d3.chart.deputiesScatterplot = function() {
 		})
 
 		var scaleX = d3.scale.linear()
-			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
-			.range([ margin.left, _dimensions.width-margin.right ]);
+			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
+			.range([ _dimensions.width-margin.right, margin.left ]);
 
 		var scaleY = d3.scale.linear()
-			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
-			.range([ _dimensions.height-margin.bottom, margin.top ]);
+			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
+			.range([ margin.top, _dimensions.height-margin.bottom ]);
 
 		g.select('.gchart').attr({
 			width 		: _dimensions.width,
@@ -113,8 +113,8 @@ d3.chart.deputiesScatterplot = function() {
 		circles
 		.transition().delay(100).duration(1000)
 		.attr({
-			cx: function (d) { return scaleX(d.scatterplot[0]); },
-			cy: function (d) { return scaleY(d.scatterplot[1]); },
+			cx: function (d) { return scaleX(d.scatterplot[1]); },
+			cy: function (d) { return scaleY(d.scatterplot[0]); },
 			class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}

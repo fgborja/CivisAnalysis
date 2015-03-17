@@ -10,6 +10,7 @@ html
 
 		link(rel='stylesheet', href="./javascripts/lib/bootstrap/slider/slider.css")
 		link(rel='stylesheet', href="./stylesheets/brazilianStates.css")
+		link(rel='stylesheet', href="./javascripts/lib/selectize/dist/css/selectize.bootstrap3.css")
 
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
 
@@ -50,10 +51,10 @@ html
 							br
 							br
 							.btn-group-vertical(role="group")
-								a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SearchAll()')
+								a.btn(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_SELECT()')
 									span.glyphicon.glyphicon-search 
-									text  Search Deputies
-								a.btn.btn-deputiesSelected.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_ListSelected()')
+									text  Select Deputies
+								a.btn.btn-deputiesSelected.disabled(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setDeputyModal_LIST_SELECTED()')
 									span.glyphicon.glyphicon-list 
 									text  List Selected
 								a.btn.btn-deputiesSelected.disabled#btn-resetDeputies( onclick='javascript:modals.selectAllDeputies()')
@@ -156,6 +157,7 @@ html
 		script(src="./javascripts/lib/bootstrap/slider/slider.js")
 		script(src="./javascripts/lib/topojson.min.js")
 		script(src="./javascripts/lib/DataTables-1.10.1/media/js/jquery.dataTables.min.js")
+		script(src="./javascripts/lib/selectize/dist/js/standalone/selectize.min.js")
 
 
 		// APP_LIBS
