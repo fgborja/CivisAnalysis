@@ -222,7 +222,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 				if(d != null){
 					var tableContent = '';
 					$.each(d.alliances, function(i){
-						tableContent += '<div class="col-md-3 alliance" style="word-wrap: break-word;">';
+						tableContent += '<div class="col-md-3 alliance" style="word-wrap: break-word; margin-bottom:15px;">';
 						tableContent += 
 							'<div class="col-md-12 no-padding">'+
 							'<div class="col-md-2 no-padding"><h4><span class="color-preview" style="background-color: '+ CONGRESS_DEFINE.getConstantPartyColor(d.alliances[i].parties[0])+';"></span></h4></div>'+

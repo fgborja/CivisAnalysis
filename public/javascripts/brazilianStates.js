@@ -96,9 +96,13 @@ d3.chart.brazilianStates = function() {
 				.attr("d", path)
 				.attr("id", function(d) { return state[ d.properties.NAME_1 ] ; })
 				.attr("class", "states selected")
+				.attr( popoverAttr(renderStateTooltip) )
 
 				.on("mouseover", function (d) { 
-					d3.select(this).classed('mouseover',true) ; 
+					d3.select(this)
+						.classed('mouseover',true)
+						.attr( popoverAttr(renderStateTooltip) )
+
 					setStateStyle(d3.select(this));
 
 					deputies.forEach(function (deputy) {
@@ -108,13 +112,6 @@ d3.chart.brazilianStates = function() {
 					//dispatch event of hovering state.
 					dispatch.update()  
 
-					tooltip.html(chart.renderStateTooltip(d));
-					return tooltip
-						.style("visibility", "visible")
-						.style("opacity", 1);
-				})
-				.on('mousemove',function(){
-					return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 25)+"px");
 				})
 				.on("mouseout",  function () {
 					d3.select(this).classed('mouseover',false); 
@@ -125,8 +122,7 @@ d3.chart.brazilianStates = function() {
 					}) 
 
 					//dispatch event of end of hover
-					dispatch.update() 				
-					return tooltip.style("visibility", "hidden");			
+					dispatch.update() 						
 				})
 				.on("click",function (d) {
 					d3.event.preventDefault();
@@ -163,10 +159,12 @@ d3.chart.brazilianStates = function() {
 					}
 					
 					dispatch.update()
-					tooltip.html(chart.renderStateTooltip(d));	
+					d3.select(this).attr( popoverAttr(renderStateTooltip) )
+					$(this).popover("show");
 				})
-				// html tooltip
-				//.append("title").text( function (d) { return d.properties.NAME_1 });	
+				
+				$('#statesSVG .states').popover({ trigger: "hover" });
+
 				setStatesStyle()
 		});
 	}
@@ -421,7 +419,7 @@ d3.chart.brazilianStates = function() {
 
 	// }
 
-	chart.renderStateTooltip = function(state){
+	function renderStateTooltip (state){
 		var selectedRate =  
 			(state.selected==state.total)?
 				state.total + ' Deputies'

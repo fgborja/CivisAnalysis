@@ -105,10 +105,10 @@ d3.chart.deputiesScatterplot = function() {
 
 		circles.enter().append("circle")
 			.on("mouseover", mouseoverDeputy)
-			.on("mousemove", mousemoveDeputy)
 			.on("mouseout", mouseoutDeputy)
 			.on("click", mouseClickDeputy)
 			.attr('r',0)
+			.attr(popoverAttr(deputyPopover))
 
 		circles
 		.transition().delay(100).duration(1000)
@@ -119,6 +119,11 @@ d3.chart.deputiesScatterplot = function() {
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
+
+		$('.chart.deputy circle.node').popover({ trigger: "hover" });
+		function deputyPopover(d){
+			return d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>"
+		}
 		
 		circles.attr({
 			r: function(d){ return (d.hovered)? _dimensions.radius*2 : _dimensions.radius },
@@ -194,20 +199,12 @@ d3.chart.deputiesScatterplot = function() {
 		d.hovered = true;
 		dispatch.update();
 
-		tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");			
-		return tooltip
-				.style("visibility", "visible")
-				.style("opacity", 1)
 	}	
-
-	// mouse MOVE circle deputy
-	function mousemoveDeputy() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
 
 	// mouse OUT circle deputy
 	function mouseoutDeputy(d){ 
 		d.hovered = false;
 		dispatch.update()
-		return tooltip.style('visibility','hidden')
 	}
 
 	function mouseClickDeputy(d){

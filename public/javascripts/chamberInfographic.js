@@ -25,7 +25,7 @@ d3.chart.chamberInfographic = function() {
 		baseWidth = (_dimensions.direction=='horizontal')? _dimensions.width : _dimensions.height;
 		radiusWidth = (_dimensions.direction=='horizontal')? _dimensions.height : _dimensions.width;
 
-		chamberInfographic = svgContainer.append('g').attr('transform', 'translate(' + (dimensions.x) + ',' + dimensions.y + ')')
+		chamberInfographic = svgContainer.append('g').attr({id:'chamber','transform':'translate(' + (dimensions.x) + ',' + dimensions.y + ')'})
 	
 		chamberInfographic.append('g').attr('class','deputies')
 		chamberInfographic.append('g').attr('class','parties')
@@ -172,10 +172,13 @@ d3.chart.chamberInfographic = function() {
 			
 		circles.enter().append('circle')
 			.on("mouseover", mouseoverDeputy)
-			.on("mousemove", mousemoveDeputy)
 			.on("mouseout", mouseoutDeputy)
 			.on("click", mouseClickDeputy)
-			.attr('r',0)
+			.attr({
+				r:0,
+				id: function(d) { return "deputy-" + d.deputyID; }
+			})
+			.attr( popoverAttr(deputiesPopover) );
 				
 		circles.exit().transition().attr('r',0).remove();
 
@@ -186,9 +189,8 @@ d3.chart.chamberInfographic = function() {
 				.attr({
 					cy: function(d,i){ return radiusWidth- (radiusWidth-7 - i % circlePerAngle * radius*2.3) * calcAngleX(calcAngle(i)); },
 					cx: function(d,i){ return radiusWidth - (radiusWidth-7 - i % circlePerAngle * radius*2.3) * calcAngleY(calcAngle(i)); },
-					class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
-					id: function(d) { return "deputy-" + d.deputyID; }
-				})	
+					class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); }	
+				});	
 		
 		circles
 			.attr({r:  function(d){ return (d.hovered)? radiusHover : radius }})
@@ -204,6 +206,9 @@ d3.chart.chamberInfographic = function() {
 					return CONGRESS_DEFINE.getPartyColor(d.party)
 				} 
 			})
+
+		$('#chamber .deputies circle.node').popover({ trigger: "hover" });
+		function deputiesPopover(d){ return d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>"; };
 
 		circles.order(); // sort elements in the svg
 	}
@@ -237,11 +242,13 @@ d3.chart.chamberInfographic = function() {
 				cursor : 'pointer'
 			})
 			.on("mouseover", mouseoverParty)
-			.on("mousemove", mousemoveParty)
 			.on("mouseout", mouseoutParty)
 			.on("click", clickParty)
+			.attr( popoverAttr(renderPartyTooltip));
 
 		arcs.exit().remove()
+
+		$('#chamber .parties .arc').popover({ trigger: "hover" });
 
 		var paths = arcs.selectAll('path.main')
 						.data( function(d){ return [d] });
@@ -308,15 +315,17 @@ d3.chart.chamberInfographic = function() {
 					.select('.alliances')
 					.attr("transform", "translate(" + (radiusWidth+partyBandWidth+4) +"," + (baseWidth/2)  + ")")
 					.selectAll(".arc")
-					.data(pie(alliances), function(d,i){return i})
-			
+					.data(pie(alliances), function(d,i){return i});
+
 		var enterArcs =
 			arcs.enter().append("g")
 				.attr("class", "arc")
 				.attr( { 
 					cursor : 'pointer'
 				})
-				.on(allianceInteractions())	
+				.on(allianceInteractions())
+				.attr(popoverAttr(renderAllianceTooltip))
+		$('#chamber .alliances .arc').popover({ trigger: "hover" });
 				
 		var paths = arcs.selectAll('path.main')
 						.data( function(d){ return [d] });
@@ -334,21 +343,12 @@ d3.chart.chamberInfographic = function() {
 	function mouseoverDeputy(d) {
 		d.hovered = true;
 		dispatch.update();
-
-		tooltip.html(d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>");
-		return tooltip
-				.style("visibility", "visible")
-				.style("opacity", 1)
 	};	
-
-	// mouse MOVE circle deputy
-	function mousemoveDeputy() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
 
 	// mouse OUT circle deputy
 	function mouseoutDeputy(d){ 
 		d.hovered = false;
 		dispatch.update();
-		return tooltip.style('visibility','hidden')
 	}
 
 	function mouseClickDeputy(d){
@@ -376,19 +376,11 @@ d3.chart.chamberInfographic = function() {
 		deputies.forEach( function (deputy){
 			if(deputy.party == d.key) deputy.hovered = true;
 		})
-
+		// update popover
+		d3.select(this).attr( popoverAttr(renderPartyTooltip));
 		// update vis
 		dispatch.update()
-		// update tooltip
-		tooltip.html(renderPartyTooltip(d));
-		return tooltip
-			.style("visibility", "visible")
-			.style("opacity", 1);
-	}
-				
-	function mousemoveParty(){
-		return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 25)+"px");
-	}
+	}	
 	
 	function mouseoutParty(d){ 
 		d = d.data;
@@ -399,8 +391,6 @@ d3.chart.chamberInfographic = function() {
 
 		// update vis
 		dispatch.update()
-		// update tooltip
-		return tooltip.style("visibility", "hidden");
 	}
 
 	function clickParty (d) {
@@ -427,11 +417,13 @@ d3.chart.chamberInfographic = function() {
 		}		
 		// update vis
 		dispatch.update()
-		// update tooltip
-		tooltip.html(renderPartyTooltip(d));		
+		// update popover
+		d3.select(this).attr( popoverAttr(renderPartyTooltip));
+		$(this).popover("show");
 	}
 
 	function renderPartyTooltip (party){
+		party = party.data;
 		var selectedRate =
 			(party.value.selected == party.value.size)?
 				party.value.size+' Deputies'
@@ -455,20 +447,14 @@ d3.chart.chamberInfographic = function() {
 
 				dispatch.update();
 
-				tooltip.html(renderAllianceTooltip(d));
-				return tooltip
-					.style("visibility", "visible")
-					.style("opacity", 1);
-			},
-			mousemove: function(){
-				return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 25)+"px");
+				// update popover
+				d3.select(this).attr( popoverAttr(renderAllianceTooltip));
 			},
 			mouseout: function(d){
 				deputies.map(function(d){ 
 					d.hovered = false;
 				})	 
 				dispatch.update();
-				return tooltip.style("visibility", "hidden");
 			},
 			click: function(d){
 					var selectedParties = {};
@@ -493,7 +479,9 @@ d3.chart.chamberInfographic = function() {
 					}
 
 				dispatch.update();
-				tooltip.html(renderAllianceTooltip(d));
+				// update popover
+				d3.select(this).attr( popoverAttr(renderAllianceTooltip));
+				$(this).popover("show");
 			}
 		}
 

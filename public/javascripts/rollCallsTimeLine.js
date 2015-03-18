@@ -911,18 +911,10 @@ d3.chart.timeline = function() {
 					x:function (d) { return Math.max(x(d.dates[0]),0) },
 					y:20,
 					width:20,
-					height:20,
-					cursor : 'pointer',
-					href:"#",
-					'data-container':'body',
-					'data-content':electionPopover, 
-					'data-html': true,
-					rel:"popover", 
-					'data-placement': function (d,i) { if(i>5) return 'bottom'; else return 'bottom';}, 
-					//'data-original-title': function(d){ return 'Brazilian Presidential Election of '+d.name}, 
-					'data-trigger':"hover",
-					'data-viewport': '#timeline'
-				}).text('')
+					height:20
+				})
+				.attr( popoverAttr(electionPopover) )
+				.text('')
 				//
 
 		function electionPopover( d ){

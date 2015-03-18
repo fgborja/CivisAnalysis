@@ -91,10 +91,10 @@ d3.chart.rollCallsScatterplot = function() {
 
 		circles.enter().append("circle")
 							.on("mouseover", mouseOverVoting)
-							.on("mousemove", mousemoveVoting)
 							.on("mouseout", mouseOutVoting)
 							.on("click", mouseClickVoting)
 							.attr('r',0)
+							.attr(popoverAttr(rollCallPopover))
 
 		circles
 			.transition().delay(100).duration(1000)
@@ -105,9 +105,14 @@ d3.chart.rollCallsScatterplot = function() {
 				id: function (d) { return 'rollCall-'+d.rollCallID }
 			})
 			
-		circles.attr({
-			r: function(d){ return (d.hovered)? radiusHover : radius }
-		})
+		circles
+		.attr({r: function(d){ return (d.hovered)? radiusHover : radius }})
+		
+
+		$('.chart.rollCall circle.node').popover({ trigger: "hover" });
+		function rollCallPopover(d){
+			return d.type+' '+d.number+'/'+d.year+"<br/><em>Click to select</em>";
+		}
 
 		circles.style('fill', setRollCallFill )
 
@@ -132,11 +137,6 @@ d3.chart.rollCallsScatterplot = function() {
 		d.hovered = true;
 
 		dispatch.update();
-
-		tooltip.html(d.type+' '+d.number+'/'+d.year+"<br/><em>Click to select</em>");
-		return tooltip
-				.style("visibility", "visible")
-				.style("opacity", 1);
 	}	
 
 	// mouse OUT circle voting
@@ -144,13 +144,8 @@ d3.chart.rollCallsScatterplot = function() {
 		d.hovered = false;
 
 		dispatch.update();
-			
-		return tooltip.style("visibility", "hidden");
 	}
 
-	// mouse MOVE circle voting
-	function mousemoveVoting() { return tooltip.style("top", (event.pageY - 10)+"px").style("left",(event.pageX + 10)+"px");}
-	
 	function mouseClickVoting(d) { 
 		if (d3.event.shiftKey){	
 			// using the shiftKey deselect the rollCall				
