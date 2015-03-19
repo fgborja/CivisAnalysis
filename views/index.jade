@@ -70,14 +70,16 @@ html
 							#infoStates
 
 
-				.col-md-9.col-xs-9
-					h5.col-md-6.col-xs-6 Distribution of Deputies per Party				
-					h5.col-md-6.col-xs-6 Political Spectrum of Deputies				
 				.col-md-9.col-xs-9#canvas
+				.col-md-9.col-xs-9(style='margin-top: -7px;')
+					em.col-md-6.col-xs-6 Government
+					em.col-md-6.col-xs-6(style="text-align:right") Opposition
+					.col-md-12(style="text-align:center") Political Spectrum of Deputies
 
 			.col-md-4.col-xs-12(style='padding-left: 0px')
 				.col-md-12(style='padding: initial')
-					h5.content Political Spectrum of Roll Calls 
+					h5.col-md-4
+					h5.col-md-6.content Political Spectrum of Roll Calls 
 					.col-md-4.col-xs-2(style='padding-left:0')
 						br
 						// SEARCH ROLL CALLS
@@ -107,9 +109,18 @@ html
 		//	#loading
 		//		img#loadingGIF(src='./images/ajax_loader.gif')
 
-		span.glyphicon.glyphicon-eye-close( onmouseover='javascript:timeline.drawParties("cluttered")',onmouseout='javascript:timeline.drawParties("uncluttered")')
+		.col-md-12
+			input(type='range', min=10, max=100, value=58, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties('uncluttered'); $('#partyDistance').html(100-value); $('#partySize').html(value)")
 
-		input(type='range', min=0, max=100, value=50, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties('uncluttered')")
+			.col-md-12(style="margin-top:-5px")
+				em.col-md-6.col-xs-6
+					span#partyDistance 42
+					% pixels to represent the 'political distances' of parties
+				em.col-md-6.col-xs-6(style="text-align:right") 
+					span#partySize 58
+					% pixels to represent the number of deputies
+			
+			span.glyphicon.glyphicon-eye-close.onHoverSetBlue( onmouseover='javascript:timeline.drawParties("cluttered")',onmouseout='javascript:timeline.drawParties("uncluttered")')  hover to see the raw party positions (cluttured)
 
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")

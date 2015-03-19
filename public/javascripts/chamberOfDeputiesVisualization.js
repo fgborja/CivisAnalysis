@@ -240,7 +240,10 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 					});
 					var html = 
 					'<div id="content" style="display: none;">' +
-						'<h3>Brazilian Presidential Election of '+d.name+'</h3>'+
+						'<div>'+
+							'<text style="font-size:xx-large;">Brazilian Presidential Election of '+d.name+'</text>'+
+							'<a class="reset" href="javascript:timeline.resetAlliances()">close</a>'+
+						'</div>'+
 						tableContent +
 					'</div>';
 

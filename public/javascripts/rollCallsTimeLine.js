@@ -73,6 +73,11 @@ d3.chart.timeline = function() {
 			setPartiesTraces(10+histogramHeight+rangeButtonsHeight*3+10)
 		}
 	}
+	chart.resetAlliances = function() {
+		dispatch.setAlliances(null);
+		setAlliance(null)
+		d3.selectAll('#timeline .election').classed('selected',false);
+	}
 
 	function barPath(groups) {
 		var path = [],
@@ -907,7 +912,7 @@ d3.chart.timeline = function() {
 			.enter()
 				.append('text')
 				.attr({    
-					class:"glyphicon",
+					class:"glyphicon election",
 					x:function (d) { return Math.max(x(d.dates[0]),0) },
 					y:20,
 					width:20,

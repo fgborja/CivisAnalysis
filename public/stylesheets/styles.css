@@ -11,6 +11,11 @@ a.btn{
   text-align: initial;
 }
 
+a.reset {
+  padding-left: 1em;
+  color: #ccc;
+};
+
 .no-padding{
   padding: 0px;
 }
@@ -194,3 +199,8 @@ td.details-control {
 tr.shown td.details-control {
     background: url('../images/details_close.png') no-repeat center center;
 }
+
+.onHoverSetBlue:hover{
+  color: steelblue;
+  cursor: pointer;
+};
