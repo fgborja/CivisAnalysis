@@ -1,99 +1,106 @@
-h2 {text-align: center;}
-
-a { 
-  cursor: pointer;
-}
-
-a.btn{
-  font-size: small;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  text-align: initial;
-}
-
-a.reset {
-  padding-left: 1em;
-  color: #ccc;
-};
+h1 { font-size: -webkit-xxx-large; }
+h2 { font-size: xx-large; }
+h3 { font-size: x-large; }
+h4 { font-size: large; }
+h5 { font-size: medium; }
+h6 { font-size: small; }
 
 .no-padding{
-  padding: 0px;
+	padding: 0px;
+};
+.onHoverSetBlue:hover{
+	color: steelblue;
+	cursor: pointer;
+};
+
+a { 
+	cursor: pointer;
 }
 
-a.btn.highlight{
-  font-weight: bold;
-}
+	a.btn{
+		font-size: small;
+		padding-top: 1px;
+		padding-bottom: 1px;
+		text-align: initial;
+	}
+
+		a.btn.highlight{
+			font-weight: bold;
+		}
+
+	a.reset {
+		padding-left: 1em;
+		color: #ccc;
+		font-size: large;
+	};
+
 
 .navbar-default{
-  background-color: #F1F0F0;
+	background-color: #F1F0F0;
 }
 
 #socialshare{
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 #main{
-  /*height:400px;*/
-  /*margin-top: 50px;*/
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .header{
-     margin-bottom:50px;
+		 margin-bottom:50px;
 }
 
 #timeline{
-  width:99%;
-  margin-top: 0px;
-  margin-left: auto ;
-  margin-right: auto ;
+	width:99%;
+	margin-top: 0px;
+	margin-left: auto ;
+	margin-right: auto ;
 }
 #timelineInfo{
-  margin-left: auto ;
-  margin-right: auto ;
+	margin-left: auto ;
+	margin-right: auto ;
 }
 
 #loading {
-  background-color: #333;
-  width: 99%;
-  height:144px;
-  position: fixed;
-  z-index: 1;
-  opacity: 0.3;
-  margin-left: auto ;
-  margin-right: auto ;
-  visibility: hidden;
+	background-color: #333;
+	width: 99%;
+	height:144px;
+	position: fixed;
+	z-index: 1;
+	opacity: 0.3;
+	margin-left: auto ;
+	margin-right: auto ;
+	visibility: hidden;
 }
 
 #loadingGIF {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    top: 15%;
-    width: 100px;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		top: 15%;
+		width: 100px;
 }
 
 /* turn all elements unselectable*/
 * {
-            user-select: none; /* CSS3 (little to no support) */
-        -ms-user-select: none; /* IE 10+ */
-       -moz-user-select: none; /* Gecko (Firefox) */
-    -webkit-user-select: none; /* Webkit (Safari, Chrome) */
+						user-select: none; /* CSS3 (little to no support) */
+				-ms-user-select: none; /* IE 10+ */
+			 -moz-user-select: none; /* Gecko (Firefox) */
+		-webkit-user-select: none; /* Webkit (Safari, Chrome) */
 }
 
 .axis {
-      shape-rendering: crispEdges;
-      stroke: black;
-      fill: none;
-      opacity: 0.4;
+			shape-rendering: crispEdges;
+			stroke: black;
+			fill: none;
+			opacity: 0.4;
 }
 
 .gchart {
-  stroke:rgba(0, 0, 0, .2);
-  fill: white;
+	stroke:rgba(0, 0, 0, .2);
+	fill: white;
 }
 .chart {border:1px solid rgba(0, 0, 0, .2);}
 
@@ -101,106 +108,89 @@ a.btn.highlight{
 .axis text{ display: none }
 
 .node {
-  stroke: #E0E0E0;
-  stroke-width: 1px;
-  opacity: 0.1;
-  cursor: pointer;
+	stroke: #E0E0E0;
+	stroke-width: 1px;
+	opacity: 0.1;
+	cursor: pointer;
 }
 
 .node.selected {
-  opacity: 1 !important;
+	opacity: 1 !important;
 }
 
 .node.hovered {
-  opacity: 0.4;
+	opacity: 0.4;
 }
 
 .selectorRect {
-    cursor: crosshair;
+		cursor: crosshair;
 }
 
 .selection {
-    stroke          : grey;
-    stroke-width    : 3px;
-    stroke-dasharray: 4px;
-    stroke-opacity  : 0.6;
-    fill            : transparent;
+		stroke          : grey;
+		stroke-width    : 3px;
+		stroke-dasharray: 4px;
+		stroke-opacity  : 0.6;
+		fill            : transparent;
 }
 .selection.shiftKey{ stroke   : red;}
 .selection.ctrlKey { stroke   : green;}
 
-.details {
-  font-size: 12px;
-}
-
 .d3tooltip {
-  font-family: "Arial", sans-serif;
-  position: absolute;
-  z-index: 10;
-  visibility: hidden;
-  background-color: #FFF;
-  border: 1px solid #CCC;
-  padding: 3px 6px;
+	font-family: "Arial", sans-serif;
+	position: absolute;
+	z-index: 10;
+	visibility: hidden;
+	background-color: #FFF;
+	border: 1px solid #CCC;
+	padding: 3px 6px;
 }
 
 .popover {
-  max-width: 800px !important;
+	max-width: 800px !important;
 }
 
 #timeline .background {
-  fill: lightgrey;
+	fill: lightgrey;
 }
 
 #timeline  .foreground {
-  fill: darkgrey;
+	fill: darkgrey;
 }
 
 .brush rect.extent {
-  fill: darkgrey;
-  fill-opacity: .125;
+	fill: darkgrey;
+	fill-opacity: .125;
 }
 
 .brush .resize path {
-  fill: #eee;
-  stroke: #666;
+	fill: #eee;
+	stroke: #666;
 }
 
 .link {
-  stroke: #999;
-  stroke-opacity: 0.7;
-  stroke-width: 0.5;
+	stroke: #999;
+	stroke-opacity: 0.7;
+	stroke-width: 0.5;
 }
 
 .slider {
-  width: 100px;
-  height: 5px;
-  margin: 0 3px 0 0;
-  opacity: 0.8;
+	width: 100px;
+	height: 5px;
+	margin: 0 3px 0 0;
+	opacity: 0.8;
 }
-
-
-div.selected{
-  border-left: thick double lightgrey;
-}
-  div.selected text{
-    font-size: 12px;
-  }
 
 .glyphicon.selected { 
-  fill: steelblue;
+	fill: steelblue;
 }
 
 .alliance .color-preview {vertical-align:middle; border: 1px solid #ccc;border-radius: 3px;height: 1.229em; width: 1.229em; display: inline-block; background-color:#fff}
 
 td.details-control {
-    background: url('../images/details_open.png') no-repeat center center;
-    cursor: pointer;
+		background: url('../images/details_open.png') no-repeat center center;
+		cursor: pointer;
 }
 tr.shown td.details-control {
-    background: url('../images/details_close.png') no-repeat center center;
+		background: url('../images/details_close.png') no-repeat center center;
 }
-
-.onHoverSetBlue:hover{
-  color: steelblue;
-  cursor: pointer;
-};

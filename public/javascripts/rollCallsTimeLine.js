@@ -202,7 +202,7 @@ d3.chart.timeline = function() {
 
 			// Initialize the brush component with pretty resize handles.
 			gBrush = g.append("g").attr("class", "brush").call(brush);
-			gBrush.selectAll("rect").attr("height", timelineDim.height+histogramHeight);
+			gBrush.selectAll("rect").attr("height", timelineDim.height+histogramHeight+rangeButtonsHeight*3+40);
 			gBrush.selectAll(".resize").append("path").attr("d", resizePath);
 
 			// Only redraw the brush if set externally.

@@ -107,9 +107,8 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	//
 	// init
 		var rollCallsScatterplot 	= d3.chart.rollCallsScatterplot();
-		rollCallsScatterplot.width(canvasDimension.height*0.5)
 		// set html container
-		rollCallsScatterplot(d3.select('#canvasRollCalls'));
+		rollCallsScatterplot(d3.select('#canvasRollCalls'), {width:$('.col-md-6').width(),height:canvasDimension.height*0.5 });
 	//
 	// interactions
 		rollCallsScatterplot
@@ -241,7 +240,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 					var html = 
 					'<div id="content" style="display: none;">' +
 						'<div>'+
-							'<text style="font-size:xx-large;">Brazilian Presidential Election of '+d.name+'</text>'+
+							'<text style="font-size:x-large;">Brazilian Presidential Election of '+d.name+'</text>'+
 							'<a class="reset" href="javascript:timeline.resetAlliances()">close</a>'+
 						'</div>'+
 						tableContent +
