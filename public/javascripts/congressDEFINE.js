@@ -300,7 +300,46 @@ CONGRESS_DEFINE.partiesTraces = {
 
 
 
-
+CONGRESS_DEFINE.parties = {
+	DEM:{name:'Democratas',wiki:'http://pt.wikipedia.org/wiki/Democratas_(Brasil)'}, 
+	NoParty: {name:'No Party'}, 
+	PCB:{name:'Partido Comunista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Comunista_Brasileiro'}, 
+	PCdoB:{name:'Partido Comunista do Brasil',wiki:'http://pt.wikipedia.org/wiki/Partido_Comunista_do_Brasil'}, 
+	PDC:{name:'Partido Democrata Cristão', wiki:'http://pt.wikipedia.org/wiki/Partido_Democrata_Crist%C3%A3o_(1985-1993)'}, 
+	PDS:{name:'Partido Democrático Social',wiki:'http://pt.wikipedia.org/wiki/Partido_Democr%C3%A1tico_Social'}, 
+	PDT:{name:'Parido Democrático Trabalhista',wiki:'http://pt.wikipedia.org/wiki/Partido_Democr%C3%A1tico_Trabalhista'}, 
+	PEN:{name:'Partido Ecológico Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_Ecol%C3%B3gico_Nacional'}, 
+	PHS:{name:'Partido Humanista da Solidariedade',wiki:'http://pt.wikipedia.org/wiki/Partido_Humanista_da_Solidariedade'}, 
+	PMDB:{name:'Partido do Movimento Democrático Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_do_Movimento_Democr%C3%A1tico_Brasileiro'}, 
+	PMN:{name:'Partido da Mobilização Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Mobiliza%C3%A7%C3%A3o_Nacional'}, 
+	PP: {name:'Partido Progressista',wiki:'http://pt.wikipedia.org/wiki/Partido_Progressista_(Brasil)'},
+	PPR:{name:'Partido Progressista Renovador', wiki:'http://pt.wikipedia.org/wiki/Partido_Progressista_Renovador'}, 
+	PPS:{name:'Partido Popular Socialista', wiki:'http://pt.wikipedia.org/wiki/Partido_Popular_Socialista'}, 
+	PR: {name:'Partido da República',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Rep%C3%BAblica'},
+	PRB:{name:'Partido Republicano Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_Brasileiro'}, 
+	PRN:{name:'Partido da Renovação Nacional', wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Crist%C3%A3o'}, 
+	PRONA:{name:'Partido da Reedificação da Ordem Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_de_Reedifica%C3%A7%C3%A3o_da_Ordem_Nacional'}, 
+	PROS:{name:'Partido Republicano da Ordem Social',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_da_Ordem_Social'}, 
+	PRP:{name:'Partido Republicano Progressista',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_Progressista'}, 
+	PRS:{name:'Partido da Renovação Social',wiki:'http://pt.wikipedia.org/wiki/Partido_de_Renova%C3%A7%C3%A3o_Social'}, 
+	PRTB:{name:'Partido Renovador Trabalhista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Renovador_Trabalhista_Brasileiro'}, 
+	PSB:{name:'Partido Socialista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialista_Brasileiro'}, 
+	PSC:{name:'Partido Social Cristão', wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Crist%C3%A3o'}, 
+	PSD:{name:'Partido Social Democrático',wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Democr%C3%A1tico_(2011)'}, 
+	PSDB:{name:'Partido da Social Democracia Brasileira',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Social_Democracia_Brasileira'}, 
+	PSL:{name:'Partido Social Liberal', wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Liberal'}, 
+	PSOL:{name:'Partido Socialismo e Liberdade',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialismo_e_Liberdade'}, 
+	PST:{name:'Partido Social Trabalhista',wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Trabalhista'}, 
+	PSTU:{name:'Partido Socialista dos Trabalhadores Unificado',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialista_dos_Trabalhadores_Unificado'}, 
+	PT: {name:'Partido dos Trabalhadores',wiki:'http://pt.wikipedia.org/wiki/Partido_dos_Trabalhadores'},
+	PTB:{name:'Partido Trabalhista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Brasileiro'}, 
+	PTC:{name:'Partido Trabalhista Cristão',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Crist%C3%A3o'}, 
+	PTN:{name:'Partido Trabalhista Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Nacional'}, 
+	PTR:{name:'Partido Trabalhista Reformador', wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Reformador'}, 
+	PTdoB:{name:'Partido Trabalhista do Brasil',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_do_Brasil'}, 
+	PV: {name:'Partido Verde',wiki:'http://pt.wikipedia.org/wiki/Partido_Verde_(Brasil)'},
+	SDD: {name:'Solidariedade',wiki:'http://pt.wikipedia.org/wiki/Solidariedade_(partido_pol%C3%ADtico)'}
+}
 /*var labelParties = [['PT','PT'],['PMDB','PMDB'],['PFL/DEM','DEM'],['PSDB','PSDB'],['PPB/PP','PP'],['PL/PR','PR'],['PDT','PDT'],['PSB','PSB']];
 
 $(document).ready(function () {

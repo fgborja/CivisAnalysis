@@ -270,6 +270,13 @@ d3.chart.timeline = function() {
 		partiesG.enter().append('g').attr({'class':'party'})
 			.on('mouseover',function(d){ var p={}; p[d.key] = true; chart.partiesMouseover(p); })
 			.on('mouseout',chart.partiesMouseout)
+			.attr( popoverAttr(partyPopOver) )
+
+		function partyPopOver( d ){
+			return '<h4>'+d.key+'</h4><em>'+CONGRESS_DEFINE.parties[d.key].name+'</em>';
+		}
+		$('#timeline g.party').popover({ trigger: "hover" });
+
 
 		partiesG.exit().transition().attr('opacity',0).remove();
 		
@@ -923,11 +930,11 @@ d3.chart.timeline = function() {
 				//
 
 		function electionPopover( d ){
-			var html =  '<h4>'+'Brazilian Presidential Election of '+d.name+'</h1><em>Click get more info</em>';
+			var html =  '<h4>'+'Brazilian Presidential Election of '+d.name+'</h4><em>Click get more info</em>';
 			return html;
 		}
 		// // POPOVER!
-		$('text.glyphicon').popover({ trigger: "hover" });
+		$('#timeline text.glyphicon.election').popover({ trigger: "hover" });
 
 		// set on/off alliance
 		allianceIcons.on('click', function(d){
