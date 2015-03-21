@@ -352,11 +352,13 @@ d3.chart.chamberInfographic = function() {
 	}
 
 	function mouseClickDeputy(d){
+		d3.event.preventDefault();
+
 		if (d3.event.shiftKey){	
 			// using the shiftKey deselect the deputy				
 			d.selected = false;
 		} else 
-		if (d3.event.ctrlKey){
+		if (d3.event.ctrlKey || d3.event.metaKey){
 			// using the ctrlKey add deputy to selection
 			d.selected = true;
 		} 
@@ -403,7 +405,7 @@ d3.chart.chamberInfographic = function() {
 			d.value.selected = d.value.size;
 
 		} else 
-		if (d3.event.ctrlKey){
+		if (d3.event.ctrlKey || d3.event.metaKey){
 			// using the ctrlKey select all deputies of the party
 			deputies.forEach( function (deputy){
 				if(deputy.party == d.key) deputy.selected = true;
@@ -467,7 +469,7 @@ d3.chart.chamberInfographic = function() {
 							d.selected = (selectedParties[d.party] !== undefined)? false : d.selected;
 						})	
 					} else 
-					if (d3.event.ctrlKey){
+					if (d3.event.ctrlKey || d3.event.metaKey){
 						deputies.map(function(d){ 
 							d.selected = (selectedParties[d.party] !== undefined)? true : d.selected;
 						})	

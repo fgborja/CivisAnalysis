@@ -136,7 +136,7 @@ d3.chart.brazilianStates = function() {
 						})
 
 					} else 
-					if (d3.event.ctrlKey){
+					if (d3.event.ctrlKey || d3.event.metaKey){
 						// using the ctrlKey add state to selection
 						d3.select(this).classed('selected',true);
 						setStateStyle(d3.select(this));

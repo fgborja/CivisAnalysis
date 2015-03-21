@@ -132,11 +132,13 @@ d3.chart.rollCallsScatterplot = function() {
 	}
 
 	function mouseClickVoting(d) { 
+		d3.event.preventDefault();
+		
 		if (d3.event.shiftKey){	
 			// using the shiftKey deselect the rollCall				
 			d.selected = false;
 		} else 
-		if (d3.event.ctrlKey){
+		if (d3.event.ctrlKey || d3.event.metaKey){
 			// using the ctrlKey add rollCalls to selection
 			d.selected = true;
 		} 

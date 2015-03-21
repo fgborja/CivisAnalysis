@@ -64,11 +64,11 @@ function selectors( class_selector,dispatchSelected){
 			
 		d3.select('body').on("keydown", function() { 
 			if (d3.event.shiftKey) selectorElement.classed('shiftKey',true)  
-			if (d3.event.ctrlKey) selectorElement.classed('ctrlKey',true)   
+			if (d3.event.ctrlKey || d3.event.metaKey) selectorElement.classed('ctrlKey',true)   
 		})
 		.on("keyup", function() {  
 			if (!d3.event.shiftKey) selectorElement.classed('shiftKey',false)  
-			if (!d3.event.ctrlKey) selectorElement.classed('ctrlKey',false)  
+			if (!d3.event.ctrlKey || d3.event.metaKey) selectorElement.classed('ctrlKey',false)  
 		})
 
 		main.on('mouseleave', function(){selectingIndex=0; setDefaultMode() })
@@ -296,7 +296,7 @@ function selectors( class_selector,dispatchSelected){
 			//deselect 
 			selectInElement(selectClass,selectionElement,function(){return false}, function(d){ return d3.select(d).classed('selected');})
 
-		} else if (d3.event.ctrlKey){ // INCLUDE selected nodes in selection
+		} else if (d3.event.ctrlKey || d3.event.metaKey){ // INCLUDE selected nodes in selection
 			//select 
 			selectInElement(selectClass,selectionElement,function(){return true},function(d){ return d3.select(d).classed('selected');})	
 

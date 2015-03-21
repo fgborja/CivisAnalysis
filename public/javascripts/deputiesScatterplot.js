@@ -208,11 +208,13 @@ d3.chart.deputiesScatterplot = function() {
 	}
 
 	function mouseClickDeputy(d){
+		d3.event.preventDefault();
+		
 		if (d3.event.shiftKey){	
 			// using the shiftKey deselect the deputy				
 			d.selected = false;
 		} else 
-		if (d3.event.ctrlKey){
+		if (d3.event.ctrlKey || d3.event.metaKey){
 			// using the ctrlKey add deputy to selection
 			d.selected = true;
 		} 
