@@ -326,11 +326,9 @@ function updateRollCalls(){
 			})
 			
 			$('#rollCallInfo').html(
-				'<div class="panel panel-default" style="margin-top:5px; ">'+
-				  '<div class="panel-heading">'+
-				  	"Roll Call - "+rollCall.type+' '+rollCall.number+'/'+rollCall.year+" : "+ rollCall.datetime.toLocaleString()+
-				  '</div>'+
+				'<div class="panel panel-default" style="margin-top:5px; ">'+  	
 				  '<div class="panel-body" style="overflow-y:scroll; height: '+(rollCallsScatterplot.height()-5)+'px; font-size: small;">'+
+				   	'<h5>'+"Roll Call - "+rollCall.type+' '+rollCall.number+'/'+rollCall.year+" : "+ rollCall.datetime.toLocaleString()+'</h5>'+
 				   	((rollCall.summary != '')?"Status: "+rollCall.summary+'<br/>':'')+
 				   	"Amendment: "+motions[rollCall.type+rollCall.number+rollCall.year].amendment +'<br/><br/>'+
 				   	"Tags: "+motions[rollCall.type+rollCall.number+rollCall.year].tags +
