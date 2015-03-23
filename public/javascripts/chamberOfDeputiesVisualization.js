@@ -1,11 +1,18 @@
-$('#toggleClutter').on('click',function(){ 
-	if($('#cluttered').hasClass('active')){
-		timeline.setDrawingType("uncluttered"); 
+$('#cluttered').on('click',function(){ 
+	if(!$('#cluttered').hasClass('active')){
+		timeline.setDrawingType("cluttered"); 
+		$('#cluttered').toggleClass('active');
+		$('#uncluttered').toggleClass('active');
 	} 
-	else {
-		timeline.setDrawingType("cluttered");  
-	}
 })
+$('#uncluttered').on('click',function(){ 
+	if(!$('#uncluttered').hasClass('active')){
+		timeline.setDrawingType("uncluttered"); 
+		$('#uncluttered').toggleClass('active');
+		$('#cluttered').toggleClass('active');
+	} 
+})
+
 
 // collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
 var motions = {};  	

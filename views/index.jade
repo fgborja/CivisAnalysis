@@ -109,26 +109,38 @@ html
 		//	#loading
 		//		img#loadingGIF(src='./images/ajax_loader.gif')
 
+
+		// Uncluttered an Cluttered explains
+		.col-md-12.btn-group.btn-group-justified#toggleClutter
+			label.btn.btn-default.unclutteredButtons.active#cluttered
+				text Original parties positions at political spectrum
+			label.btn.btn-default.unclutteredButtons#uncluttered
+				text Apply function to unclutter the parties
 		.col-md-12
-			input(type='range', min=10, max=100, value=58, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties(); $('#partyDistance').html(100-value); $('#partySize').html(value)")
+			.col-md-6.col-xs-6.unclutteredInfo
+				p
+				p The positions of parties' are calculated using the average of his Deputies' positions in the political spectrum, calculated through SVD for each period (biennial).
+				br
+			.col-md-6.col-xs-6.unclutteredInfo
+				p
+				p Since many parties have close roll call policy, parties' positions can be culttered in one dimenison. The uncluttered function tries to provide a better visual representations of parties in the spectrum minimizing the loss of political distance between parties.
 
-			.col-md-12(style="margin-top:-5px")
-				em.col-md-6.col-xs-6
-					span#partyDistance 42
-					% pixels to represent the 'political distances' of parties
-				em.col-md-6.col-xs-6(style="text-align:right") 
-					span#partySize 58
-					% pixels to represent the number of deputies
-			
-			//span.glyphicon.glyphicon-eye-close.onHoverSetBlue( onmouseover='javascript:timeline.drawParties("cluttered")',onmouseout='javascript:timeline.drawParties("uncluttered")')  hover to see the raw party positions (cluttured)
+		// RANGE INPUT to set TIMELINE percentage
+		.col-md-12
+			.col-md-12.unclutteredInfo
+				p
+				text Trade-off: set the percentage of canvas to represent the political distances and parties size: 
+				input(type='range', min=10, max=100, value=50, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties(); $('#partyDistance').html(100-value); $('#partySize').html(value)")
 
-		.btn-group#toggleClutter(data-toggle="buttons")
-			label.btn.btn-primary.active#uncluttered
-				text Uncluttered
-				input(type="radio", name="options", autocomplete="off", checked)
-			label.btn.btn-primary#cluttered
-				text Cluttered
-				input(type="radio", name="options", autocomplete="off")
+				.col-md-12(style="margin-top:-7px")
+					em.col-md-6.col-xs-6
+						span#partyDistance 50
+						% pixels to represent the 'political distances' of parties
+					em.col-md-6.col-xs-6(style="text-align:right") 
+						span#partySize 50
+						% pixels to represent the number of deputies
+				br
+					
 
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")

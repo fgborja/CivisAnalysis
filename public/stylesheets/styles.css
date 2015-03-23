@@ -194,3 +194,14 @@ td.details-control {
 tr.shown td.details-control {
 		background: url('../images/details_close.png') no-repeat center center;
 }
+
+.unclutteredButtons{
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+.unclutteredInfo {
+	border: 1px solid;
+	border-color: #ccc;
+	margin-top: -1px;
+	border-radius: '0 0 0 5px';
+}
