@@ -271,7 +271,7 @@ d3.chart.timeline = function() {
 		partiesG.enter().append('g').attr({'class':'party'})
 			.on('mouseover',function(d){ var p={}; p[d.key] = true; chart.partiesMouseover(p); })
 			.on('mouseout',chart.partiesMouseout)
-			.attr( popoverAttr(partyPopOver) )
+			.attr( popoverAttr(partyPopOver,'top') )
 
 		function partyPopOver( d ){
 			return '<h4>'+d.key+'</h4><em>'+CONGRESS_DEFINE.parties[d.key].name+'</em>';

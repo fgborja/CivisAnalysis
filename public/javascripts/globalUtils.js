@@ -62,7 +62,7 @@ function saveEntriesOfArray( array, getName, index){
 	
 }
 
-function popoverAttr(htmlContent){
+function popoverAttr(htmlContent,placement){
 	return {
 		cursor : 'pointer',
 		href:"#",
@@ -70,7 +70,7 @@ function popoverAttr(htmlContent){
 		'data-content': htmlContent, 
 		'data-html': true,
 		rel:"popover", 
-		'data-placement': 'bottom', 
+		'data-placement': (placement)?placement:'bottom', 
 		'data-trigger':"hover",
 		'data-viewport': 'body'
 	}
