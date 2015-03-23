@@ -1,9 +1,11 @@
-/*global d3 tooltip*/
-var tooltip = d3.select("body")
-	.append("div")
-	.style("visibility", "hidden")
-	.style("opacity", 0)
-	.attr("class", "d3tooltip");
+$('#toggleClutter').on('click',function(){ 
+	if($('#cluttered').hasClass('active')){
+		timeline.setDrawingType("uncluttered"); 
+	} 
+	else {
+		timeline.setDrawingType("cluttered");  
+	}
+})
 
 // collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
 var motions = {};  	

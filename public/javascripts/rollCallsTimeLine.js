@@ -20,7 +20,8 @@ d3.chart.timeline = function() {
 
 		var rangeButtonsHeight = 15;
 		var timelineDim = {};
-		var partyStepWidth = 15;
+		var partyStepWidth = 15,
+			drawingType = 'uncluttered' // or cluttered
 
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 
@@ -47,11 +48,7 @@ d3.chart.timeline = function() {
 				.append("rect")
 					.attr("width", width)
 					.attr("height", timelineDim.height);
-		}
-
-		
-
-		
+		}	
 	}
 
 	chart.update = function () {
@@ -77,6 +74,10 @@ d3.chart.timeline = function() {
 		dispatch.setAlliances(null);
 		setAlliance(null)
 		d3.selectAll('#timeline .election').classed('selected',false);
+	}
+	chart.setDrawingType = function(type){
+		drawingType = type;
+		chart.drawParties(drawingType);
 	}
 
 	function barPath(groups) {
@@ -243,11 +244,11 @@ d3.chart.timeline = function() {
 		partyTraces.append('g').attr('class','parties').attr({transform:'translate(0,'+traceMargin+')'});
 
 
-		chart.drawParties('uncluttered')
+		chart.drawParties()
 	}
 
 	chart.pixelPercentageToParties = 0.5;
-	chart.drawParties  = function(type){
+	chart.drawParties  = function(){
 		calcPartiesStepsUncluttered(timelineDim.height,chart.pixelPercentageToParties);
 		calcPartiesStepsCluttered(timelineDim.height,chart.pixelPercentageToParties);
 
@@ -280,8 +281,8 @@ d3.chart.timeline = function() {
 
 		partiesG.exit().transition().attr('opacity',0).remove();
 		
-		drawPartiesSteps(type);
-		drawPartiesTraces(type);
+		drawPartiesSteps(drawingType);
+		drawPartiesTraces(drawingType);
 	}
 	function calcPartiesStepsUncluttered(height,pixelPercentageToParties){
 		// ------------------------------------------------------------

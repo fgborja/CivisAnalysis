@@ -110,7 +110,7 @@ html
 		//		img#loadingGIF(src='./images/ajax_loader.gif')
 
 		.col-md-12
-			input(type='range', min=10, max=100, value=58, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties('uncluttered'); $('#partyDistance').html(100-value); $('#partySize').html(value)")
+			input(type='range', min=10, max=100, value=58, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties(); $('#partyDistance').html(100-value); $('#partySize').html(value)")
 
 			.col-md-12(style="margin-top:-5px")
 				em.col-md-6.col-xs-6
@@ -120,7 +120,15 @@ html
 					span#partySize 58
 					% pixels to represent the number of deputies
 			
-			span.glyphicon.glyphicon-eye-close.onHoverSetBlue( onmouseover='javascript:timeline.drawParties("cluttered")',onmouseout='javascript:timeline.drawParties("uncluttered")')  hover to see the raw party positions (cluttured)
+			//span.glyphicon.glyphicon-eye-close.onHoverSetBlue( onmouseover='javascript:timeline.drawParties("cluttered")',onmouseout='javascript:timeline.drawParties("uncluttered")')  hover to see the raw party positions (cluttured)
+
+		.btn-group#toggleClutter(data-toggle="buttons")
+			label.btn.btn-primary.active#uncluttered
+				text Uncluttered
+				input(type="radio", name="options", autocomplete="off", checked)
+			label.btn.btn-primary#cluttered
+				text Cluttered
+				input(type="radio", name="options", autocomplete="off")
 
 		// MODAL (POP-UP)
 		.modal.fade(tabindex="-1",role="dialog",aria-labelledby="billModal",aria-hidden="true")
