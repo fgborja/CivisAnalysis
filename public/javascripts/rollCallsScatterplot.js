@@ -13,13 +13,13 @@ d3.chart.rollCallsScatterplot = function() {
 		height = dimension.height; 
 		width =  dimension.width;
 		margin = {top: (radius+5), right: (radius+5), bottom: (radius+5), left: (radius+5)};
-		_dimensions.width = width - margin.left - margin.right;
-	  	_dimensions.height = height - margin.top - margin.bottom;
+		_dimensions.width = 260 - margin.left - margin.right;
+	  	_dimensions.height = 230 - margin.top - margin.bottom;
 
 		scatterplot = container.append('svg').attr({
 			viewBox:'0 0 260 230',
-			width:_dimensions.width+1,
-			height:_dimensions.height+1
+			width:  width+1,
+			height: height+1
 		});
 
 		g = scatterplot.append('g')
