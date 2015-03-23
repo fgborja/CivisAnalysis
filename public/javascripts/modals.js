@@ -15,7 +15,7 @@ function setDeputyModal_SelectInit(){
 	d3.select('.modal-title').text('Deputies - search & select')
 	$('.modal-body').children().remove();
 
-	$('.modal-body').append('<select id="select-to" class="selectized" placeholder="Pick Deputies..." multiple="multiple" tabindex="-1" style="display: none; height="200px""></select>')
+	$('.modal-body').append('<select id="select-to" class="selectized" placeholder="Pick Deputies..." multiple="multiple" tabindex="-1" style="display: none;"></select>')
 
 	var $select = $('#select-to').selectize({
 	    persist: false,
