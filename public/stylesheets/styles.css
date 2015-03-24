@@ -181,7 +181,8 @@ a {
 	opacity: 0.8;
 }
 
-.glyphicon.selected { 
+/* fill all children from election with steelblue when selected*/
+.election.selected > *{ 
 	fill: steelblue;
 }
 
