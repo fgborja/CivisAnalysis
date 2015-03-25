@@ -210,3 +210,11 @@ tr.shown td.details-control {
 #select-to + .selectize-control .selectize-input{
 	height: 150px;
 }
+
+.partyTraceLabels{
+	text-anchor: middle;
+	writing-mode: tb;
+	glyph-orientation-vertical: 0;
+	font-family: monospace;
+	font-size: small;
+}

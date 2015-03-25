@@ -249,8 +249,9 @@ d3.chart.timeline = function() {
 			var gg = partyTraces.append('g');
 			gg.append('text')
 				.attr({
+					'class':'partyTraceLabels',
 					x:scaleX_middleOfBiennial(1991),
-					y:"0",
+					y:timelineDim.height/4 -5,
 					style:"fill:grey; writing-mode: tb; glyph-orientation-vertical: 0;font-family: monospace;"
 				})
 				.text('GOVERNMENT')
@@ -258,9 +259,10 @@ d3.chart.timeline = function() {
 			gg.append('text')
 				.text(opposition)
 				.attr({
-					style:"fill:grey; writing-mode: tb; glyph-orientation-vertical: 0;font-family: monospace;",
+					'class':'partyTraceLabels',
+					style:"fill:grey;",
 					x:scaleX_middleOfBiennial(1991),
-					y: function(d){console.log($(this).width()*opposition.length);  return timelineDim.height - $(this).width()*opposition.length*2; },	
+					y: function(d){ return 3* timelineDim.height/4 +5; },	
 				})
 
 		partyTraces.append('g').attr('class','parties').attr({transform:'translate(0,'+traceMargin+')'});
