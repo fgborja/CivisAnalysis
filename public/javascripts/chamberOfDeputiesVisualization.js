@@ -895,13 +895,16 @@ $('#btn-lockDeputies').click(function() {
 	}
 })
 
+
+
+// PARTIES IN THE ACCORDION ----------------------------------------------------------------------------------------------
 var parties = d3.select('#accordion #partiesInfo')
 				.selectAll('div')
 				.data(d3.entries(CONGRESS_DEFINE.parties))
 				.enter()
 					.append('div')
 
-parties.attr({'class':'col-md-1 partyInfo no-padding'})
+parties.attr({'class':'col-md-1 partyInfo no-padding',title:function(d){ return d.value.name} })
 
 parties.append('input')
 	.attr({
@@ -915,4 +918,11 @@ parties.append('input')
 parties.append('span')
 	.text(function(d){ return d.key; })
 	.attr('class','')
-parties.append('a').attr({href:function(d){return d.value.wiki},target:"blank",'class':'glyphicon glyphicon-link',style:'font-size:x-small'})
+parties.append('a')
+	.attr({
+		href:function(d){return d.value.wiki},
+		target:"blank",
+		'class':'glyphicon glyphicon-link',
+		style:'font-size:x-small'
+	})
+// -----------------------------------------------------------------------------------------------------------------------

@@ -5,7 +5,6 @@ html
 		title CivisAnalysis
 		link(rel="stylesheet" href="./javascripts/lib/bootstrap/dist/css/bootstrap.min.css")
 		link(rel='stylesheet', href='./stylesheets/styles.css')
-		link(rel="stylesheet", href="./javascripts/lib/pick-a-color-master/build/1.2.2/css/pick-a-color-1.2.2.min.css")
 		link(rel="stylesheet", href="./javascripts/lib/DataTables-1.10.1/media/css/jquery.dataTables.min.css")
 
 		link(rel='stylesheet', href="./javascripts/lib/bootstrap/slider/slider.css")
@@ -114,14 +113,15 @@ html
 			.panel.panel-default
 				.panel-heading#headingOne(role="tab")
 					h4.panel-title
-						a.collapsed(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne") Parties
+						a.accordion-toggle(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne") Parties
 				#collapseOne.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingOne")
 					.panel-body#partiesInfo
 
 			.panel.panel-default
 				.panel-heading#headingTwo(role="tab")
 					h4.panel-title
-						a.collapsed(data-toggle="collapse",data-parent="#accordion",href="#collapseTwo",aria-expanded="false",aria-controls="collapseTwo") Timeline Settings
+						a.accordion-toggle(data-toggle="collapse",data-parent="#accordion",href="#collapseTwo",aria-expanded="false",aria-controls="collapseTwo") Timeline Settings
+
 				#collapseTwo.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingTwo")
 					.panel-body
 						// Uncluttered an Cluttered explains
@@ -197,8 +197,7 @@ html
 		script(src="./javascripts/lib/d3/queue.v1.min.js")
 		script(src="./javascripts/lib/numeric-1.2.6.js")
 		script(src="./javascripts/lib/crossfilter.v1.min.js")
-		script(src="./javascripts/lib/pick-a-color-master/build//dependencies/tinycolor-0.9.15.min.js")
-		script(src="./javascripts/lib/pick-a-color-master/build/1.2.2/js/pick-a-color-1.2.2.min.js")
+		script(src="./javascripts/lib/tinycolor.js")
 		script(src="./javascripts/lib/bootstrap/slider/slider.js")
 		script(src="./javascripts/lib/topojson.min.js")
 		script(src="./javascripts/lib/DataTables-1.10.1/media/js/jquery.dataTables.min.js")
