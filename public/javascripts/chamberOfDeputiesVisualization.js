@@ -912,7 +912,9 @@ parties.append('input')
 		value:function(d){return $(this).val(tinycolor(CONGRESS_DEFINE.getConstantPartyColor(d.key)).toHexString())},
 		id:function(d){return d.key;},
 		onchange:function(d){ 
-			return 'javascript:CONGRESS_DEFINE.setConstantPartyColor("'+d.key+'",$("input#'+d.key+'").val())'
+			return 'javascript:CONGRESS_DEFINE.setConstantPartyColor("'+d.key+'",$("input#'+d.key+'").val());'+
+					'timeline.drawParties();updateDeputies()'
+
 		}
 	})
 parties.append('span')
