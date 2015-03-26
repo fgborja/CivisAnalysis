@@ -894,3 +894,25 @@ $('#btn-lockDeputies').click(function() {
 		})
 	}
 })
+
+var parties = d3.select('#accordion #partiesInfo')
+				.selectAll('div')
+				.data(d3.entries(CONGRESS_DEFINE.parties))
+				.enter()
+					.append('div')
+
+parties.attr({'class':'col-md-1 partyInfo no-padding'})
+
+parties.append('input')
+	.attr({
+		type:"color",
+		value:function(d){return $(this).val(tinycolor(CONGRESS_DEFINE.getConstantPartyColor(d.key)).toHexString())},
+		id:function(d){return d.key;},
+		onchange:function(d){ 
+			return 'javascript:CONGRESS_DEFINE.setConstantPartyColor("'+d.key+'",$("input#'+d.key+'").val())'
+		}
+	})
+parties.append('span')
+	.text(function(d){ return d.key; })
+	.attr('class','')
+parties.append('a').attr({href:function(d){return d.value.wiki},target:"blank",'class':'glyphicon glyphicon-link',style:'font-size:x-small'})

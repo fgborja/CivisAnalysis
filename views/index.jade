@@ -110,36 +110,50 @@ html
 		//		img#loadingGIF(src='./images/ajax_loader.gif')
 
 
-		// Uncluttered an Cluttered explains
-		.col-md-12.btn-group.btn-group-justified#toggleClutter(style='margin-top: 20px;')
-			label.btn.btn-default.unclutteredButtons.active#cluttered
-				text Original party position at the political spectrum
-			label.btn.btn-default.unclutteredButtons#uncluttered
-				text Apply function to unclutter the parties
-		.col-md-12
-			.col-md-6.col-xs-6.unclutteredInfo
-				p
-				p The positions of parties' are calculated using the average of his Deputies' positions in the political spectrum, calculated through SVD for each period (biennial).
-				br
-			.col-md-6.col-xs-6.unclutteredInfo
-				p
-				p Since many parties have close roll call policy, parties' positions can be culttered in one dimenison. The uncluttered function tries to provide a better visual representations of parties in the spectrum minimizing the loss of political distance between parties.
+		.col-md-12.panel-group#accordion(role="tablist",aria-multiselectable="true")
+			.panel.panel-default
+				.panel-heading#headingOne(role="tab")
+					h4.panel-title
+						a.collapsed(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne") Parties
+				#collapseOne.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingOne")
+					.panel-body#partiesInfo
 
-		// RANGE INPUT to set TIMELINE percentage
-		.col-md-12
-			.col-md-12.unclutteredInfo
-				p
-				text Trade-off: set the percentage of canvas to represent the political distances and parties size: 
-				input(type='range', min=10, max=100, value=50, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties(); $('#partyDistance').html(100-value); $('#partySize').html(value)")
+			.panel.panel-default
+				.panel-heading#headingTwo(role="tab")
+					h4.panel-title
+						a.collapsed(data-toggle="collapse",data-parent="#accordion",href="#collapseTwo",aria-expanded="false",aria-controls="collapseTwo") Timeline Settings
+				#collapseTwo.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingTwo")
+					.panel-body
+						// Uncluttered an Cluttered explains
+						.col-md-12.btn-group.btn-group-justified#toggleClutter
+							label.btn.btn-default.unclutteredButtons.active#cluttered
+								text Original party position at the political spectrum
+							label.btn.btn-default.unclutteredButtons#uncluttered
+								text Apply function to unclutter the parties
+						.col-md-12
+							.col-md-6.col-xs-6.unclutteredInfo
+								p
+								p The positions of parties' are calculated using the average of his Deputies' positions in the political spectrum, calculated through SVD for each period (biennial).
+								br
+							.col-md-6.col-xs-6.unclutteredInfo
+								p
+								p Since many parties have close roll call policy, parties' positions can be culttered in one dimenison. The uncluttered function tries to provide a better visual representations of parties in the spectrum minimizing the loss of political distance between parties.
 
-				.col-md-12(style="margin-top:-7px")
-					em.col-md-6.col-xs-6
-						span#partyDistance 50
-						% pixels to represent the 'political distances' of parties
-					em.col-md-6.col-xs-6(style="text-align:right") 
-						span#partySize 50
-						% pixels to represent the number of deputies
-				br
+						// RANGE INPUT to set TIMELINE percentage
+						.col-md-12
+							.col-md-12.unclutteredInfo
+								p
+								text Trade-off: set the percentage of canvas to represent the political distances and parties size: 
+								input(type='range', min=10, max=100, value=50, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties(); $('#partyDistance').html(100-value); $('#partySize').html(value)")
+
+								.col-md-12(style="margin-top:-7px")
+									em.col-md-6.col-xs-6
+										span#partyDistance 50
+										% pixels to represent the 'political distances' of parties
+									em.col-md-6.col-xs-6(style="text-align:right") 
+										span#partySize 50
+										% pixels to represent the number of deputies
+								br
 					
 
 		// MODAL (POP-UP)

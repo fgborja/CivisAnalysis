@@ -281,6 +281,9 @@ var CONGRESS_DEFINE = {
 			{return CONGRESS_DEFINE.partiesNamesColor[party];}
 		else{ /*console.log(party);*/ return "#AAA" }
 	},
+	setConstantPartyColor : function(party,color){
+		CONGRESS_DEFINE.partiesNamesColor[party] = color;
+	}
 }
 
 CONGRESS_DEFINE.years = $.map( d3.range(CONGRESS_DEFINE.startingYear, CONGRESS_DEFINE.endingYear+1), function(d){ return {name:d, period:[new Date(d,0,1), new Date(d+1,0,1)] }   });
