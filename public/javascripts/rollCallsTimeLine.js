@@ -240,29 +240,27 @@ d3.chart.timeline = function() {
 					})    
 			})
 			biennialColumms.append('path').attr({
-				d: 'M '+scaleX_middleOfBiennial(1991)+' '+timelineDim.height/2+' H '+scaleX_middleOfBiennial(2015),
+				d: 'M '+scaleX_middleOfBiennial(1990)+' '+timelineDim.height/2+' H '+scaleX_middleOfBiennial(2015),
 				stroke:'lightgrey',
 				'stroke-dasharray':"5,5"
 			})    
 			
 		// governemnt X opposition
-			var gg = partyTraces.append('g');
+			var gg = partyTraces.append('g').style('text-anchor','middle');
 			gg.append('text')
 				.attr({
-					'class':'partyTraceLabels',
-					x:scaleX_middleOfBiennial(1991),
-					y:timelineDim.height/4 -5,
-					style:"fill:grey; writing-mode: tb; glyph-orientation-vertical: 0;font-family: monospace;"
+					x:scaleX_middleOfBiennial(1990) +scaleX_middleOfBiennial(1991)/2,
+					y: timelineDim.height/4 -5,
+					'class':"partiesLabel"
 				})
 				.text('GOVERNMENT')
 			var opposition = 'OPPOSITION';
 			gg.append('text')
 				.text(opposition)
 				.attr({
-					'class':'partyTraceLabels',
-					style:"fill:grey;",
-					x:scaleX_middleOfBiennial(1991),
-					y: function(d){ return 3* timelineDim.height/4 +5; },	
+					'class':"partiesLabel",
+					x:scaleX_middleOfBiennial(1990) +scaleX_middleOfBiennial(1991)/2,
+					y: 3*timelineDim.height/4 +5,	
 				})
 
 		partyTraces.append('g').attr('class','parties').attr({transform:'translate(0,'+traceMargin+')'});
