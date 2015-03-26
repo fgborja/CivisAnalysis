@@ -108,7 +108,7 @@ d3.chart.deputiesScatterplot = function() {
 			.on("mouseout", mouseoutDeputy)
 			.on("click", mouseClickDeputy)
 			.attr('r',0)
-			.attr(popoverAttr(deputyPopover))
+			
 
 		circles
 		.transition().delay(100).duration(1000)
@@ -119,7 +119,8 @@ d3.chart.deputiesScatterplot = function() {
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
 		})
-
+		.attr(popoverAttr(deputyPopover))
+		
 		$('.chart.deputy circle.node').popover({ trigger: "hover" });
 		function deputyPopover(d){
 			return d.name +' ('+d.party+'-'+d.district+")<br /><em>Click to select</em>"

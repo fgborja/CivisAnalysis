@@ -178,7 +178,6 @@ d3.chart.chamberInfographic = function() {
 				r:0,
 				id: function(d) { return "deputy-" + d.deputyID; }
 			})
-			.attr( popoverAttr(deputiesPopover) );
 				
 		circles.exit().transition().attr('r',0).remove();
 
@@ -190,7 +189,9 @@ d3.chart.chamberInfographic = function() {
 					cy: function(d,i){ return radiusWidth- (radiusWidth-7 - i % circlePerAngle * radius*2.3) * calcAngleX(calcAngle(i)); },
 					cx: function(d,i){ return radiusWidth - (radiusWidth-7 - i % circlePerAngle * radius*2.3) * calcAngleY(calcAngle(i)); },
 					class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); }	
-				});	
+				})
+				.attr( popoverAttr(deputiesPopover) );
+
 		
 		circles
 			.attr({r:  function(d){ return (d.hovered)? radiusHover : radius }})
