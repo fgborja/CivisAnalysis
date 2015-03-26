@@ -203,24 +203,24 @@ var CONGRESS_DEFINE = {
 			dates:[new Date(2014,10,3)],
 			alliances: [
 				 { 
-				 	president:"Dilma Rousseff (PT)", name:"Coligação Com a Força do Povo", 
+				 	president:"Dilma Rousseff (PT)", vice:"Michel Temer (PMDB)", name:"Coligação Com a Força do Povo", 
 				 	parties:["PT", "PP", "PROS", "PCdoB", "PMDB", "PSD","PR", "PDT", "PRB"],
-					result:[0] 
+					result:[0.4159,0.5164] 
 				 }, 
 				 { 
-				 	president:"Marina Silva (PSB)", name:"Coligação Unidos pelo Brasil", 
+				 	president:"Aécio Neves (PSDB)", vice:"Aloysio Nunes (PSDB)", name:"Coligação Muda Brasil", 
+					parties:["PSDB", "DEM","PFL","PTN","PTC","PTB","SDD", "PEN", "PTdoB","PMN"],
+					result:[0.3355,0.4836]
+				 }, 
+				 { 
+				 	president:"Marina Silva (PSB)", vice:"Beto Albuquerque (PSB)", name:"Coligação Unidos pelo Brasil", 
 					parties:["PSB","PPS","PHS","PRP","PPL","PSL"],
-					result:[0]
+					result:[0.2132]
 				 },
 				 { 
-				 	president:"Aécio Neves (PSDB)", name:"Coligação Muda Brasil", 
-					parties:["PSDB", "DEM","PFL","PTN","PTC","PTB","SDD", "PEN", "PTdoB"],
-					result:[0]
-				 }, 
-				 { 
-				 	president:"Pastor Everaldo (PSC)", name:"PSC", 
-					parties:["PSC"],
-					result:[0]
+				 	president:"Luciana Genro (PSOL)",vice:"Jorge Paz (PSOL)", name:"PSOL", 
+					parties:["PSOL"],
+					result:[0.0155]
 				 }
 			]
 		}

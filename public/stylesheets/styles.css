@@ -136,20 +136,6 @@ a {
 .selection.shiftKey{ stroke   : red;}
 .selection.ctrlKey { stroke   : green;}
 
-.d3tooltip {
-	font-family: "Arial", sans-serif;
-	position: absolute;
-	z-index: 10;
-	visibility: hidden;
-	background-color: #FFF;
-	border: 1px solid #CCC;
-	padding: 3px 6px;
-}
-
-.popover {
-	max-width: 800px !important;
-}
-
 #timeline .background {
 	fill: lightgrey;
 }
