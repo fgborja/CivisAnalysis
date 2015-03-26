@@ -899,7 +899,7 @@ $('#btn-lockDeputies').click(function() {
 
 // PARTIES IN THE ACCORDION ----------------------------------------------------------------------------------------------
 var parties = d3.select('#accordion #partiesInfo')
-				.selectAll('div')
+				.selectAll('partyInfo')
 				.data(d3.entries(CONGRESS_DEFINE.parties))
 				.enter()
 					.append('div')
@@ -912,8 +912,7 @@ parties.append('input')
 		value:function(d){return $(this).val(tinycolor(CONGRESS_DEFINE.getConstantPartyColor(d.key)).toHexString())},
 		id:function(d){return d.key;},
 		onchange:function(d){ 
-			return 'javascript:CONGRESS_DEFINE.setConstantPartyColor("'+d.key+'",$("input#'+d.key+'").val());'+
-					'timeline.drawParties();updateDeputies()'
+			return 'javascript:CONGRESS_DEFINE.setConstantPartyColor("'+d.key+'",$("input#'+d.key+'").val());colorsReDraw()';
 
 		}
 	})
@@ -928,3 +927,7 @@ parties.append('a')
 		style:'font-size:x-small'
 	})
 // -----------------------------------------------------------------------------------------------------------------------
+function colorsReDraw(){
+	timeline.drawParties();
+	updateDeputies();
+}

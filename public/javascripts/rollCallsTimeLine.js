@@ -21,7 +21,7 @@ d3.chart.timeline = function() {
 		var rangeButtonsHeight = 15;
 		var timelineDim = {};
 		var partyStepWidth = 15,
-			drawingType = 'cluttered' // or cluttered || uncluttered
+			drawingType = 'uncluttered' // or cluttered || uncluttered
 
 	var dispatch = d3.dispatch(chart, "timelineFilter", 'setAlliances');
 

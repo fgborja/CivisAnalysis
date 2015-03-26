@@ -237,7 +237,7 @@ var CONGRESS_DEFINE = {
 	 "rgb(102,189,99)","rgb(26,152,80)","rgb(0,104,55)"],
 
 	// ================================================================================================================
-	partiesNamesColor : {"DEM":"LightCoral", "PFL":"LightCoral", // PFL ==> DEM
+	partiesArbitraryColor : {"DEM":"LightCoral", "PFL":"LightCoral", // PFL ==> DEM
 						  "PSDB":"#1f77b4",
 						  "PP":"#008000", "PPB": "#008000", // PPB ==> PP
 						  "PL":"#ffbb78", "PR":"#ffbb78",   // PL + PRONA ==> PR
@@ -256,33 +256,49 @@ var CONGRESS_DEFINE = {
 						  "PRONA": "DarkOrange",
 						  "PRN": "#8c564b","PSC":"#8c564b",
 	},
-	// partiesNamesColor : {"DEM":"#2166ac", "PFL":"#2166ac", // PFL ==> DEM
-	// 					  "PSDB":"#7fbc41",
-	// 					  "PP":"#4393c3", "PPB": "#4393c3", // PPB ==> PP
-	// 					  "PL":"#d1e5f0", "PR":"#d1e5f0",   // PL + PRONA ==> PR
-	// 					  "PMDB":"#4d9221", 
-	// 					  "PT":"#b2182b", 
-	// 					  "PDT":"#f4a582", "PSB":"#d6604d",
-	// 					  "PTB":"#92c5de",
-	// 					  "PSD":"#660000",
-	// 					  "PSOL":"#FFCC00",
-	// 					  "PV":"#e377c2",
-	// 					  "PPS":"#666",
-	// 					  "PCdoB":"Brown",
-	// 					  "SDD":"DarkOrange",
-	// 					  "Solidaried":"DarkOrange ", 
-	// 					  "PROS":"Orange",
-	// 					  "PRONA": "DarkOrange",
-	// 					  "PRN": "#8c564b","PSC":"#8c564b",
-	// },
+	partiesIdeologyColor : {
+			DEM: "rgb(79, 46, 157)",	PFL: "rgb(79, 46, 157)",
+			PCdoB: "Brown",
+			PDT: "#c74635",
+			PL: "#395eb3",PR: "#395eb3",
+			PMDB: "#39793b",
+			PP: "#1c769f",PPB: "#1c769f",
+			PPS: "#ed3b3b",
+			PL:"#395eb3",
+			PRN: "rgb(45, 132, 137)",
+			PRONA: "#3b3397",
+			PROS: "#ff1e00",
+			PSB: "#dc4444",
+			PSC: "#5779b1",
+			PSD: "#5d5ec4",
+			PSDB: "rgb(147, 165, 37)",
+			PSOL: "#ff4400",
+			PT: "#d62728",
+			PTB: "#4f72a6",
+			PV: "#e27e83",
+			SDD: "#5316c1",
+			Solidaried: "5316c1 ",
+	},
+	partiesColors:{},
+
+	setIdeologyColors: function() {
+		for (var party in CONGRESS_DEFINE.partiesIdeologyColor) {
+				CONGRESS_DEFINE.partiesColors[party] = CONGRESS_DEFINE.partiesIdeologyColor[party];
+			}	
+	},
+	setArbitraryColors: function() {
+		for (var party in CONGRESS_DEFINE.partiesArbitraryColor) {
+				CONGRESS_DEFINE.partiesColors[party] = CONGRESS_DEFINE.partiesArbitraryColor[party];
+			}	
+	},
 	// PARTY COLORS =================================================================================================
-	getConstantPartyColor : function(party){ 
-		if(CONGRESS_DEFINE.partiesNamesColor[party] !== undefined ) 
-			{return CONGRESS_DEFINE.partiesNamesColor[party];}
+	getConstantPartyColor : function(party){ 	
+		if(CONGRESS_DEFINE.partiesColors[party] !== undefined ) 
+			{return CONGRESS_DEFINE.partiesColors[party];}
 		else{ /*console.log(party);*/ return "#AAA" }
 	},
 	setConstantPartyColor : function(party,color){
-		CONGRESS_DEFINE.partiesNamesColor[party] = color;
+		CONGRESS_DEFINE.partiesColors[party] = color;
 	}
 }
 
@@ -358,3 +374,5 @@ $(document).ready(function () {
 
    $(".pick-a-color").pickAColor({ showHexInput  : false});
 });*/
+
+CONGRESS_DEFINE.setIdeologyColors();
