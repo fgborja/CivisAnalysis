@@ -311,6 +311,13 @@ var CONGRESS_DEFINE = {
 		}	
 	},
 	setArbitraryColors: function() {
+		for (var partyIndex in  CONGRESS_DEFINE.parties ) {
+			
+				if(CONGRESS_DEFINE.partiesArbitraryColor[partyIndex] !== undefined)
+					CONGRESS_DEFINE.partiesColors[partyIndex] = CONGRESS_DEFINE.partiesArbitraryColor[partyIndex];
+					else CONGRESS_DEFINE.partiesColors[partyIndex] = "#AAA" ;
+		}
+
 		for (var party in CONGRESS_DEFINE.partiesArbitraryColor) {
 				CONGRESS_DEFINE.partiesColors[party] = CONGRESS_DEFINE.partiesArbitraryColor[party];
 			}	

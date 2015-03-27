@@ -116,36 +116,47 @@ d3.chart.timeline = function() {
 	// });
 
 	brush.on("brush.chart", function() {
-	  var g = d3.select(this.parentNode),
-		  extent = brush.extent();
-	  if (round) g.select(".brush")
-		  .call(brush.extent(extent = extent.map(round)))
+		var g = d3.select(this.parentNode),
+			extent = brush.extent();
+		if (round) g.select(".brush")
+			.call(brush.extent(extent = extent.map(round)))
 		.selectAll(".resize")
-		  .style("display", null);
-	  svg.select("#clip-timeline rect")
-		  .attr("x", x(extent[0]))
-		  .attr("width", x(extent[1]) - x(extent[0]));
-	  //dimension.filterRange(extent);
+			.style("display", null);
+		svg.select("#clip-timeline rect")
+			.attr("x", x(extent[0]))
+			.attr("width", x(extent[1]) - x(extent[0]));
 	  
-	var labels = svg.selectAll('.dateLabel')
-		.data(extent)
-		
-	labels.enter()
-		.append('text')
-			.attr({
-				'class':'dateLabel',
-				opacity: 0.8
-			});
+		var labels = svg.selectAll('.dateLabel')
+			.data(extent)
+			
+		labels.enter()
+			.append('text')
+				.attr({
+					'class':'dateLabel',
+					opacity: 0.8
+				});
 
-	labels.transition()
-		.attr({
-			x: function(d,i){ return ((i)? +35 : -40) + x(d);},
-			y: function(d,i){ return (i)? histogramHeight : histogramHeight/2; }
-		})
-		.text( function(d){return d.toLocaleDateString();})
+		labels.transition()
+			.attr({
+				x: function(d,i){ return ((i)? +30 : -35) + x(d);},
+				y: function(d,i){ return (i)? histogramHeight : histogramHeight/2; }
+			})
+			.text( function(d){return d.toLocaleDateString();})
 	});
 
 	brush.on("brushend.chart", function() {
+		var days = Math.abs((brush.extent()[0] - brush.extent()[1])/(24*60*60*1000));
+		if(days>1200)
+			alert( 'You selected '+days+' days of legislative activity. It will take some time to calculate the Political Spectrum.' );
+
+		if(brush.extent()[0].toLocaleDateString() == brush.extent()[1].toLocaleDateString()){
+			svg.selectAll('.dateLabel').remove()
+			svg.select("#clip-timeline rect")
+						.attr("x", 0)
+						.attr("width", 0);
+			return;
+		}
+
 		if (brush.empty()) {
 			var div = d3.select(this.parentNode.parentNode.parentNode);
 			//div.select(".title a").style("display", "none");

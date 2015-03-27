@@ -209,6 +209,7 @@ input[type="color"] {
   background-color: transparent;
   border: 0px;
   padding: 1px 2px;
+  cursor: pointer;
 }
 .panel-heading .accordion-toggle:after {
     /* symbol for "opening" panels */

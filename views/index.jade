@@ -118,8 +118,8 @@ html
 												a(href="javascript:partiesInfo.setArbitraryParties()") Diff Major Parties
 											li
 												a(href="javascript:partiesInfo.setIdeologyParties()") Ideology
-											li
-												a(href="javascript:partiesInfo.setMilitaryParties()") Military Regime (1964-1885) Heritage
+										//	li
+										//		a(href="javascript:partiesInfo.setMilitaryParties()") Military Regime (1964-1885) Heritage
 								#paletteParties.col-md-10
 									text.col-md-3 Parties Color Palette
 
@@ -147,17 +147,17 @@ html
 						.col-md-12
 							.col-md-6.col-xs-6.unclutteredInfo
 								p
-								p The positions of parties' are calculated using the average of his Deputies' positions in the political spectrum, calculated through SVD for each period (biennial).
+								p The positions of parties' are calculated using the average of their Deputies' positions in the political spectrum, wich are obtained through SVD for each period (biennial).
 								br
 							.col-md-6.col-xs-6.unclutteredInfo
 								p
-								p Since many parties have close roll call policy, parties' positions can be culttered in one dimenison. The uncluttered function tries to provide a better visual representations of parties in the spectrum minimizing the loss of political distance between parties.
+								p Since many parties have close roll call policy, parties' positions can be cluttered in one dimenison. The Unclutter function tries to provide a better visual representation of parties in the spectrum.
 
 						// RANGE INPUT to set TIMELINE percentage
 						.col-md-12
 							.col-md-12.unclutteredInfo
 								p
-								text Trade-off: set the percentage of canvas to represent the political distances and parties size: 
+								text Trade-off: set the percentage of canvas to represent the political distances and parties size
 								input(type='range', min=10, max=100, value=40, id=fader, step=1, oninput="timeline.pixelPercentageToParties =value/100; timeline.drawParties(); $('#partyDistance').html(100-value); $('#partySize').html(value)")
 
 								.col-md-12(style="margin-top:-7px")
@@ -237,5 +237,6 @@ html
 		script(src='./javascripts/modals.js')
 		script(src='./javascripts/labelManager.js')
 		script(src='./javascripts/votesPieChart.js')
+		script(src='./javascripts/partiesInfo.js')
 
 		script(src='./javascripts/chamberOfDeputiesVisualization.js')
