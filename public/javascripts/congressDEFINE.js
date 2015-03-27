@@ -259,10 +259,10 @@ var CONGRESS_DEFINE = {
 	partiesIdeologyColor: {
 		'left-wing': 'darkred',
 		center: 'darkgreen',
-		'right-wing': 'darkblue'
+		'right-wing': 'rgb(73, 75, 128)'
 	},
 	partiesMilitaryColor: {
-		ARENA: {color:'darkblue', name:'ARENA - Pro-Military Regime',title:'Aliança Renovadora Nacional',wiki:'http://pt.wikipedia.org/wiki/Alian%C3%A7a_Renovadora_Nacional'},
+		ARENA: {color:'rgb(73, 75, 128)', name:'ARENA - Pro-Military Regime',title:'Aliança Renovadora Nacional',wiki:'http://pt.wikipedia.org/wiki/Alian%C3%A7a_Renovadora_Nacional'},
 		MDB: {color:'darkgreen', name:'MDB - Allowed Opposition', title:'Movimento Democrático Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Movimento_Democr%C3%A1tico_Brasileiro'},
 		mix: {color:'darkred', name:'MDB + Anti-Regime',wiki:''},
 		Illegal: {color:'red', name:'Anti-Regime',title:'Unionist + No Political Rights + Exile + Guerrilla',wiki:'http://pt.wikipedia.org/wiki/Ditadura_militar_no_Brasil_(1964-1985)#Repress.C3.A3o'}
@@ -304,7 +304,6 @@ var CONGRESS_DEFINE = {
 	setMilitaryColors: function() {
 		for (var partyIndex in  CONGRESS_DEFINE.parties ) {
 			var party = CONGRESS_DEFINE.parties[partyIndex];
-			console.log(party.military, partyIndex);
 			CONGRESS_DEFINE.partiesColors[partyIndex] = 
 				( (party.military!=='') && CONGRESS_DEFINE.partiesMilitaryColor[party.military].color!=='')?
 					CONGRESS_DEFINE.partiesMilitaryColor[party.military].color

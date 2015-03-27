@@ -57,18 +57,21 @@ d3.chart.timeline = function() {
 			updateRollCallHistogram();
 
 			// TODO contantes chusmes! wtf ive done here?  height,width(?!!)
-			appendGreyRangeButtons(CONGRESS_DEFINE.years,histogramHeight)
-			appendGreyRangeButtons(CONGRESS_DEFINE.legislatures,histogramHeight+15 );
-			appendGreyRangeButtons(CONGRESS_DEFINE.presidents,histogramHeight+30 );
+			appendGreyRangeButtons('years',histogramHeight);
+			appendGreyRangeButtons('legislatures',histogramHeight+15 );
+			appendGreyRangeButtons('presidents',histogramHeight+30 );
 
-			appendClipedRangeButtons(CONGRESS_DEFINE.years,histogramHeight)
-			appendClipedRangeButtons(CONGRESS_DEFINE.legislatures, histogramHeight+15 );
-			appendClipedRangeButtons(CONGRESS_DEFINE.presidents, histogramHeight+30 );
+			appendClipedRangeButtons('years',histogramHeight)
+			appendClipedRangeButtons('legislatures', histogramHeight+15 );
+			appendClipedRangeButtons('presidents', histogramHeight+30 );
 
 			appendElections(histogramHeight+rangeButtonsHeight*3);
 			
 			setPartiesTraces(10+histogramHeight+rangeButtonsHeight*3+10)
 		}
+	}
+	chart.reColorPresidents = function(){
+		svg.selectAll(".presidents").style('fill',function(d){ if(d.party!==undefined){ return CONGRESS_DEFINE.getConstantPartyColor(d.party)}})
 	}
 	chart.resetAlliances = function() {
 		dispatch.setAlliances(null);
@@ -878,19 +881,19 @@ d3.chart.timeline = function() {
 	}
 
 
-	function appendGreyRangeButtons(ranges, y ){
-
-		var gRects = appendRangeButtons(ranges, y,'background');
+	function appendGreyRangeButtons(type, y ){
+		var ranges = CONGRESS_DEFINE[type];
+		var gRects = appendRangeButtons(ranges, y,'background '+type);
 
 		gRects
 			.on('mouseover', function(){
 				d3.select(this).select('rect')
-					.attr('class','foreground')
+					.attr('class','foreground '+type)
 					.style('opacity',function(d){ if(d.party!==undefined){ return 1 }})
 			})
 			.on('mouseout', function(){
 				if(d3.select(this)  )
-				d3.select(this).select('rect').attr('class','background')
+				d3.select(this).select('rect').attr('class','background '+type)
 				.style('opacity',function(d){ if(d.party!==undefined){ return 0.5 }})
 			})	
 			.on('mousedown', function(d){ presetDateRangeButtonSelected(d); })
@@ -899,9 +902,9 @@ d3.chart.timeline = function() {
 	
 	}
 
-	function appendClipedRangeButtons(ranges, y ){
-
-		var gRects = appendRangeButtons(ranges, y,'foreground');
+	function appendClipedRangeButtons(type, y ){
+		var ranges = CONGRESS_DEFINE[type];
+		var gRects = appendRangeButtons(ranges, y,'foreground '+type);
 
 		gRects.selectAll('rect').attr("clip-path", "url(#clip-timeline)");	
 		gRects.selectAll('text').attr("clip-path", "url(#clip-timeline)");	

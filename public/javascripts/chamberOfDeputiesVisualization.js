@@ -901,7 +901,7 @@ $('#btn-lockDeputies').click(function() {
 var partiesInfo = {
 	setIdeologyParties: function () {
 		CONGRESS_DEFINE.setIdeologyColors();
-
+		timeline.reColorPresidents();
 		d3.select('#accordion #paletteParties text').text('Ideology Color Palette: ')
 
 		var divs = d3.select('#accordion #paletteParties')
@@ -928,12 +928,14 @@ var partiesInfo = {
 	},
 	setArbitraryParties: function () {
 		CONGRESS_DEFINE.setArbitraryColors();
+		timeline.reColorPresidents();
 		d3.selectAll('#accordion #paletteParties div').remove();
 		d3.select('#accordion #paletteParties text').text('Parties Color Palette');
 		colorsReDraw();
 	},
 	setMilitaryParties: function () {
 		CONGRESS_DEFINE.setMilitaryColors();
+		timeline.reColorPresidents();
 		d3.select('#accordion #paletteParties text').text('Military Regime Color Palette: ');
 
 		var divs = d3.select('#accordion #paletteParties')
@@ -956,7 +958,7 @@ var partiesInfo = {
 			.append('a')
 			.attr({
 				href:function(d){return d.value.wiki},
-				style:function(d){console.log(d.value.wiki); return (d.value.wiki=='')?'display:none':'font-size:x-small';},
+				style:function(d){ return (d.value.wiki=='')?'display:none':'font-size:x-small';},
 				target:"blank",
 				'class':'glyphicon glyphicon-link',
 			})
