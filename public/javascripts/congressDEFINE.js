@@ -256,35 +256,60 @@ var CONGRESS_DEFINE = {
 						  "PRONA": "DarkOrange",
 						  "PRN": "#8c564b","PSC":"#8c564b",
 	},
-	partiesIdeologyColor : {
-			DEM: "rgb(79, 46, 157)",	PFL: "rgb(79, 46, 157)",
-			PCdoB: "Brown",
-			PDT: "#c74635",
-			PL: "#395eb3",PR: "#395eb3",
-			PMDB: "#39793b",
-			PP: "#1c769f",PPB: "#1c769f",
-			PPS: "#ed3b3b",
-			PL:"#395eb3",
-			PRN: "rgb(45, 132, 137)",
-			PRONA: "#3b3397",
-			PROS: "#ff1e00",
-			PSB: "#dc4444",
-			PSC: "#5779b1",
-			PSD: "#5d5ec4",
-			PSDB: "rgb(147, 165, 37)",
-			PSOL: "#ff4400",
-			PT: "#d62728",
-			PTB: "#4f72a6",
-			PV: "#e27e83",
-			SDD: "#5316c1",
-			Solidaried: "5316c1 ",
+	partiesIdeologyColor: {
+		'left-wing': 'darkred',
+		center: 'darkgreen',
+		'right-wing': 'darkblue'
 	},
+	partiesMilitaryColor: {
+		ARENA: {color:'darkblue', name:'ARENA - Pro-Military Regime',title:'Aliança Renovadora Nacional',wiki:'http://pt.wikipedia.org/wiki/Alian%C3%A7a_Renovadora_Nacional'},
+		MDB: {color:'darkgreen', name:'MDB - Allowed Opposition', title:'Movimento Democrático Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Movimento_Democr%C3%A1tico_Brasileiro'},
+		mix: {color:'darkred', name:'MDB + Anti-Regime',wiki:''},
+		Illegal: {color:'red', name:'Anti-Regime',title:'Unionist + No Political Rights + Exile + Guerrilla',wiki:'http://pt.wikipedia.org/wiki/Ditadura_militar_no_Brasil_(1964-1985)#Repress.C3.A3o'}
+	},
+	// partiesIdeologyColor : {
+	// 		DEM: "rgb(79, 46, 157)",	PFL: "rgb(79, 46, 157)",
+	// 		PCdoB: "Brown",
+	// 		PDT: "#c74635",
+	// 		PL: "#395eb3",PR: "#395eb3",
+	// 		PMDB: "#39793b",
+	// 		PP: "#1c769f",PPB: "#1c769f",
+	// 		PPS: "#ed3b3b",
+	// 		PL:"#395eb3",
+	// 		PRN: "rgb(45, 132, 137)",
+	// 		PRONA: "#3b3397",
+	// 		PROS: "#ff1e00",
+	// 		PSB: "#dc4444",
+	// 		PSC: "#5779b1",
+	// 		PSD: "#5d5ec4",
+	// 		PSDB: "rgb(147, 165, 37)",
+	// 		PSOL: "#ff4400",
+	// 		PT: "#d62728",
+	// 		PTB: "#4f72a6",
+	// 		PV: "#e27e83",
+	// 		SDD: "#5316c1",
+	// 		Solidaried: "5316c1 ",
+	// },
 	partiesColors:{},
 
 	setIdeologyColors: function() {
-		for (var party in CONGRESS_DEFINE.partiesIdeologyColor) {
-				CONGRESS_DEFINE.partiesColors[party] = CONGRESS_DEFINE.partiesIdeologyColor[party];
-			}	
+		for (var partyIndex in CONGRESS_DEFINE.parties ) {
+			var party = CONGRESS_DEFINE.parties[partyIndex];
+			CONGRESS_DEFINE.partiesColors[partyIndex] = 
+				(CONGRESS_DEFINE.partiesIdeologyColor[party.wing]!=='')?
+					CONGRESS_DEFINE.partiesIdeologyColor[party.wing]
+					: "#AAA" ;
+		}	
+	},
+	setMilitaryColors: function() {
+		for (var partyIndex in  CONGRESS_DEFINE.parties ) {
+			var party = CONGRESS_DEFINE.parties[partyIndex];
+			console.log(party.military, partyIndex);
+			CONGRESS_DEFINE.partiesColors[partyIndex] = 
+				( (party.military!=='') && CONGRESS_DEFINE.partiesMilitaryColor[party.military].color!=='')?
+					CONGRESS_DEFINE.partiesMilitaryColor[party.military].color
+					: "#AAA" ;
+		}	
 	},
 	setArbitraryColors: function() {
 		for (var party in CONGRESS_DEFINE.partiesArbitraryColor) {
@@ -320,44 +345,46 @@ CONGRESS_DEFINE.partiesTraces = {
 
 
 CONGRESS_DEFINE.parties = {
-	DEM:{name:'Democratas',wiki:'http://pt.wikipedia.org/wiki/Democratas_(Brasil)'}, 
-	NoParty: {name:'No Party'}, 
-	PCB:{name:'Partido Comunista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Comunista_Brasileiro'}, 
-	PCdoB:{name:'Partido Comunista do Brasil',wiki:'http://pt.wikipedia.org/wiki/Partido_Comunista_do_Brasil'}, 
-	PDC:{name:'Partido Democrata Cristão', wiki:'http://pt.wikipedia.org/wiki/Partido_Democrata_Crist%C3%A3o_(1985-1993)'}, 
-	PDS:{name:'Partido Democrático Social',wiki:'http://pt.wikipedia.org/wiki/Partido_Democr%C3%A1tico_Social'}, 
-	PDT:{name:'Parido Democrático Trabalhista',wiki:'http://pt.wikipedia.org/wiki/Partido_Democr%C3%A1tico_Trabalhista'}, 
-	PEN:{name:'Partido Ecológico Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_Ecol%C3%B3gico_Nacional'}, 
-	PHS:{name:'Partido Humanista da Solidariedade',wiki:'http://pt.wikipedia.org/wiki/Partido_Humanista_da_Solidariedade'}, 
-	PMDB:{name:'Partido do Movimento Democrático Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_do_Movimento_Democr%C3%A1tico_Brasileiro'}, 
-	PMN:{name:'Partido da Mobilização Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Mobiliza%C3%A7%C3%A3o_Nacional'}, 
-	PP: {name:'Partido Progressista',wiki:'http://pt.wikipedia.org/wiki/Partido_Progressista_(Brasil)'},
-	PPR:{name:'Partido Progressista Renovador', wiki:'http://pt.wikipedia.org/wiki/Partido_Progressista_Renovador'}, 
-	PPS:{name:'Partido Popular Socialista', wiki:'http://pt.wikipedia.org/wiki/Partido_Popular_Socialista'}, 
-	PR: {name:'Partido da República',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Rep%C3%BAblica'},
-	PRB:{name:'Partido Republicano Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_Brasileiro'}, 
-	PRN:{name:'Partido da Renovação Nacional', wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Crist%C3%A3o'}, 
-	PRONA:{name:'Partido da Reedificação da Ordem Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_de_Reedifica%C3%A7%C3%A3o_da_Ordem_Nacional'}, 
-	PROS:{name:'Partido Republicano da Ordem Social',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_da_Ordem_Social'}, 
-	PRP:{name:'Partido Republicano Progressista',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_Progressista'}, 
-	PRS:{name:'Partido da Renovação Social',wiki:'http://pt.wikipedia.org/wiki/Partido_de_Renova%C3%A7%C3%A3o_Social'}, 
-	PRTB:{name:'Partido Renovador Trabalhista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Renovador_Trabalhista_Brasileiro'}, 
-	PSB:{name:'Partido Socialista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialista_Brasileiro'}, 
-	PSC:{name:'Partido Social Cristão', wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Crist%C3%A3o'}, 
-	PSD:{name:'Partido Social Democrático',wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Democr%C3%A1tico_(2011)'}, 
-	PSDB:{name:'Partido da Social Democracia Brasileira',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Social_Democracia_Brasileira'}, 
-	PSL:{name:'Partido Social Liberal', wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Liberal'}, 
-	PSOL:{name:'Partido Socialismo e Liberdade',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialismo_e_Liberdade'}, 
-	PST:{name:'Partido Social Trabalhista',wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Trabalhista'}, 
-	PSTU:{name:'Partido Socialista dos Trabalhadores Unificado',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialista_dos_Trabalhadores_Unificado'}, 
-	PT: {name:'Partido dos Trabalhadores',wiki:'http://pt.wikipedia.org/wiki/Partido_dos_Trabalhadores'},
-	PTB:{name:'Partido Trabalhista Brasileiro',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Brasileiro'}, 
-	PTC:{name:'Partido Trabalhista Cristão',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Crist%C3%A3o'}, 
-	PTN:{name:'Partido Trabalhista Nacional',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Nacional'}, 
-	PTR:{name:'Partido Trabalhista Reformador', wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Reformador'}, 
-	PTdoB:{name:'Partido Trabalhista do Brasil',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_do_Brasil'}, 
-	PV: {name:'Partido Verde',wiki:'http://pt.wikipedia.org/wiki/Partido_Verde_(Brasil)'},
-	SDD: {name:'Solidariedade',wiki:'http://pt.wikipedia.org/wiki/Solidariedade_(partido_pol%C3%ADtico)'}
+	DEM:{name:'Democratas',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Democratas_(Brasil)'}, 
+	PFL:{name:'Partido da Frente Liberal',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Frente_Liberal'}, 
+	NoParty: {name:'No Party',wing:'',military:''}, 
+	PCB:{name:'Partido Comunista Brasileiro',wing:'left-wing',military:'Illegal',wiki:'http://pt.wikipedia.org/wiki/Partido_Comunista_Brasileiro'}, 
+	PCdoB:{name:'Partido Comunista do Brasil',wing:'left-wing',military:'Illegal',wiki:'http://pt.wikipedia.org/wiki/Partido_Comunista_do_Brasil'}, 
+	PDC:{name:'Partido Democrata Cristão',wing:'right-wing',military:'ARENA', wiki:'http://pt.wikipedia.org/wiki/Partido_Democrata_Crist%C3%A3o_(1985-1993)'}, 
+	PDS:{name:'Partido Democrático Social',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_Democr%C3%A1tico_Social'}, 
+	PDT:{name:'Parido Democrático Trabalhista',wing:'left-wing',military:'mix',wiki:'http://pt.wikipedia.org/wiki/Partido_Democr%C3%A1tico_Trabalhista'}, 
+	PEN:{name:'Partido Ecológico Nacional',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Ecol%C3%B3gico_Nacional'}, 
+	PHS:{name:'Partido Humanista da Solidariedade',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Humanista_da_Solidariedade'}, 
+	PMDB:{name:'Partido do Movimento Democrático Brasileiro',wing:'center',military:'MDB',wiki:'http://pt.wikipedia.org/wiki/Partido_do_Movimento_Democr%C3%A1tico_Brasileiro'}, 
+	PMN:{name:'Partido da Mobilização Nacional',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Mobiliza%C3%A7%C3%A3o_Nacional'}, 
+	PP: {name:'Partido Progressista',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_Progressista_(Brasil)'},
+	PPR:{name:'Partido Progressista Renovador',wing:'right-wing',military:'ARENA', wiki:'http://pt.wikipedia.org/wiki/Partido_Progressista_Renovador'}, 
+	PPS:{name:'Partido Popular Socialista',wing:'left-wing',military:'Illegal', wiki:'http://pt.wikipedia.org/wiki/Partido_Popular_Socialista'}, 
+	PR: {name:'Partido da República',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Rep%C3%BAblica'},
+	PL: {name:'Partido Liberal',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_Liberal_%28Brasil%29'},
+	PRB:{name:'Partido Republicano Brasileiro',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_Brasileiro'}, 
+	PRN:{name:'Partido da Renovação Nacional',wing:'right-wing',military:'', wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Crist%C3%A3o'}, 
+	PRONA:{name:'Partido da Reedificação da Ordem Nacional',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_de_Reedifica%C3%A7%C3%A3o_da_Ordem_Nacional'}, 
+	PROS:{name:'Partido Republicano da Ordem Social',wing:'',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_da_Ordem_Social'}, 
+	PRP:{name:'Partido Republicano Progressista',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_Republicano_Progressista'}, 
+	PRS:{name:'Partido da Renovação Social',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_de_Renova%C3%A7%C3%A3o_Social'}, 
+	PRTB:{name:'Partido Renovador Trabalhista Brasileiro',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Renovador_Trabalhista_Brasileiro'}, 
+	PSB:{name:'Partido Socialista Brasileiro',wing:'left-wing',military:'Illegal',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialista_Brasileiro'}, 
+	PSC:{name:'Partido Social Cristão',wing:'right-wing',military:'ARENA', wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Crist%C3%A3o'}, 
+	PSD:{name:'Partido Social Democrático',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Democr%C3%A1tico_(2011)'}, 
+	PSDB:{name:'Partido da Social Democracia Brasileira',wing:'center',military:'mix',wiki:'http://pt.wikipedia.org/wiki/Partido_da_Social_Democracia_Brasileira'}, 
+	PSL:{name:'Partido Social Liberal',wing:'right-wing',military:'', wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Liberal'}, 
+	PSOL:{name:'Partido Socialismo e Liberdade',wing:'left-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialismo_e_Liberdade'}, 
+	PST:{name:'Partido Social Trabalhista',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Social_Trabalhista'}, 
+	PSTU:{name:'Partido Socialista dos Trabalhadores Unificado',wing:'left-wing',military:'Illegal',wiki:'http://pt.wikipedia.org/wiki/Partido_Socialista_dos_Trabalhadores_Unificado'}, 
+	PT: {name:'Partido dos Trabalhadores',wing:'left-wing',military:'Illegal',wiki:'http://pt.wikipedia.org/wiki/Partido_dos_Trabalhadores'},
+	PTB:{name:'Partido Trabalhista Brasileiro',wing:'right-wing',military:'ARENA',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Brasileiro'}, 
+	PTC:{name:'Partido Trabalhista Cristão',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Crist%C3%A3o'}, 
+	PTN:{name:'Partido Trabalhista Nacional',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Nacional'}, 
+	PTR:{name:'Partido Trabalhista Reformador',wing:'right-wing',military:'ARENA', wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_Reformador'}, 
+	PTdoB:{name:'Partido Trabalhista do Brasil',wing:'right-wing',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Trabalhista_do_Brasil'}, 
+	PV: {name:'Partido Verde',wing:'center',military:'',wiki:'http://pt.wikipedia.org/wiki/Partido_Verde_(Brasil)'},
+	SDD: {name:'Solidariedade',wing:'',military:'',wiki:'http://pt.wikipedia.org/wiki/Solidariedade_(partido_pol%C3%ADtico)'}
 }
 /*var labelParties = [['PT','PT'],['PMDB','PMDB'],['PFL/DEM','DEM'],['PSDB','PSDB'],['PPB/PP','PP'],['PL/PR','PR'],['PDT','PDT'],['PSB','PSB']];
 
@@ -375,4 +402,4 @@ $(document).ready(function () {
    $(".pick-a-color").pickAColor({ showHexInput  : false});
 });*/
 
-CONGRESS_DEFINE.setIdeologyColors();
+CONGRESS_DEFINE.setArbitraryColors();

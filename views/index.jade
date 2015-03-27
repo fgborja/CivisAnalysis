@@ -116,14 +116,19 @@ html
 						a.accordion-toggle(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne") Parties
 				#collapseOne.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingOne")
 					.panel-body#partiesInfo
-						.btn-group.col-md-12.no-padding
-								button.btn.btn-xs.btn-default.dropdown-toggle(type="button", data-toggle="dropdown",aria-expanded="false") Apply Color Palette
-									span.caret
-								ul.dropdown-menu(role="menu")
-									li
-										a(href="javascript:CONGRESS_DEFINE.setIdeologyColors();colorsReDraw()") Ideology
-									li
-										a(href="javascript:CONGRESS_DEFINE.setArbitraryColors();colorsReDraw()") Diff Major Parties
+						.col-md-12.no-padding
+							.btn-group.col-md-2
+									button.btn.btn-xs.btn-default.dropdown-toggle(type="button", data-toggle="dropdown",aria-expanded="false") Apply Color Palette
+										span.caret
+									ul.dropdown-menu(role="menu")
+										li
+											a(href="javascript:partiesInfo.setArbitraryParties()") Parties
+										li
+											a(href="javascript:partiesInfo.setIdeologyParties()") Ideology
+										li
+											a(href="javascript:partiesInfo.setMilitaryParties()") Military Regime (1964-1885)
+							#paletteParties.col-md-10
+								text.col-md-2 Parties Color Palette
 
 			.panel.panel-default
 				.panel-heading#headingTwo(role="tab")
@@ -208,6 +213,7 @@ html
 		script(src="./javascripts/lib/tinycolor.js")
 		script(src="./javascripts/lib/bootstrap/slider/slider.js")
 		script(src="./javascripts/lib/topojson.min.js")
+		script(src="./javascripts/lib/tinycolor.js")
 		script(src="./javascripts/lib/DataTables-1.10.1/media/js/jquery.dataTables.min.js")
 		script(src="./javascripts/lib/selectize/dist/js/standalone/selectize.min.js")
 
