@@ -936,7 +936,7 @@ var partiesInfo = {
 	setMilitaryParties: function () {
 		CONGRESS_DEFINE.setMilitaryColors();
 		timeline.reColorPresidents();
-		d3.select('#paletteParties text').text('Military Regime Color Palette: ');
+		d3.select('#paletteParties text').text('Military Regime Heritage Color Palette: ');
 
 		var divs = d3.select('#paletteParties')
 				.selectAll('div')
