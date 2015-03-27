@@ -902,9 +902,9 @@ var partiesInfo = {
 	setIdeologyParties: function () {
 		CONGRESS_DEFINE.setIdeologyColors();
 		timeline.reColorPresidents();
-		d3.select('#accordion #paletteParties text').text('Ideology Color Palette: ')
+		d3.select('#paletteParties text').text('Ideology Color Palette: ')
 
-		var divs = d3.select('#accordion #paletteParties')
+		var divs = d3.select('#paletteParties')
 				.selectAll('div')
 				.data(d3.entries(CONGRESS_DEFINE.partiesIdeologyColor), function(d){ return d.key;})
 				
@@ -929,16 +929,16 @@ var partiesInfo = {
 	setArbitraryParties: function () {
 		CONGRESS_DEFINE.setArbitraryColors();
 		timeline.reColorPresidents();
-		d3.selectAll('#accordion #paletteParties div').remove();
-		d3.select('#accordion #paletteParties text').text('Parties Color Palette');
+		d3.selectAll('#paletteParties div').remove();
+		d3.select('#paletteParties text').text('Parties Color Palette');
 		colorsReDraw();
 	},
 	setMilitaryParties: function () {
 		CONGRESS_DEFINE.setMilitaryColors();
 		timeline.reColorPresidents();
-		d3.select('#accordion #paletteParties text').text('Military Regime Color Palette: ');
+		d3.select('#paletteParties text').text('Military Regime Color Palette: ');
 
-		var divs = d3.select('#accordion #paletteParties')
+		var divs = d3.select('#paletteParties')
 				.selectAll('div')
 				.data(d3.entries(CONGRESS_DEFINE.partiesMilitaryColor), function(d){ return d.key;});
 
@@ -966,7 +966,7 @@ var partiesInfo = {
 		colorsReDraw();
 	}
 }
-var parties = d3.select('#accordion #partiesInfo')
+var parties = d3.select('#partiesInfo')
 				.selectAll('.partyInfo')
 				.data(d3.entries(CONGRESS_DEFINE.parties))
 				.enter()
@@ -996,7 +996,7 @@ parties.append('a')
 	})
 // -----------------------------------------------------------------------------------------------------------------------
 function colorsReDraw(){
-	d3.selectAll('#accordion #partiesInfo .partyInfo input')
+	d3.selectAll('#partiesInfo .partyInfo input')
 		.attr('value',function(d){return $(this).val(tinycolor(CONGRESS_DEFINE.getConstantPartyColor(d.key)).toHexString())})
 	timeline.drawParties();
 	updateDeputies();

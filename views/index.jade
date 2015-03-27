@@ -101,6 +101,27 @@ html
 				// ROLL CALLS infos
 				.col-md-12.no-padding#rollCallInfo(style='padding-right: 10px;')
 
+		// PARTIES INFO
+		.col-md-12.panel-group#accordion(role="tablist",aria-multiselectable="true",style='margin-bottom: 10px;')
+			.panel.panel-default
+					.panel-heading#headingOne(role="tab")
+						h4.panel-title
+							a.accordion-toggle(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne") Parties
+					#collapseOne.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingOne")
+						.panel-body#partiesInfo
+							.col-md-12.no-padding
+								.btn-group.col-md-2
+										button.btn.btn-xs.btn-default.dropdown-toggle(type="button", data-toggle="dropdown",aria-expanded="false") Apply Color Palette
+											span.caret
+										ul.dropdown-menu(role="menu")
+											li
+												a(href="javascript:partiesInfo.setArbitraryParties()") Diff Major Parties
+											li
+												a(href="javascript:partiesInfo.setIdeologyParties()") Ideology
+											li
+												a(href="javascript:partiesInfo.setMilitaryParties()") Military Regime (1964-1885) Heritage
+								#paletteParties.col-md-10
+									text.col-md-3 Parties Color Palette
 
 		.col-md-12#timelineInfo
 		// TIMELINE and PARTY FLOW
@@ -108,28 +129,8 @@ html
 		//	#loading
 		//		img#loadingGIF(src='./images/ajax_loader.gif')
 
-
-		.col-md-12.panel-group#accordion(role="tablist",aria-multiselectable="true")
-			.panel.panel-default
-				.panel-heading#headingOne(role="tab")
-					h4.panel-title
-						a.accordion-toggle(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne") Parties
-				#collapseOne.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingOne")
-					.panel-body#partiesInfo
-						.col-md-12.no-padding
-							.btn-group.col-md-2
-									button.btn.btn-xs.btn-default.dropdown-toggle(type="button", data-toggle="dropdown",aria-expanded="false") Apply Color Palette
-										span.caret
-									ul.dropdown-menu(role="menu")
-										li
-											a(href="javascript:partiesInfo.setArbitraryParties()") Parties
-										li
-											a(href="javascript:partiesInfo.setIdeologyParties()") Ideology
-										li
-											a(href="javascript:partiesInfo.setMilitaryParties()") Military Regime (1964-1885) Heritage
-							#paletteParties.col-md-10
-								text.col-md-3 Parties Color Palette
-
+		// TIMELINE SETTINGS
+		.col-md-12(style='margin-top:10px')
 			.panel.panel-default
 				.panel-heading#headingTwo(role="tab")
 					h4.panel-title
