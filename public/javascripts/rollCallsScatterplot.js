@@ -27,9 +27,9 @@ d3.chart.rollCallsScatterplot = function() {
 				'class' 	: 'chart rollCall',
 			});
 
-		g.append('rect').attr({
+		g.append('g').attr({
 			'class':'gchart',
-		});
+		}).append('rect');
 
 		g.append('rect')
 			.attr('class', 'selectorRect')
@@ -54,7 +54,7 @@ d3.chart.rollCallsScatterplot = function() {
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
 			.range([ margin.top, _dimensions.height-margin.bottom]);
 
-		g.select('.gchart').attr({
+		g.select('.gchart rect').attr({
 			width 		: _dimensions.width,
 			height 		: _dimensions.height
 		});
@@ -106,6 +106,31 @@ d3.chart.rollCallsScatterplot = function() {
 		circles.style('fill', setRollCallFill )
 
 		circles.exit().transition().duration(1000).attr('r',0).remove();				
+	}
+
+	chart.showRelativeCoord = function(relativeCoord){
+		if(!relativeCoord){
+			g.selectAll('path').remove();
+			return;
+		}
+
+		var coord = g.selectAll('path')
+						.data(relativeCoord)
+
+		coord.enter().append('path').attr({
+			stroke:'lightgrey',
+			'stroke-dasharray':"5,5"
+		})
+
+		coord.attr({
+			d:function (d,i) {  
+				var c = (i==1)?
+				'M '+relativeCoord[0]*_dimensions.width+' '+0+' V '+_dimensions.height
+				:
+				'M '+0+' '+relativeCoord[1]*_dimensions.height+' H '+_dimensions.width;
+				return c;
+			}
+		}) 
 	}
 
 	function setRollCallFill (d){

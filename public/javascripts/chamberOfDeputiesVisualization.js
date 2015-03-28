@@ -84,6 +84,9 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 
 		deputiesScatterplot
 			.on('update', updateDeputies )
+			.on('relativeCoord', function(relatCoord) {
+				rollCallsScatterplot.showRelativeCoord(relatCoord)
+			})
 	// ====================================================================================
 
 
@@ -125,7 +128,7 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 		timeline
 			// Set new range of dates!
 			.on("timelineFilter", function(filtered) { 
-				
+
 				$('#main').show().animate({height: $('#canvas').height()+50},1000)
 				console.log("filtered", filtered);
 				//$('#loading').css('visibility','visible');

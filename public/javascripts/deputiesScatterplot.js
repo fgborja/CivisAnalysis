@@ -11,7 +11,7 @@ if(!d3.chart) d3.chart = {};
 d3.chart.deputiesScatterplot = function() {
 	var g;
 	var data;
-	var dispatch = d3.dispatch("update");
+	var dispatch = d3.dispatch("update",'relativeCoord');
 
 	var _dimensions ={};
 	var margin;
@@ -27,7 +27,12 @@ d3.chart.deputiesScatterplot = function() {
 		g = containerSVG.append('g')
 			.attr({
 				'class' 	: 'chart deputy',
-			});
+			})
+			.on("mousemove", function() {
+				var relativeCoord = [d3.mouse(this)[0]/_dimensions.width, d3.mouse(this)[1]/_dimensions.height]
+				dispatch.relativeCoord(relativeCoord)
+			})
+			.on('mouseout', function() { dispatch.relativeCoord(null) })
 
 		g.append('rect').attr({
 			'class':'gchart',
