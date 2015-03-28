@@ -114,23 +114,56 @@ d3.chart.rollCallsScatterplot = function() {
 			return;
 		}
 
-		var coord = g.selectAll('path')
-						.data(relativeCoord)
+		// var coord = g.selectAll('path')
+		// 				.data(relativeCoord)
 
-		coord.enter().append('path').attr({
-			stroke:'lightgrey',
-			'stroke-dasharray':"5,5"
-		})
+		// coord.enter().append('path').attr({
+		// 	stroke:'lightgrey',
+		// 	'stroke-dasharray':"5,5"
+		// })
+
+		// coord.attr({
+		// 	d:function (d,i) {  
+		// 		var c = (i==1)?
+		// 		'M '+relativeCoord[0]*_dimensions.width+' '+0+' V '+_dimensions.height
+		// 		:
+		// 		'M '+0+' '+relativeCoord[1]*_dimensions.height+' H '+_dimensions.width;
+		// 		return c;
+		// 	}
+		// }) 
+
+		var arrow1 = [relativeCoord[0]*_dimensions.width,relativeCoord[1]*_dimensions.height]
+		var arrow2 = [ (1-relativeCoord[0])*_dimensions.width, (1-relativeCoord[1])*_dimensions.height ]
+
+		var relat = [ relativeCoord[0]-0.5, relativeCoord[1]-0.5];
+		var a = Math.atan2(relat[1],relat[0]) 
+		console.log(a * 180/Math.PI, Math.cos(a-3*Math.PI/4))
+
+		var arrow= [
+				[[_dimensions.width/2,_dimensions.height/2],  [arrow1[0],arrow1[1]] ],
+				[ [arrow1[0]-7*Math.sin(a+Math.PI/4),arrow1[1]-7*Math.cos(a-3*Math.PI/4)],  [arrow1[0],arrow1[1]] ],
+				[ [arrow1[0]-7*Math.cos(a+Math.PI/4),arrow1[1]+7*Math.sin(a-3*Math.PI/4)],  [arrow1[0],arrow1[1]] ],
+				[[_dimensions.width/2,_dimensions.height/2],[arrow2[0],arrow2[1]]],
+				[ [arrow2[0]+7*Math.sin(a+Math.PI/4),arrow2[1]+7*Math.cos(a-3*Math.PI/4)],  [arrow2[0],arrow2[1]] ],
+				[ [arrow2[0]+7*Math.cos(a+Math.PI/4),arrow2[1]-7*Math.sin(a-3*Math.PI/4)],  [arrow2[0],arrow2[1]] ],
+			]
+		var coord = g.selectAll('path')
+						.data(arrow)
+
+		coord.enter().append('path');
 
 		coord.attr({
-			d:function (d,i) {  
-				var c = (i==1)?
-				'M '+relativeCoord[0]*_dimensions.width+' '+0+' V '+_dimensions.height
-				:
-				'M '+0+' '+relativeCoord[1]*_dimensions.height+' H '+_dimensions.width;
-				return c;
-			}
-		}) 
+			d: function (d){ return 'M '+d[0][0]+' '+d[0][1]+' L'+d[1][0]+' '+d[1][1]; },
+			stroke: function(d,i) { return (i<3)?'darkgreen':'darkred';},
+			'stroke-width':"1px",
+		})
+		// coord.append('path')
+		// 	.attr({
+		// 		d: function (d){ return 'M '+(_dimensions.width/2+50)+' '+(_dimensions.height/2+10)+' L'+d[0]+' '+d[1]; },
+		// 		stroke: function(d,i) { return (i==0)?'darkgreen':'darkred';},
+		// 	})
+
+
 	}
 
 	function setRollCallFill (d){
