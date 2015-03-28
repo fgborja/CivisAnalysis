@@ -111,6 +111,9 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// interactions
 		rollCallsScatterplot
 			.on('update', updateRollCalls )
+			.on('relativeCoord', function(relatCoord) {
+				deputiesScatterplot.showRelativeCoord(relatCoord)
+			})
 	// ====================================================================================
 
 

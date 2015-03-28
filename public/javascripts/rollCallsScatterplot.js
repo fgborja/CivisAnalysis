@@ -3,7 +3,7 @@ if(!d3.chart) d3.chart = {};
 d3.chart.rollCallsScatterplot = function() {
 	var g;
 	var data;
-	var dispatch = d3.dispatch('update');
+	var dispatch = d3.dispatch('update','relativeCoord');
 
 	var _dimensions = {};
 	var margin;
@@ -25,7 +25,12 @@ d3.chart.rollCallsScatterplot = function() {
 		g = scatterplot.append('g')
 			.attr({
 				'class' 	: 'chart rollCall',
-			});
+			})
+			.on("mousemove", function() {
+				var relativeCoord = [d3.mouse(this)[0]/_dimensions.width, d3.mouse(this)[1]/_dimensions.height]
+				dispatch.relativeCoord(relativeCoord)
+			})
+			.on('mouseout', function() { dispatch.relativeCoord(null) })
 
 		g.append('g').attr({
 			'class':'gchart',
@@ -110,7 +115,7 @@ d3.chart.rollCallsScatterplot = function() {
 
 	chart.showRelativeCoord = function(relativeCoord){
 		if(!relativeCoord){
-			g.selectAll('path').remove();
+			g.selectAll('.arrow').remove();
 			return;
 		}
 
@@ -137,7 +142,6 @@ d3.chart.rollCallsScatterplot = function() {
 
 		var relat = [ relativeCoord[0]-0.5, relativeCoord[1]-0.5];
 		var a = Math.atan2(relat[1],relat[0]) 
-		console.log(a * 180/Math.PI, Math.cos(a-3*Math.PI/4))
 
 		var arrow= [
 				[[_dimensions.width/2,_dimensions.height/2],  [arrow1[0],arrow1[1]] ],
@@ -147,23 +151,16 @@ d3.chart.rollCallsScatterplot = function() {
 				[ [arrow2[0]+7*Math.sin(a+Math.PI/4),arrow2[1]+7*Math.cos(a-3*Math.PI/4)],  [arrow2[0],arrow2[1]] ],
 				[ [arrow2[0]+7*Math.cos(a+Math.PI/4),arrow2[1]-7*Math.sin(a-3*Math.PI/4)],  [arrow2[0],arrow2[1]] ],
 			]
-		var coord = g.selectAll('path')
+		var coord = g.selectAll('.arrow')
 						.data(arrow)
 
-		coord.enter().append('path');
+		coord.enter().append('path').attr('class','arrow');
 
 		coord.attr({
 			d: function (d){ return 'M '+d[0][0]+' '+d[0][1]+' L'+d[1][0]+' '+d[1][1]; },
 			stroke: function(d,i) { return (i<3)?'darkgreen':'darkred';},
 			'stroke-width':"1px",
 		})
-		// coord.append('path')
-		// 	.attr({
-		// 		d: function (d){ return 'M '+(_dimensions.width/2+50)+' '+(_dimensions.height/2+10)+' L'+d[0]+' '+d[1]; },
-		// 		stroke: function(d,i) { return (i==0)?'darkgreen':'darkred';},
-		// 	})
-
-
 	}
 
 	function setRollCallFill (d){
