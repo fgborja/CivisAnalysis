@@ -88,7 +88,7 @@ d3.chart.rollCallsScatterplot = function() {
 							.on("mouseout", mouseOutVoting)
 							.on("click", mouseClickVoting)
 							.attr('r',0)
-							.attr(popoverAttr(rollCallPopover))
+							.attr(popoverAttr(rollCallPopover,'left'))
 
 		circles
 			.transition().delay(100).duration(1000)
@@ -159,7 +159,7 @@ d3.chart.rollCallsScatterplot = function() {
 		coord.attr({
 			d: function (d){ return 'M '+d[0][0]+' '+d[0][1]+' L'+d[1][0]+' '+d[1][1]; },
 			stroke: function(d,i) { return (i<3)?'darkgreen':'darkred';},
-			'stroke-width':"1px",
+			'stroke-width':"2px",
 		})
 	}
 

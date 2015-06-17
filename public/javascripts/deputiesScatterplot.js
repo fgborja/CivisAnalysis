@@ -174,7 +174,7 @@ d3.chart.deputiesScatterplot = function() {
 		coord.attr({
 			d: function (d){ return 'M '+d[0][0]+' '+d[0][1]+' L'+d[1][0]+' '+d[1][1]; },
 			stroke: function(d,i) { return (i<3)?'darkgreen':'darkred';},
-			'stroke-width':"1px",
+			'stroke-width':"2px",
 		})
 	}
 
