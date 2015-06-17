@@ -51,6 +51,10 @@ d3.chart.timeline = function() {
 		}	
 	}
 
+	chart.dispatchDatesToCalc = function() {
+		dispatch.timelineFilter(brush.extent())
+	}
+
 	chart.update = function () {
 
 		if(!group){
@@ -146,8 +150,8 @@ d3.chart.timeline = function() {
 
 	brush.on("brushend.chart", function() {
 		var days = Math.abs((brush.extent()[0] - brush.extent()[1])/(24*60*60*1000));
-		if(days>1200)
-			alert( 'You selected '+days+' days of legislative activity. It will take some time to calculate the Political Spectrum.' );
+		// if(days>1200)
+		// 	alert( 'You selected '+days+' days of legislative activity. It will take some time to calculate the Political Spectrum.' );
 
 		if(brush.extent()[0].toLocaleDateString() == brush.extent()[1].toLocaleDateString()){
 			svg.selectAll('.dateLabel').remove()

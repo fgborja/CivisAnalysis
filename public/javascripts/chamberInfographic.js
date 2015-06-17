@@ -245,7 +245,7 @@ d3.chart.chamberInfographic = function() {
 			.on("mouseover", mouseoverParty)
 			.on("mouseout", mouseoutParty)
 			.on("click", clickParty)
-			.attr( popoverAttr(renderPartyTooltip));
+			.attr( popoverAttr(renderPartyTooltip,'left'));
 
 		arcs.exit().remove()
 
