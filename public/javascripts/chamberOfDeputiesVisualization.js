@@ -1,4 +1,5 @@
 var dimRedTechnique = 'svd'; // tsne
+var tsneOpt = null;
 
 partiesInfo.init();
 
@@ -433,7 +434,7 @@ function updateDeputies(){
 // ======================================================================================================================
 // ======================================================================================================================
 // set new date and set the new data for all visualizations 
-function setNewDateRange(period,callback){
+function setNewDateRange(period,setNewDateRangeCallback){
 	//deputiesGraph.stop();
 
 	deputyNodes =[];
@@ -488,7 +489,7 @@ function setNewDateRange(period,callback){
 					return rollCall;
 			})
 			$('#loading').css('visibility','hidden');
-			callback()
+			setNewDateRangeCallback()
 		})
 	}
 
@@ -499,16 +500,7 @@ function setNewDateRange(period,callback){
 			filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
 			matrixDeputiesPerRollCall = createMatrixDeputiesPerRollCall(filteredDeputies,rollCallInTheDateRange)
 			
-			// var twoDimData;
-			if(dimRedTechnique == 'svd'){
-				$('#loading #msg').text('Gerating Political Spectra by SVD');
-				setTimeout(	function(){calcSVD(matrixDeputiesPerRollCall,endCalcCallback)}, 10);
-			} else if(dimRedTechnique == 'tsne'){
-				$('#loading #msg').text('Generating Political Spectra by t-SNE');
-				calcTSNE(matrixDeputiesPerRollCall,endCalcCallback);
-			}
-			dimRedTechnique='svd'; // return to svd
-			function endCalcCallback(twoDimData) {
+			function calcCallback(twoDimData) {
 				// Create the arrays to D3 plot (TODO set to var var var); ---------------------------------------------------------------
 				// Deputies array
 				deputyNodes = createDeputyNodes(twoDimData.deputies,filteredDeputies);
@@ -520,8 +512,18 @@ function setNewDateRange(period,callback){
 				calcRollCallRate(rollCallNodes,null)
 
 				$('#loading').css('visibility','hidden');
-				callback();
+				setNewDateRangeCallback();
 			}
+
+			// var twoDimData;
+			if(dimRedTechnique == 'svd'){
+				$('#loading #msg').text('Gerating Political Spectra by SVD');
+				setTimeout(	function(){calcSVD(matrixDeputiesPerRollCall,calcCallback)}, 10);
+			} else if(dimRedTechnique == 'tsne'){
+				$('#loading #msg').text('Generating Political Spectra by t-SNE');
+				calcTSNE(matrixDeputiesPerRollCall,calcCallback);
+			}
+			dimRedTechnique='svd'; // return to svd
 		}
 	})
 }
@@ -813,9 +815,13 @@ function calcSVD(matrixDepXRollCall,endCalcCallback){
 }
 function calcTSNE(matrixDepXRollCall,endCalcCallback){
 	// -----------------------------------------------------------------------------------------------------------------
+		//console.log(tsneOpt)
 		console.log('START TSNE');
-		
 		var opt = {epsilon: 10, perplexity: 30, dim: 2};
+		if(tsneOpt != null){
+			opt.perplexity = tsneOpt.perplexity;
+			opt.epsilon = tsneOpt.learningRate;
+		}
 		var T = new tsnejs.tSNE(opt); // create a tSNE instance
 		T.initDataRaw(matrixDepXRollCall);
 
@@ -827,12 +833,12 @@ function calcTSNE(matrixDepXRollCall,endCalcCallback){
 		var intervalT = setInterval(stepT, 5);
 		function stepT() {
 			var cost = T.step(); // do a few steps
-			console.log("iteration Y " + T.iter + ", cost: " + cost);
+			//console.log("iteration Y " + T.iter + ", cost: " + cost);
 		}
 		var intervalX = setInterval(stepX, 5);
 		function stepX() {
 			var cost = X.step(); // do a few steps
-			console.log("iteration X " + X.iter + ", cost: " + cost);
+			//console.log("iteration X " + X.iter + ", cost: " + cost);
 		}
 
 		var result = {deputies: [], voting: []};
@@ -840,16 +846,16 @@ function calcTSNE(matrixDepXRollCall,endCalcCallback){
 		setTimeout(function(){
 			clearInterval(intervalT);
 			result.deputies = T.getSolution();
-		},9000)
+		},tsneOpt.iterationSec*1000)
 
 		setTimeout(function(){
 			clearInterval(intervalX);
 			result.voting = X.getSolution(); 
-		},9000)
+		},tsneOpt.iterationSec*1000)
 
 		setTimeout(function () {
 			endCalcCallback(result);
-		},10000)
+		},tsneOpt.iterationSec*1000+300)
 
 		console.log("CALC TSNE- FINISHED!! => PLOT")
 	// ----------------------------------------------------------------------------------------------------------------

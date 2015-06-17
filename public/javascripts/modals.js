@@ -334,8 +334,9 @@ function setTSNEModal(){
 	    
 	
 	$('.modal-body div .btn').on('click', function(){
-		dimRedTechnique='tsne'; 
-		timeline.dispatchDatesToCalc();
+		dimRedTechnique= 'tsne'; 
+		tsneOpt = {perplexity:$('#perplexity').val(),learningRate:$('#learningRate').val(),iterationSec:$('#iterationSec').val()}
 		$('.modal').modal('toggle');
+		timeline.dispatchDatesToCalc();
 	})
 }
