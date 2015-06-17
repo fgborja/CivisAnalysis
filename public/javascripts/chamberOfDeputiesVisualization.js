@@ -1,3 +1,5 @@
+var dimRedTechnique = 'svd'; // tsne
+
 partiesInfo.init();
 
 // collection of motions  => { "type+number+year":{ rollCalls:{}, details:{} },...}
@@ -329,10 +331,10 @@ function updateRollCalls(){
 			$('#rollCallInfo').html(
 				'<div class="panel panel-default" style="margin-top:5px; ">'+  	
 				  '<div class="panel-body" style="overflow-y:scroll; height: '+(rollCallsScatterplot.height()-5)+'px; font-size: small;">'+
-				   	'<h5>'+"Roll Call - "+rollCall.type+' '+rollCall.number+'/'+rollCall.year+" : "+ rollCall.datetime.toLocaleString()+'</h5>'+
-				   	((rollCall.summary != '')?"Status: "+rollCall.summary+'<br/>':'')+
-				   	"Amendment: "+motions[rollCall.type+rollCall.number+rollCall.year].amendment +'<br/><br/>'+
-				   	"Tags: "+motions[rollCall.type+rollCall.number+rollCall.year].tags +
+					'<h5>'+"Roll Call - "+rollCall.type+' '+rollCall.number+'/'+rollCall.year+" : "+ rollCall.datetime.toLocaleString()+'</h5>'+
+					((rollCall.summary != '')?"Status: "+rollCall.summary+'<br/>':'')+
+					"Amendment: "+motions[rollCall.type+rollCall.number+rollCall.year].amendment +'<br/><br/>'+
+					"Tags: "+motions[rollCall.type+rollCall.number+rollCall.year].tags +
 				  '</div>'+
 				'</div>'
 			)
@@ -463,15 +465,17 @@ function setNewDateRange(period,callback){
 				console.log('YEAR - preCALC!!'); }
 	})
 
-
+	$('#loading').css('visibility','visible');
+	
 	if(precalc.found) {
+		$('#loading #msg').text('Loading Data');
 		// GET THE PRECALC DEPUTIES AND ROLLCALS
 		chamberOfDeputies.getPreCalc(precalc.type,precalc.id, function (precalc) {
 
 			// SET THE precalc DEPUTIES to their constant object in the app 
 			deputyNodes = precalc.deputyNodes.map( function(precalcDeputy){ 
 					var depObj = phonebook.getDeputyObj(precalcDeputy.deputyID);  // get the constant obj Deputy TODO
- 					depObj.party = precalcDeputy.party;
+					depObj.party = precalcDeputy.party;
 					depObj.scatterplot 	= precalcDeputy.scatterplot;  
 					return depObj;
 			})
@@ -483,7 +487,7 @@ function setNewDateRange(period,callback){
 					rollCall.scatterplot 	= precalcRollCall.scatterplot;  
 					return rollCall;
 			})
-
+			$('#loading').css('visibility','hidden');
 			callback()
 		})
 	}
@@ -492,25 +496,38 @@ function setNewDateRange(period,callback){
 	updateDataforDateRange(period, function(){
 		// if the precal was found we dont need to calc the SVD
 		if(!precalc.found) {
-			var filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
-			var SVDdata = calcSVD(filteredDeputies,rollCallInTheDateRange);
-		
-			// Create the arrays to D3 plot (TODO set to var var var); ---------------------------------------------------------------
-			// Deputies array
-			deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
-			// RollCalls array
-			rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
-			// Adjust the SVD result to the political spectrum
-			scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,period[1]);
+			filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
+			matrixDeputiesPerRollCall = createMatrixDeputiesPerRollCall(filteredDeputies,rollCallInTheDateRange)
+			
+			// var twoDimData;
+			if(dimRedTechnique == 'svd'){
+				$('#loading #msg').text('Gerating Political Spectra by SVD');
+				setTimeout(	function(){calcSVD(matrixDeputiesPerRollCall,endCalcCallback)}, 10);
+			} else if(dimRedTechnique == 'tsne'){
+				$('#loading #msg').text('Generating Political Spectra by t-SNE');
+				calcTSNE(matrixDeputiesPerRollCall,endCalcCallback);
+			}
+			dimRedTechnique='svd'; // return to svd
+			function endCalcCallback(twoDimData) {
+				// Create the arrays to D3 plot (TODO set to var var var); ---------------------------------------------------------------
+				// Deputies array
+				deputyNodes = createDeputyNodes(twoDimData.deputies,filteredDeputies);
+				// RollCalls array
+				rollCallNodes = createRollCallNodes(twoDimData.voting,rollCallInTheDateRange);
+				// Adjust the SVD result to the political spectrum
+				scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,period[1]);
 
-			calcRollCallRate(rollCallNodes,null)
-			callback();
+				calcRollCallRate(rollCallNodes,null)
+
+				$('#loading').css('visibility','hidden');
+				callback();
+			}
 		}
 	})
 }
 
 function updateDataforDateRange(period,callback){
-	
+	$('#loading #msg').text('Loading Data');
 	// get the data (from db or already loaded in the dataWrapper)
 	chamberOfDeputies.setDateRange(period[0],period[1], function(arollCallInTheDateRange,adeputiesInTheDateRange){
 
@@ -728,12 +745,11 @@ function calcPartiesSizeAndCenter( deputies ){
 		
 	return parties;
 }
-
-function calcSVD(deputies,rollCalls){
+function createMatrixDeputiesPerRollCall (deputies,rollCalls){
 	// -------------------------------------------------------------------------------------------------------------------
 	// Create the matrix [ Deputy ] X [ RollCall ] => table[Deputy(i)][RollCall(j)] = vote of deputy(i) in the rollCall(j)
-		console.log("calc matrix deputy X rollCall!!")
-		tableDepXRollCall = numeric.rep([ deputies.length, rollCalls.length],0)
+		console.log("create matrix deputy X rollCall!!")
+		var tableDepXRollCall = numeric.rep([ deputies.length, rollCalls.length],0)
 
 		// How the votes will be represented in the matrix for the calc of SVD 
 		var votoStringToInteger = {"Sim":1,"Não":-1,"Abstenção":0,"Obstrução":0,"Art. 17":0,"Branco":0}
@@ -755,26 +771,30 @@ function calcSVD(deputies,rollCalls){
 					})
 				}
 		})
+	return tableDepXRollCall;
+}
 
+function calcSVD(matrixDepXRollCall,endCalcCallback){
 	// -----------------------------------------------------------------------------------------------------------------
 	// CALC the Singular Value Decomposition (SVD) ---------------------------------------------------------------------
-		console.log("calc SVD")
+		console.log("calc SVD",matrixDepXRollCall)
 		
 		//!! Uncaught numeric.svd() Need more rows than columns
-
 		//  if(rows < columns)-> 
-		if(deputies.length < rollCalls.length){
+		var transposeToSVD = (matrixDepXRollCall.length < matrixDepXRollCall[0].length)? true : false;
+
+		if(transposeToSVD){
 			//TRANSPOSE the table to fit the rowsXcolumns numeric.svd() requirement !!
-			tableDepXRollCall = numeric.transpose(tableDepXRollCall)  
+			matrixDepXRollCall = numeric.transpose(matrixDepXRollCall)  
 		}
 
-		var svdDep = numeric.svd(tableDepXRollCall);
+		var svdDep = numeric.svd(matrixDepXRollCall);
 		var eigenValues = numeric.sqrt(svdDep.S);
 
-		if(deputies.length < rollCalls.length){tableDepXRollCall = numeric.transpose(tableDepXRollCall)};
+		if(transposeToSVD){matrixDepXRollCall = numeric.transpose(matrixDepXRollCall)};
 
 		//Uncaught numeric.svd() Need more rows than columns  numeric.transpose()
-		if(deputies.length < rollCalls.length){
+		if(transposeToSVD){
 			// 2D reduction on Deputies 
 			var data_deputies = svdDep.V.map(function(row) { return numeric.mul(row, eigenValues).splice(0, 2);})
 			// 2D reduction on Votings              
@@ -788,7 +808,52 @@ function calcSVD(deputies,rollCalls){
 
 		console.log("CALC SVD- FINISHED!! => PLOT")
 	// ----------------------------------------------------------------------------------------------------------------
-	return {deputies: data_deputies, voting: data_voting};
+	var result = {deputies: data_deputies, voting: data_voting};
+	endCalcCallback(result);
+}
+function calcTSNE(matrixDepXRollCall,endCalcCallback){
+	// -----------------------------------------------------------------------------------------------------------------
+		console.log('START TSNE');
+		
+		var opt = {epsilon: 10, perplexity: 30, dim: 2};
+		var T = new tsnejs.tSNE(opt); // create a tSNE instance
+		T.initDataRaw(matrixDepXRollCall);
+
+		var opt1 = {epsilon: 10, perplexity: 30, dim: 2};
+		var X = new tsnejs.tSNE(opt1); // create a tSNE instance
+		var matrixRollCallXDep = numeric.transpose(matrixDepXRollCall) 
+		X.initDataRaw(matrixRollCallXDep);
+		
+		var intervalT = setInterval(stepT, 5);
+		function stepT() {
+			var cost = T.step(); // do a few steps
+			console.log("iteration Y " + T.iter + ", cost: " + cost);
+		}
+		var intervalX = setInterval(stepX, 5);
+		function stepX() {
+			var cost = X.step(); // do a few steps
+			console.log("iteration X " + X.iter + ", cost: " + cost);
+		}
+
+		var result = {deputies: [], voting: []};
+
+		setTimeout(function(){
+			clearInterval(intervalT);
+			result.deputies = T.getSolution();
+		},9000)
+
+		setTimeout(function(){
+			clearInterval(intervalX);
+			result.voting = X.getSolution(); 
+		},9000)
+
+		setTimeout(function () {
+			endCalcCallback(result);
+		},10000)
+
+		console.log("CALC TSNE- FINISHED!! => PLOT")
+	// ----------------------------------------------------------------------------------------------------------------
+	// return {deputies: data_deputies, voting: data_voting};
 }
 
 function filterDeputies ( deputiesInTheDateRange, rollCallInTheDateRange) {

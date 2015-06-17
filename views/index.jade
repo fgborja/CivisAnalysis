@@ -14,6 +14,11 @@ html
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
 
 	body
+		div#loading
+			#greyScreen
+			img.gif(src='./images/ajax_loader.gif' width='100px') 
+			span.gif#msg Loading
+
 		// FIXED NAV-BAR AT THE TOP
 		navbar.navbar-default.navbar-fixed-top
 			div.container
@@ -23,6 +28,7 @@ html
 						h4 CivisAnalysis: The Brazilian Chamber of Deputies
 				// SOCIAL SHARES!
 				ul.nav.navbar-nav.navbar-right.nav-pills#socialshare
+
 					//li
 						// Facebook share 
 					//	<iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.inf.ufrgs.br%2F%7Efgborja%2Fcivisanalysis%2F&amp;width=150&amp;layout=button_count&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:150px; height:21px;" allowTransparency="true"></iframe>
@@ -63,6 +69,9 @@ html
 								a.btn#btn-lockDeputies
 									span.glyphicon.glyphicon-lock
 									text  Lock Deputies
+								a.btn#tsne(href='#', data-toggle='modal',data-target='.modal',onclick='javascript:setTSNEModal()')
+									span.glyphicon.glyphicon-cog
+									text  Generate T-SNE
 							br
 							br
 							h5.content Distribution of Deputies per State

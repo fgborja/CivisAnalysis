@@ -321,3 +321,21 @@ function formatRollCallDetails ( d ) {
 // 	});
 // }
 //=============================================================================
+function setTSNEModal(){
+	d3.select('.modal-title').text('Generate t-SNE Political Spectrums')
+	$('.modal-body').children().remove();
+	
+	$('.modal-body').append('<div class="form-horizontal" ></div>')
+	var form = $('.modal-body div')
+	form.append('<div class="form-group"> <label class="control-label col-sm-2" for="learningRate">Learning Rate:</label><div class="col-sm-10"><input type="number" class="form-control" id="learningRate" value="10"></div></div>')
+	form.append('<div class="form-group"><label class="control-label col-sm-2" for="perplexity">Perplexity:</label><div class="col-sm-10"> <input type="number" class="form-control" id="perplexity" value="30"> </div></div>')
+	form.append('<div class="form-group"><label class="control-label col-sm-2" for="iterationSec">Iter. Seconds:</label><div class="col-sm-10"> <input type="number" class="form-control" id="iterationSec" value="10"> </div></div>')
+	form.append('<div class=" col-sm-10"><button class="btn btn-default">Calc t-SNE</button></div>')
+	    
+	
+	$('.modal-body div .btn').on('click', function(){
+		dimRedTechnique='tsne'; 
+		timeline.dispatchDatesToCalc();
+		$('.modal').modal('toggle');
+	})
+}
