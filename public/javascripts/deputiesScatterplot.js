@@ -9,12 +9,13 @@
 if(!d3.chart) d3.chart = {};
 
 d3.chart.deputiesScatterplot = function() {
-	var g;
-	var data;
-	var dispatch = d3.dispatch("update",'relativeCoord');
+	var g,
+	    data,
+	    dispatch = d3.dispatch("update",'cuttingPlane');
 
-	var _dimensions ={};
-	var margin;
+	var _dimensions ={},
+		_scale = {},
+		margin;
 
 	function chart(containerSVG, dimensions) {
 		
@@ -27,12 +28,7 @@ d3.chart.deputiesScatterplot = function() {
 		g = containerSVG.append('g')
 			.attr({
 				'class' 	: 'chart deputy',
-			})
-			.on("mousemove", function() {
-				var relativeCoord = [d3.mouse(this)[0]/_dimensions.width, d3.mouse(this)[1]/_dimensions.height]
-				dispatch.relativeCoord(relativeCoord)
-			})
-			.on('mouseout', function() { dispatch.relativeCoord(null) })
+			});
 
 		g.append('rect').attr({
 			'class':'gchart',
@@ -65,11 +61,11 @@ d3.chart.deputiesScatterplot = function() {
 			height 		: _dimensions.height
 		})
 
-		var scaleX = d3.scale.linear()
+		_scale.x = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
 			.range([ _dimensions.width-margin.right, margin.left ]);
 
-		var scaleY = d3.scale.linear()
+		_scale.y = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
 			.range([ margin.top, _dimensions.height-margin.bottom ]);
 
@@ -85,7 +81,7 @@ d3.chart.deputiesScatterplot = function() {
 	
 		// draw the x axis ------------------------------------------------------------------------------------------
 		var xAxis = d3.svg.axis()
-		.scale(scaleX)
+		.scale(_scale.x)
 		.orient('bottom');
 
 		var xg = g.select(".axis.x")
@@ -96,7 +92,7 @@ d3.chart.deputiesScatterplot = function() {
 
 		// draw the y axis ------------------------------------------------------------------------------------------
 		var yAxis = d3.svg.axis()
-		.scale(scaleY)
+		.scale(_scale.y)
 		.orient('left');
 
 		var yg = g.select(".axis.y")
@@ -118,8 +114,8 @@ d3.chart.deputiesScatterplot = function() {
 		circles
 		.transition().delay(100).duration(1000)
 		.attr({
-			cx: function (d) { return scaleX(d.scatterplot[1]); },
-			cy: function (d) { return scaleY(d.scatterplot[0]); },
+			cx: function (d) { return _scale.x(d.scatterplot[1]); },
+			cy: function (d) { return _scale.y(d.scatterplot[0]); },
 			class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 			id: function(d) { return "deputy-" + d.deputyID; },
 			deputy: function(d) { return d.deputyID}
@@ -147,16 +143,42 @@ d3.chart.deputiesScatterplot = function() {
 		})
 
 	}
-	chart.showRelativeCoord = function(relativeCoord){
-		if(!relativeCoord){
+	chart.showRollCallCuttingPlane = function(rollCall){
+		if(!rollCall){
 			g.selectAll('.arrow').remove();
+			g.selectAll('.cutting').remove();
 			return;
 		}
-		var arrow1 = [relativeCoord[0]*_dimensions.width,relativeCoord[1]*_dimensions.height]
-		var arrow2 = [ (1-relativeCoord[0])*_dimensions.width, (1-relativeCoord[1])*_dimensions.height ]
+		var rollCallCoord = rollCall.coord;
+		var arrow1 = [rollCallCoord[0]*_dimensions.width,rollCallCoord[1]*_dimensions.height]
+		var arrow2 = [ (1-rollCallCoord[0])*_dimensions.width, (1-rollCallCoord[1])*_dimensions.height ]
 
-		var relat = [ relativeCoord[0]-0.5, relativeCoord[1]-0.5];
+		var relat = [ rollCallCoord[0]-0.5, rollCallCoord[1]-0.5];
 		var a = Math.atan2(relat[1],relat[0]) 
+
+		var cutting = [
+				[[
+				 _dimensions.width/2 - (_dimensions.width/2)*Math.sin(a),
+				 _dimensions.height/2 + (_dimensions.height/2)*Math.cos(a)],
+				[
+				 _dimensions.width/2 + (_dimensions.width/2)*Math.sin(a),
+				 _dimensions.height/2 - (_dimensions.height/2)*Math.cos(a)
+				]
+				]
+			];
+
+		var cuttingPlane = g.selectAll('.cutting')
+						.data(cutting)
+
+		cuttingPlane.enter()
+			.append('path')
+			.attr('class','cutting')
+			.attr({
+				d: function (d){ return 'M '+d[0][0]+' '+d[0][1]+' L'+d[1][0]+' '+d[1][1]; },
+				stroke: 'grey',
+				'stroke-width':"2px",
+				'stroke-dasharray':'5,5,5'
+			});
 
 		var arrow= [
 				[[_dimensions.width/2,_dimensions.height/2],  [arrow1[0],arrow1[1]] ],
@@ -184,6 +206,10 @@ d3.chart.deputiesScatterplot = function() {
 		data = value;
 
 		return chart;
+	}
+
+	chart.scale = function() {
+		return _scale;
 	}
 
 	chart.dimensions = function(value) {

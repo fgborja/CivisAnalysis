@@ -87,9 +87,9 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 
 		deputiesScatterplot
 			.on('update', updateDeputies )
-			.on('relativeCoord', function(relatCoord) {
-				rollCallsScatterplot.showRelativeCoord(relatCoord)
-			})
+			.on('cuttingPlane', function(rollCall) {
+				rollCallsScatterplot.showCuttingPlane(rollCall);
+			});
 	// ====================================================================================
 
 
@@ -114,9 +114,9 @@ var chamberOfDeputies = $.chamberOfDeputiesDataWrapperMin(motions, arrayRollCall
 	// interactions
 		rollCallsScatterplot
 			.on('update', updateRollCalls )
-			.on('relativeCoord', function(relatCoord) {
-				deputiesScatterplot.showRelativeCoord(relatCoord)
-			})
+			// .on('cuttingPlane', function(deputy) {
+			// 	deputiesScatterplot.showCuttingPlane(deputy);
+			// });
 	// ====================================================================================
 
 
@@ -296,12 +296,13 @@ function updatePartyRollCalls(rollCalls){
 function updateRollCalls(){
 	$('#rollCallInfo').html('')
 	$('#rollCallInfo').attr({style:"opacity:0"})
+	deputiesScatterplot.showRollCallCuttingPlane(null)
 
 	var selectedRollCalls = [];
 	var hoveredRollCalls = [];
-	rollCallNodes.forEach(function (deputy) { 
-		if(deputy.selected) selectedRollCalls.push(deputy);  
-		if(deputy.hovered) hoveredRollCalls.push(deputy);
+	rollCallNodes.forEach(function (rollCall) { 
+		if(rollCall.selected) selectedRollCalls.push(rollCall);  
+		if(rollCall.hovered) hoveredRollCalls.push(rollCall);
 	})
 
 	if (selectedRollCalls.length == rollCallNodes.length)
@@ -318,7 +319,7 @@ function updateRollCalls(){
 		 brazilianStates.resetRollCallRates();
 	}
 	else {
-		// ONLY ONE ROLL CALL SELECTED
+		// ONLY ONE ROLL CALL SELECTED || HOVER
 		if( (hoveredRollCalls.length==1) || (selectedRollCalls.length==1) ){ 
 
 			deputyNodes.forEach( function (deputy) { deputy.vote = 'null'; })
@@ -341,6 +342,14 @@ function updateRollCalls(){
 			)
 
 			selectedRollCalls = [rollCall];
+
+			deputiesScatterplot.showRollCallCuttingPlane({
+					name: rollCall.type+' '+rollCall.number+'/'+rollCall.year, 
+					coord: [
+						rollCallsScatterplot.scale().x(rollCall.scatterplot[1])/ rollCallsScatterplot.dim().width, 
+						rollCallsScatterplot.scale().y(rollCall.scatterplot[0])/ rollCallsScatterplot.dim().height
+					] 
+				});
 		} else{ 
 			deputyNodes.forEach( function (deputy) { deputy.rate = null; deputy.vote = null; })
 			calcDeputyNodesRates(selectedRollCalls);
@@ -363,6 +372,7 @@ function updateRollCalls(){
 function updateDeputies(){
 	var selectedDeputies = [];
 	var hoveredDeputies = [];
+	rollCallsScatterplot.showDeputyCuttingPlane(null);
 	deputyNodes.forEach(function (deputy) { 
 		if(deputy.selected) selectedDeputies.push(deputy);  
 		if(deputy.hovered) hoveredDeputies.push(deputy);
@@ -394,16 +404,23 @@ function updateDeputies(){
 		// show the votes of one deputy
 		if( (hoveredDeputies.length==1) || (selectedDeputies.length==1) ){
 			// get the deputy id
-			var deputyID = (hoveredDeputies.length==1)? hoveredDeputies[0].deputyID : selectedDeputies[0].deputyID;
+			var deputy = (hoveredDeputies.length==1)? hoveredDeputies[0] : selectedDeputies[0];
 			// set the deputy vote for each rollCall
 			rollCallNodes.forEach( function(rollCall){
 				rollCall.vote = 'null'
 				rollCall.votes.forEach( function(vote){
-					if(vote.deputyID == deputyID){
+					if(vote.deputyID == deputy.deputyID){
 						rollCall.vote = vote.vote;
 					}
 				})
 			})
+			rollCallsScatterplot.showDeputyCuttingPlane({
+				name: deputy.name, 
+				coord: [
+					deputiesScatterplot.scale().x(deputy.scatterplot[1])/ deputiesScatterplot.width(), 
+					deputiesScatterplot.scale().y(deputy.scatterplot[0])/ deputiesScatterplot.height()
+				] 
+			});
 		}
 		else {
 			//set the agreement rate for each RollCall

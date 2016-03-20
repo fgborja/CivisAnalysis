@@ -3,11 +3,12 @@ if(!d3.chart) d3.chart = {};
 d3.chart.rollCallsScatterplot = function() {
 	var g;
 	var data;
-	var dispatch = d3.dispatch('update','relativeCoord');
+	var dispatch = d3.dispatch('update','cuttingPlane');
 
-	var _dimensions = {};
-	var margin;
-	var width,height;
+	var _dimensions = {},
+		_scale = {},
+	    margin, width, height;
+
 	function chart(container, dimension) {
 
 		height = dimension.height; 
@@ -25,12 +26,7 @@ d3.chart.rollCallsScatterplot = function() {
 		g = scatterplot.append('g')
 			.attr({
 				'class' 	: 'chart rollCall',
-			})
-			.on("mousemove", function() {
-				var relativeCoord = [d3.mouse(this)[0]/_dimensions.width, d3.mouse(this)[1]/_dimensions.height]
-				dispatch.relativeCoord(relativeCoord)
-			})
-			.on('mouseout', function() { dispatch.relativeCoord(null) })
+			});
 
 		g.append('g').attr({
 			'class':'gchart',
@@ -51,11 +47,11 @@ d3.chart.rollCallsScatterplot = function() {
 			height 		: _dimensions.height
 		})
 		
-		var scaleX = d3.scale.linear()
+		_scale.x = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[1]; }))
 			.range([ _dimensions.width-margin.right, margin.left ]);
 
-		var scaleY = d3.scale.linear()
+		_scale.y = d3.scale.linear()
 			.domain(d3.extent(data, function(d) { return d.scatterplot[0]; }))
 			.range([ margin.top, _dimensions.height-margin.bottom]);
 
@@ -71,13 +67,13 @@ d3.chart.rollCallsScatterplot = function() {
 	
 		// draw the x axis ------------------------------------------------------------------------------------------
 		var xAxis = d3.svg.axis()
-		.scale(scaleX)
+		.scale(_scale.x)
 		.orient('bottom');
 		// ---------------------------------------------------------------------------------------------------------
 
 		// draw the y axis ------------------------------------------------------------------------------------------
 		var yAxis = d3.svg.axis()
-		.scale(scaleY)
+		.scale(_scale.y)
 		.orient('left');
 		// ---------------------------------------------------------------------------------------------------------
 		var circles = g.selectAll("circle")
@@ -93,8 +89,8 @@ d3.chart.rollCallsScatterplot = function() {
 		circles
 			.transition().delay(100).duration(1000)
 			.attr({
-				cx: function (d) { return scaleX(d.scatterplot[1]); },
-				cy: function (d) { return scaleY(d.scatterplot[0]); },
+				cx: function (d) { return _scale.x(d.scatterplot[1]); },
+				cy: function (d) { return _scale.y(d.scatterplot[0]); },
 				class: function(d) { return (d.selected)? "node selected": ( (d.hovered)? "node hovered" : "node"); } ,
 				id: function (d) { return 'rollCall-'+d.rollCallID }
 			})
@@ -113,35 +109,45 @@ d3.chart.rollCallsScatterplot = function() {
 		circles.exit().transition().duration(1000).attr('r',0).remove();				
 	}
 
-	chart.showRelativeCoord = function(relativeCoord){
-		if(!relativeCoord){
+	chart.showDeputyCuttingPlane = function(deputy){
+		if(!deputy){
 			g.selectAll('.arrow').remove();
+			g.selectAll('.cutting').remove();
+			g.selectAll('text').remove();
 			return;
 		}
 
-		// var coord = g.selectAll('path')
-		// 				.data(relativeCoord)
+		var depCoord = deputy.coord; 
 
-		// coord.enter().append('path').attr({
-		// 	stroke:'lightgrey',
-		// 	'stroke-dasharray':"5,5"
-		// })
+		var arrow1 = [depCoord[0]*_dimensions.width,depCoord[1]*_dimensions.height]
+		var arrow2 = [ (1-depCoord[0])*_dimensions.width, (1-depCoord[1])*_dimensions.height ]
 
-		// coord.attr({
-		// 	d:function (d,i) {  
-		// 		var c = (i==1)?
-		// 		'M '+relativeCoord[0]*_dimensions.width+' '+0+' V '+_dimensions.height
-		// 		:
-		// 		'M '+0+' '+relativeCoord[1]*_dimensions.height+' H '+_dimensions.width;
-		// 		return c;
-		// 	}
-		// }) 
+		var relat = [ depCoord[0]-0.5, depCoord[1]-0.5];
+		var a = Math.atan2(relat[1],relat[0]);
 
-		var arrow1 = [relativeCoord[0]*_dimensions.width,relativeCoord[1]*_dimensions.height]
-		var arrow2 = [ (1-relativeCoord[0])*_dimensions.width, (1-relativeCoord[1])*_dimensions.height ]
+		var cutting = [
+				[[
+				 _dimensions.width/2 - (_dimensions.width/2)*Math.sin(a),
+				 _dimensions.height/2 + (_dimensions.height/2)*Math.cos(a)],
+				[
+				 _dimensions.width/2 + (_dimensions.width/2)*Math.sin(a),
+				 _dimensions.height/2 - (_dimensions.height/2)*Math.cos(a)
+				]
+				]
+			];
 
-		var relat = [ relativeCoord[0]-0.5, relativeCoord[1]-0.5];
-		var a = Math.atan2(relat[1],relat[0]) 
+		var cuttingPlane = g.selectAll('.cutting')
+						.data(cutting)
+
+		cuttingPlane.enter()
+			.append('path')
+			.attr('class','cutting')
+			.attr({
+				d: function (d){ return 'M '+d[0][0]+' '+d[0][1]+' L'+d[1][0]+' '+d[1][1]; },
+				stroke: 'darkgrey',
+				'stroke-width':"1px",
+				'stroke-dasharray':'5,5,5'
+			});
 
 		var arrow= [
 				[[_dimensions.width/2,_dimensions.height/2],  [arrow1[0],arrow1[1]] ],
@@ -179,14 +185,12 @@ d3.chart.rollCallsScatterplot = function() {
 	// mouse OVER circle voting
 	function mouseOverVoting(d) {
 		d.hovered = true;
-
 		dispatch.update();
 	}	
 
 	// mouse OUT circle voting
 	function mouseOutVoting(d){ 
 		d.hovered = false;
-
 		dispatch.update();
 	}
 
@@ -227,6 +231,13 @@ d3.chart.rollCallsScatterplot = function() {
 		if(!arguments.length) return height;
 		height = value;
 		return chart;
+	}
+
+	chart.scale = function() {
+		return _scale;
+	}
+	chart.dim = function() {
+		return _dimensions;
 	}
 
 	return d3.rebind(chart, dispatch, "on");
