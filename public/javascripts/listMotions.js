@@ -318,44 +318,47 @@ function calcThePartyTracesByLegislature( ){
 }
 
 function calcThePartyTracesByYear( periodOfYears ){
-	var startYear = 1991, endYear = 2014;
+	var startYear = 1991, endYear = 2016;
 
 	function calcOneYearRecursive(year) { 
-
+		console.log('calcThePartyTracesByYear ' + year);
 		if(year > endYear){  return; }
 		var period = [];
 		period[0] = new Date(year,0,1);
 		period[1] = new Date(year+periodOfYears,0,1);
 
 		updateDataforDateRange( period , function(){
+			filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
+			matrixDeputiesPerRollCall = createMatrixDeputiesPerRollCall(filteredDeputies,rollCallInTheDateRange)
 
-			var filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
-			var SVDdata = calcSVD(filteredDeputies,rollCallInTheDateRange);
-			// Deputies array
-			deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
-			// RollCalls array
-			rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
-			// Adjust the SVD result to the political spectrum
-			scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,period[1]);
+			// var SVDdata = calcSVD(filteredDeputies,rollCallInTheDateRange);
+			calcSVD(matrixDeputiesPerRollCall, function(SVDdata) {
+				// Deputies array
+				deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
+				// RollCalls array
+				rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
+				// Adjust the SVD result to the political spectrum
+				scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,period[1]);
 
-			// store parties trace
-			var parties = calcPartiesSizeAndCenter(deputyNodes);
-			// $.each(parties, function(party){
-			// 	if(filter[party] === undefined) { delete parties[party] }
-			// });
+				// store parties trace
+				var parties = calcPartiesSizeAndCenter(deputyNodes);
+				// $.each(parties, function(party){
+				// 	if(filter[party] === undefined) { delete parties[party] }
+				// });
 
-			//console.log(parties)
-			$.each(parties, function(party){
-				if(partyTrace[party] === undefined) partyTrace[party] = {};
+				//console.log(parties)
+				$.each(parties, function(party){
+					if(partyTrace[party] === undefined) partyTrace[party] = {};
 
-				partyTrace[party][year]={}
-				partyTrace[party][year].center = this.center;
-				partyTrace[party][year].size = this.size;
+					partyTrace[party][year]={}
+					partyTrace[party][year].center = this.center;
+					partyTrace[party][year].size = this.size;
 
+				})
+				yearPartyExtent[year] = d3.extent( d3.entries(parties), function(d){ return d.value.center[1] });
+				
+				calcOneYearRecursive(year+periodOfYears);
 			})
-			yearPartyExtent[year] = d3.extent( d3.entries(parties), function(d){ return d.value.center[1] });
-			
-			calcOneYearRecursive(year+periodOfYears);
 		})
 
 	};
@@ -483,7 +486,7 @@ function printHistogram ( timestep, scale_middleOfTimestep ) {
 // print histogram by legislatures
 d3.range(6).forEach( function(i){ printHistogram( i, scale_middleOfLegislature)})
 // print histogram by years
-d3.range(1991,2015).forEach( function(i){ printHistogram( i, scaleX_middleOfYear)})
+d3.range(1991,2017).forEach( function(i){ printHistogram( i, scaleX_middleOfYear)})
 
 
 
@@ -513,54 +516,55 @@ function calcPreSetsHistory(type){
 
 
 		updateDataforDateRange( [start, end] , function(){
-
 			var filteredDeputies = filterDeputies( deputiesInTheDateRange, rollCallInTheDateRange)
-			var SVDdata = calcSVD(filteredDeputies,rollCallInTheDateRange);
-		
-			// Deputies array
-			deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
-			// RollCalls array
-			rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
-			// Adjust the SVD result to the political spectrum
-			scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,end);
+			matrixDeputiesPerRollCall = createMatrixDeputiesPerRollCall(filteredDeputies,rollCallInTheDateRange)
 
-			calcRollCallRate(rollCallNodes,null)
+			calcSVD(matrixDeputiesPerRollCall, function(SVDdata) {		
+				// Deputies array
+				deputyNodes = createDeputyNodes(SVDdata.deputies,filteredDeputies);
+				// RollCalls array
+				rollCallNodes = createRollCallNodes(SVDdata.voting,rollCallInTheDateRange);
+				// Adjust the SVD result to the political spectrum
+				scaleAdjustment().setGovernmentTo3rdQuadrant(deputyNodes,rollCallNodes,end);
+
+				calcRollCallRate(rollCallNodes,null)
+					
+				// STORE OBJECT - TO SAVE
+				var storeCalcObject = {deputyNodes:[],rollCallNodes:[]};
 				
-			// STORE OBJECT - TO SAVE
-			var storeCalcObject = {deputyNodes:[],rollCallNodes:[]};
-			
-			// store deputy trace
-			deputyNodes.forEach( function(deputy){ 
-				deputy.scatterplot[0]= Number(deputy.scatterplot[0].toPrecision(4));
-				deputy.scatterplot[1]= Number(deputy.scatterplot[1].toPrecision(4));
+				// store deputy trace
+				deputyNodes.forEach( function(deputy){ 
+					deputy.scatterplot[0]= Number(deputy.scatterplot[0].toPrecision(4));
+					deputy.scatterplot[1]= Number(deputy.scatterplot[1].toPrecision(4));
 
-				var storeDeputyTrace ={
-					deputyID : deputy.deputyID,
-					scatterplot : deputy.scatterplot,
-					party: deputy.party 
-				};
+					var storeDeputyTrace ={
+						deputyID : deputy.deputyID,
+						scatterplot : deputy.scatterplot,
+						party: deputy.party 
+					};
 
-				storeCalcObject.deputyNodes.push(storeDeputyTrace)	
-			})
-			// store roll calls
-			rollCallNodes.forEach( function (rollCall) {
+					storeCalcObject.deputyNodes.push(storeDeputyTrace)	
+				})
+				// store roll calls
+				rollCallNodes.forEach( function (rollCall) {
 
-				rollCall.scatterplot[0]= Number(rollCall.scatterplot[0].toPrecision(4));
-				rollCall.scatterplot[1]= Number(rollCall.scatterplot[1].toPrecision(4));
+					rollCall.scatterplot[0]= Number(rollCall.scatterplot[0].toPrecision(4));
+					rollCall.scatterplot[1]= Number(rollCall.scatterplot[1].toPrecision(4));
 
-				var storeRollCallTrace ={
-					rollCallID: rollCall.rollCallID,
-					scatterplot: rollCall.scatterplot,
-					rate       : (rollCall.rate == 'noVotes')? 'noVotes' : Number(rollCall.rate.toPrecision(4))
-				};
+					var storeRollCallTrace ={
+						rollCallID: rollCall.rollCallID,
+						scatterplot: rollCall.scatterplot,
+						rate       : (rollCall.rate == 'noVotes')? 'noVotes' : Number(rollCall.rate.toPrecision(4))
+					};
 
-				storeCalcObject.rollCallNodes.push(storeRollCallTrace)	
-			})
+					storeCalcObject.rollCallNodes.push(storeRollCallTrace)	
+				})
 
-			// SAVE!!
-			if(type) console.save(storeCalcObject, type+'.'+i+'.json');
-		//====================================
-			calcRecursive(i+1);
+				// SAVE!!
+				if(type) console.save(storeCalcObject, type+'.'+i+'.json');
+			//====================================
+				calcRecursive(i+1);
+			});
 		})
 
 	};

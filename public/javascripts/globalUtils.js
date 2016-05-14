@@ -55,7 +55,7 @@ function saveEntriesOfArray( array, getName, index){
 	console.log(index)
 	console.save(array[index],getName(array[index]))
 	if(index<array.length){
-		sleep( 1000, function(){ 
+		sleep( 500, function(){ 
 			saveEntriesOfArray(array, getName, index+1)
 		});
 	}

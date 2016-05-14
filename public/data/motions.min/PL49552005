@@ -1,1 +1,1474 @@
-{"type":"PL","number":"4955","year":"2005","date":"23/03/2005","author":"Poder Executivo","amendment":"Dispõe sobre a criação da Universidade Federal do Recôncavo da Bahia - UFRB, por desmembramento da Universidade Federal da Bahia - UFBA, e dá outras providências.","tags":"Criação, Universidade Federal do Recôncavo da Bahia, desmembramento, Universidade Federal da Bahia, sede, Município, Cruz das Almas, (BA), curso superior, Agronomia, redistribuição, quadro de pessoal, cargo público, Reitor, Professor, \r\nTécnico - Administrativo, cargo de direção, função gratificada, patrimônio, recursos financeiros, estatuto. ","status":"Tranformada no(a) Lei Ordinária 11151/2005","rollCalls":[{"datetime":"2005-07-06T22:28:00.000Z","obj":"SUBSTITUTIVO","summary":"Rejeitado o Substitutivo oferecido pelo Relator da CTASP: Sim: 53; Não: 234: Abst.: 2; Total: 289.\r\n","votes":[{"deputyID":607,"vote":0,"party":"PMDB"},{"deputyID":946,"vote":1,"party":"PT"},{"deputyID":519,"vote":0,"party":"PFL"},{"deputyID":273,"vote":1,"party":"PL"},{"deputyID":613,"vote":0,"party":"PSDB"},{"deputyID":11,"vote":1,"party":"PMDB"},{"deputyID":738,"vote":1,"party":"PT"},{"deputyID":640,"vote":1,"party":"PP"},{"deputyID":742,"vote":1,"party":"PL"},{"deputyID":265,"vote":1,"party":"PMDB"},{"deputyID":396,"vote":1,"party":"PSC"},{"deputyID":725,"vote":1,"party":"PMDB"},{"deputyID":949,"vote":1,"party":"PP"},{"deputyID":769,"vote":1,"party":"PCdoB"},{"deputyID":648,"vote":1,"party":"PTB"},{"deputyID":83,"vote":0,"party":"PFL"},{"deputyID":638,"vote":1,"party":"PFL"},{"deputyID":656,"vote":0,"party":"PFL"},{"deputyID":673,"vote":0,"party":"PFL"},{"deputyID":674,"vote":1,"party":"PSDB"},{"deputyID":313,"vote":1,"party":"PL"},{"deputyID":684,"vote":1,"party":"PTB"},{"deputyID":689,"vote":0,"party":"PFL"},{"deputyID":316,"vote":0,"party":"PFL"},{"deputyID":95,"vote":1,"party":"PSDB"},{"deputyID":93,"vote":1,"party":"PT"},{"deputyID":97,"vote":1,"party":"PT"},{"deputyID":774,"vote":1,"party":"PT"},{"deputyID":953,"vote":1,"party":"PL"},{"deputyID":35,"vote":1,"party":"S.Part."},{"deputyID":820,"vote":1,"party":"PCdoB"},{"deputyID":426,"vote":1,"party":"PP"},{"deputyID":801,"vote":1,"party":"PT"},{"deputyID":955,"vote":0,"party":"PFL"},{"deputyID":918,"vote":0,"party":"S.Part."},{"deputyID":958,"vote":1,"party":"PL"},{"deputyID":959,"vote":1,"party":"PP"},{"deputyID":962,"vote":1,"party":"PP"},{"deputyID":702,"vote":1,"party":"PMDB"},{"deputyID":194,"vote":1,"party":"PMDB"},{"deputyID":195,"vote":0,"party":"PFL"},{"deputyID":963,"vote":1,"party":"PTB"},{"deputyID":424,"vote":1,"party":"PMDB"},{"deputyID":675,"vote":0,"party":"PSDB"},{"deputyID":721,"vote":1,"party":"PDT"},{"deputyID":287,"vote":0,"party":"PFL"},{"deputyID":513,"vote":1,"party":"PTB"},{"deputyID":425,"vote":1,"party":"PMDB"},{"deputyID":291,"vote":1,"party":"PV"},{"deputyID":758,"vote":1,"party":"PSDB"},{"deputyID":964,"vote":1,"party":"PSDB"},{"deputyID":103,"vote":1,"party":"PSDB"},{"deputyID":650,"vote":0,"party":"PFL"},{"deputyID":657,"vote":1,"party":"PMDB"},{"deputyID":555,"vote":1,"party":"PT"},{"deputyID":107,"vote":1,"party":"PL"},{"deputyID":679,"vote":1,"party":"PT"},{"deputyID":109,"vote":1,"party":"PL"},{"deputyID":582,"vote":1,"party":"PP"},{"deputyID":710,"vote":1,"party":"PT"},{"deputyID":732,"vote":1,"party":"PT"},{"deputyID":917,"vote":1,"party":"PSDB"},{"deputyID":761,"vote":1,"party":"PCdoB"},{"deputyID":770,"vote":1,"party":"PT"},{"deputyID":722,"vote":1,"party":"PMDB"},{"deputyID":772,"vote":1,"party":"PMDB"},{"deputyID":567,"vote":1,"party":"PP"},{"deputyID":275,"vote":1,"party":"PMDB"},{"deputyID":969,"vote":1,"party":"PP"},{"deputyID":270,"vote":0,"party":"PFL"},{"deputyID":810,"vote":1,"party":"PTB"},{"deputyID":67,"vote":1,"party":"PMDB"},{"deputyID":61,"vote":1,"party":"PT"},{"deputyID":62,"vote":4,"party":"PMDB"},{"deputyID":1451,"vote":0,"party":"PFL"},{"deputyID":1088,"vote":1,"party":"PDT"},{"deputyID":43,"vote":1,"party":"PSDB"},{"deputyID":718,"vote":0,"party":"PFL"},{"deputyID":203,"vote":1,"party":"PTB"},{"deputyID":570,"vote":1,"party":"PT"},{"deputyID":928,"vote":1,"party":"PSDB"},{"deputyID":716,"vote":1,"party":"PMDB"},{"deputyID":210,"vote":1,"party":"PP"},{"deputyID":369,"vote":1,"party":"PMDB"},{"deputyID":610,"vote":1,"party":"PMDB"},{"deputyID":2089,"vote":1,"party":"PL"},{"deputyID":633,"vote":1,"party":"PT"},{"deputyID":973,"vote":1,"party":"PSDB"},{"deputyID":658,"vote":2,"party":"PV"},{"deputyID":132,"vote":0,"party":"PP"},{"deputyID":134,"vote":1,"party":"PCdoB"},{"deputyID":136,"vote":1,"party":"PT"},{"deputyID":697,"vote":0,"party":"PFL"},{"deputyID":139,"vote":1,"party":"PT"},{"deputyID":142,"vote":1,"party":"PT"},{"deputyID":974,"vote":1,"party":"PSB"},{"deputyID":146,"vote":0,"party":"PFL"},{"deputyID":670,"vote":1,"party":"PTB"},{"deputyID":1091,"vote":0,"party":"PFL"},{"deputyID":24,"vote":1,"party":"PMDB"},{"deputyID":977,"vote":0,"party":"PDT"},{"deputyID":227,"vote":1,"party":"PSB"},{"deputyID":979,"vote":1,"party":"PT"},{"deputyID":228,"vote":0,"party":"PMDB"},{"deputyID":230,"vote":1,"party":"PDT"},{"deputyID":231,"vote":1,"party":"PT"},{"deputyID":233,"vote":1,"party":"PP"},{"deputyID":1094,"vote":1,"party":"PPS"},{"deputyID":980,"vote":1,"party":"PT"},{"deputyID":729,"vote":1,"party":"PMDB"},{"deputyID":905,"vote":1,"party":"PDT"},{"deputyID":981,"vote":1,"party":"PT"},{"deputyID":631,"vote":1,"party":"PT"},{"deputyID":217,"vote":1,"party":"PMDB"},{"deputyID":1096,"vote":1,"party":"PPS"},{"deputyID":398,"vote":1,"party":"PP"},{"deputyID":372,"vote":1,"party":"PT"},{"deputyID":1602,"vote":0,"party":"PP"},{"deputyID":685,"vote":1,"party":"PMDB"},{"deputyID":606,"vote":0,"party":"PSDB"},{"deputyID":985,"vote":1,"party":"PT"},{"deputyID":152,"vote":1,"party":"PSDB"},{"deputyID":155,"vote":0,"party":"PTB"},{"deputyID":1097,"vote":1,"party":"PP"},{"deputyID":988,"vote":0,"party":"PFL"},{"deputyID":409,"vote":1,"party":"PT"},{"deputyID":164,"vote":1,"party":"PT"},{"deputyID":1967,"vote":1,"party":"PDT"},{"deputyID":566,"vote":1,"party":"PT"},{"deputyID":1364,"vote":1,"party":"PT"},{"deputyID":990,"vote":1,"party":"PSDB"},{"deputyID":703,"vote":1,"party":"PT"},{"deputyID":168,"vote":1,"party":"PSB"},{"deputyID":926,"vote":1,"party":"PMDB"},{"deputyID":172,"vote":1,"party":"PTB"},{"deputyID":991,"vote":1,"party":"PT"},{"deputyID":736,"vote":1,"party":"PMDB"},{"deputyID":741,"vote":1,"party":"PT"},{"deputyID":174,"vote":1,"party":"PTB"},{"deputyID":765,"vote":1,"party":"PT"},{"deputyID":840,"vote":0,"party":"PFL"},{"deputyID":2082,"vote":1,"party":"PMDB"},{"deputyID":993,"vote":0,"party":"PFL"},{"deputyID":995,"vote":1,"party":"PMDB"},{"deputyID":423,"vote":1,"party":"PCdoB"},{"deputyID":812,"vote":1,"party":"PP"},{"deputyID":997,"vote":1,"party":"PPS"},{"deputyID":19,"vote":1,"party":"PP"},{"deputyID":999,"vote":1,"party":"PMDB"},{"deputyID":1000,"vote":1,"party":"PL"},{"deputyID":1101,"vote":1,"party":"PMDB"},{"deputyID":1001,"vote":1,"party":"PT"},{"deputyID":552,"vote":0,"party":"PFL"},{"deputyID":410,"vote":0,"party":"PPS"},{"deputyID":435,"vote":1,"party":"PCdoB"},{"deputyID":1004,"vote":1,"party":"PT"},{"deputyID":92,"vote":1,"party":"PT"},{"deputyID":1005,"vote":0,"party":"PFL"},{"deputyID":599,"vote":1,"party":"PL"},{"deputyID":1006,"vote":1,"party":"PDT"},{"deputyID":1007,"vote":0,"party":"PFL"},{"deputyID":321,"vote":1,"party":"PT"},{"deputyID":1008,"vote":0,"party":"PSDB"},{"deputyID":1102,"vote":1,"party":"PT"},{"deputyID":1103,"vote":1,"party":"PT"},{"deputyID":338,"vote":1,"party":"PT"},{"deputyID":117,"vote":1,"party":"PDT"},{"deputyID":1012,"vote":1,"party":"PMDB"},{"deputyID":1013,"vote":1,"party":"PL"},{"deputyID":1014,"vote":1,"party":"PSB"},{"deputyID":363,"vote":1,"party":"PSDB"},{"deputyID":493,"vote":1,"party":"PMDB"},{"deputyID":1105,"vote":1,"party":"PT"},{"deputyID":193,"vote":0,"party":"PP"},{"deputyID":1016,"vote":1,"party":"PSB"},{"deputyID":2100,"vote":1,"party":"PT"},{"deputyID":1018,"vote":1,"party":"PP"},{"deputyID":1021,"vote":1,"party":"PT"},{"deputyID":481,"vote":0,"party":"PPS"},{"deputyID":588,"vote":1,"party":"PSB"},{"deputyID":1107,"vote":1,"party":"PT"},{"deputyID":1023,"vote":1,"party":"PL"},{"deputyID":329,"vote":1,"party":"PT"},{"deputyID":1025,"vote":1,"party":"PMDB"},{"deputyID":414,"vote":1,"party":"PDT"},{"deputyID":336,"vote":1,"party":"PT"},{"deputyID":484,"vote":1,"party":"PT"},{"deputyID":568,"vote":1,"party":"PT"},{"deputyID":366,"vote":1,"party":"PPS"},{"deputyID":1108,"vote":0,"party":"PFL"},{"deputyID":367,"vote":1,"party":"PT"},{"deputyID":1028,"vote":1,"party":"PMDB"},{"deputyID":580,"vote":0,"party":"PMDB"},{"deputyID":276,"vote":1,"party":"PT"},{"deputyID":17,"vote":1,"party":"PSC"},{"deputyID":302,"vote":1,"party":"PT"},{"deputyID":2083,"vote":1,"party":"PT"},{"deputyID":1110,"vote":1,"party":"PSB"},{"deputyID":249,"vote":1,"party":"PT"},{"deputyID":1031,"vote":1,"party":"PCdoB"},{"deputyID":176,"vote":1,"party":"PPS"},{"deputyID":200,"vote":1,"party":"PSB"},{"deputyID":1034,"vote":1,"party":"PT"},{"deputyID":921,"vote":1,"party":"PPS"},{"deputyID":1113,"vote":1,"party":"PT"},{"deputyID":213,"vote":0,"party":"PFL"},{"deputyID":1036,"vote":1,"party":"PT"},{"deputyID":1037,"vote":1,"party":"PMDB"},{"deputyID":919,"vote":0,"party":"PMDB"},{"deputyID":1114,"vote":1,"party":"S.Part."},{"deputyID":128,"vote":1,"party":"PT"},{"deputyID":351,"vote":1,"party":"PT"},{"deputyID":562,"vote":1,"party":"PPS"},{"deputyID":129,"vote":1,"party":"PMDB"},{"deputyID":1039,"vote":1,"party":"PT"},{"deputyID":1115,"vote":1,"party":"PTB"},{"deputyID":2092,"vote":1,"party":"PMDB"},{"deputyID":1042,"vote":0,"party":"PRONA"},{"deputyID":1116,"vote":1,"party":"PMDB"},{"deputyID":2093,"vote":0,"party":"PMDB"},{"deputyID":1043,"vote":1,"party":"PP"},{"deputyID":1044,"vote":1,"party":"PPS"},{"deputyID":1117,"vote":1,"party":"PCdoB"},{"deputyID":135,"vote":1,"party":"PP"},{"deputyID":138,"vote":0,"party":"PMDB"},{"deputyID":1047,"vote":0,"party":"PV"},{"deputyID":2103,"vote":1,"party":"S.Part."},{"deputyID":1118,"vote":1,"party":"PMDB"},{"deputyID":1052,"vote":1,"party":"PT"},{"deputyID":51,"vote":1,"party":"PT"},{"deputyID":490,"vote":1,"party":"PT"},{"deputyID":54,"vote":1,"party":"PSB"},{"deputyID":1054,"vote":1,"party":"PT"},{"deputyID":1055,"vote":1,"party":"PT"},{"deputyID":1056,"vote":1,"party":"PDT"},{"deputyID":903,"vote":1,"party":"PPS"},{"deputyID":1057,"vote":1,"party":"PTB"},{"deputyID":1058,"vote":1,"party":"PP"},{"deputyID":253,"vote":0,"party":"PMDB"},{"deputyID":1060,"vote":1,"party":"PP"},{"deputyID":2096,"vote":1,"party":"PTB"},{"deputyID":1121,"vote":1,"party":"PL"},{"deputyID":1061,"vote":1,"party":"PSDB"},{"deputyID":907,"vote":1,"party":"S.Part."},{"deputyID":1063,"vote":1,"party":"PTB"},{"deputyID":381,"vote":1,"party":"PT"},{"deputyID":1122,"vote":1,"party":"PMDB"},{"deputyID":535,"vote":1,"party":"PT"},{"deputyID":1065,"vote":1,"party":"PT"},{"deputyID":1066,"vote":1,"party":"PMDB"},{"deputyID":1123,"vote":1,"party":"PSDB"},{"deputyID":910,"vote":1,"party":"PT"},{"deputyID":1067,"vote":1,"party":"PSDB"},{"deputyID":551,"vote":1,"party":"PL"},{"deputyID":911,"vote":1,"party":"PTB"},{"deputyID":912,"vote":0,"party":"PFL"},{"deputyID":1124,"vote":1,"party":"PL"},{"deputyID":1069,"vote":0,"party":"PFL"},{"deputyID":350,"vote":0,"party":"PSDB"},{"deputyID":1070,"vote":1,"party":"PPS"},{"deputyID":1072,"vote":1,"party":"PTB"},{"deputyID":1073,"vote":1,"party":"PL"},{"deputyID":1125,"vote":1,"party":"PT"},{"deputyID":1200,"vote":2,"party":"PP"},{"deputyID":2097,"vote":1,"party":"PT"},{"deputyID":1078,"vote":0,"party":"PSDB"},{"deputyID":1079,"vote":1,"party":"PL"},{"deputyID":1081,"vote":1,"party":"PP"},{"deputyID":42,"vote":0,"party":"PMDB"},{"deputyID":1082,"vote":1,"party":"PL"},{"deputyID":611,"vote":1,"party":"PL"},{"deputyID":387,"vote":1,"party":"PT"},{"deputyID":1083,"vote":1,"party":"PT"},{"deputyID":1127,"vote":1,"party":"PMDB"},{"deputyID":1128,"vote":1,"party":"PT"},{"deputyID":2105,"vote":1,"party":"PSB"},{"deputyID":2116,"vote":3,"party":"PP"},{"deputyID":1741,"vote":1,"party":"PP"},{"deputyID":671,"vote":1,"party":"PPS"},{"deputyID":625,"vote":1,"party":"PL"},{"deputyID":545,"vote":1,"party":"PMDB"},{"deputyID":464,"vote":1,"party":"PT"},{"deputyID":1130,"vote":1,"party":"PSDB"},{"deputyID":523,"vote":1,"party":"PSDB"},{"deputyID":2120,"vote":0,"party":"PSDB"},{"deputyID":293,"vote":1,"party":"PDT"},{"deputyID":1149,"vote":0,"party":"PFL"},{"deputyID":1717,"vote":1,"party":"PMDB"},{"deputyID":2123,"vote":0,"party":"PSDB"},{"deputyID":1133,"vote":1,"party":"PT"},{"deputyID":1135,"vote":1,"party":"PT"}]}]}
+{
+    "type": "PL",
+    "number": "4955",
+    "year": "2005",
+    "date": "23/03/2005",
+    "author": "Poder Executivo",
+    "amendment": "Dispõe sobre a criação da Universidade Federal do Recôncavo da Bahia - UFRB, por desmembramento da Universidade Federal da Bahia - UFBA, e dá outras providências.",
+    "tags": "Criação, Universidade Federal do Recôncavo da Bahia, desmembramento, Universidade Federal da Bahia, sede, Município, Cruz das Almas, (BA), curso superior, Agronomia, redistribuição, quadro de pessoal, cargo público, Reitor, Professor, \r\nTécnico - Administrativo, cargo de direção, função gratificada, patrimônio, recursos financeiros, estatuto. ",
+    "status": "Tranformada no(a) Lei Ordinária 11151/2005",
+    "rollCalls": [
+        {
+            "datetime": "2005-07-06T22:28:00.000Z",
+            "obj": "SUBSTITUTIVO",
+            "summary": "Rejeitado o Substitutivo oferecido pelo Relator da CTASP: Sim: 53; Não: 234: Abst.: 2; Total: 289.\r\n",
+            "votes": [
+                {
+                    "deputyID": 607,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 946,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 519,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 273,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 613,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 11,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 738,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 640,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 742,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 265,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 396,
+                    "vote": 1,
+                    "party": "PSC"
+                },
+                {
+                    "deputyID": 725,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 949,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 769,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 648,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 83,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 638,
+                    "vote": 1,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 656,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 673,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 674,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 313,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 684,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 689,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 316,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 95,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 93,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 97,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 774,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 953,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 35,
+                    "vote": 1,
+                    "party": "S.Part."
+                },
+                {
+                    "deputyID": 817,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 426,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 798,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 955,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 918,
+                    "vote": 0,
+                    "party": "S.Part."
+                },
+                {
+                    "deputyID": 958,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 959,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 962,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 702,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 194,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 195,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 963,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 424,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 675,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 721,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 287,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 513,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 425,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 291,
+                    "vote": 1,
+                    "party": "PV"
+                },
+                {
+                    "deputyID": 758,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 964,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 103,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 650,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 657,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 555,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 107,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 679,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 109,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 582,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 710,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 732,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 917,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 761,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 770,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 722,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 772,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 567,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 275,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 969,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 270,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 807,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 67,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 61,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 62,
+                    "vote": 4,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1451,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 1088,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 43,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 718,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 203,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 570,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 928,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 716,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 210,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 369,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 610,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 2089,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 633,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 973,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 658,
+                    "vote": 2,
+                    "party": "PV"
+                },
+                {
+                    "deputyID": 132,
+                    "vote": 0,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 134,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 136,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 697,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 139,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 142,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 974,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 146,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 670,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 1091,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 24,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 977,
+                    "vote": 0,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 227,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 979,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 228,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 230,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 231,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 233,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 1094,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 980,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 729,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 905,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 981,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 631,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 217,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1096,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 398,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 372,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1602,
+                    "vote": 0,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 685,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 606,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 985,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 152,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 155,
+                    "vote": 0,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 1097,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 988,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 409,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 164,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1966,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 566,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1364,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 990,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 703,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 168,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 926,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 172,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 991,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 736,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 741,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 174,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 765,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 837,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 2082,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 993,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 995,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 423,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 809,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 997,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 19,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 999,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1000,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 1101,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1001,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 552,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 410,
+                    "vote": 0,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 435,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 1004,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 92,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1005,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 599,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 1006,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 1007,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 321,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1008,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 1102,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1103,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 338,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 117,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 1012,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1013,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 1014,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 363,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 493,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1105,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 193,
+                    "vote": 0,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 1016,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 2106,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1018,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 1021,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 481,
+                    "vote": 0,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 588,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 1107,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1023,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 329,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1025,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 414,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 336,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 484,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 568,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 366,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 1108,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 367,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1028,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 580,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 276,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 17,
+                    "vote": 1,
+                    "party": "PSC"
+                },
+                {
+                    "deputyID": 302,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 2083,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1110,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 249,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1031,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 176,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 200,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 1034,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 921,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 1113,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 213,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 1036,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1037,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 919,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1114,
+                    "vote": 1,
+                    "party": "S.Part."
+                },
+                {
+                    "deputyID": 128,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 351,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 562,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 129,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1039,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1115,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 2095,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1042,
+                    "vote": 0,
+                    "party": "PRONA"
+                },
+                {
+                    "deputyID": 1116,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 2096,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1043,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 1044,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 1117,
+                    "vote": 1,
+                    "party": "PCdoB"
+                },
+                {
+                    "deputyID": 135,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 138,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1047,
+                    "vote": 0,
+                    "party": "PV"
+                },
+                {
+                    "deputyID": 2097,
+                    "vote": 1,
+                    "party": "S.Part."
+                },
+                {
+                    "deputyID": 1118,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1052,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 51,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 490,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 54,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 1054,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1055,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1056,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 903,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 1057,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 1058,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 253,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1060,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 2101,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 1121,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 1061,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 907,
+                    "vote": 1,
+                    "party": "S.Part."
+                },
+                {
+                    "deputyID": 1063,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 381,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1122,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 535,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1065,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1066,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1123,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 910,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1067,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 551,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 911,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 912,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 1124,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 1069,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 350,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 1070,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 1072,
+                    "vote": 1,
+                    "party": "PTB"
+                },
+                {
+                    "deputyID": 1073,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 1125,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1200,
+                    "vote": 2,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 2103,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1078,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 1079,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 1081,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 42,
+                    "vote": 0,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1082,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 611,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 387,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1083,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1127,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 1128,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 2110,
+                    "vote": 1,
+                    "party": "PSB"
+                },
+                {
+                    "deputyID": 2116,
+                    "vote": 3,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 1741,
+                    "vote": 1,
+                    "party": "PP"
+                },
+                {
+                    "deputyID": 671,
+                    "vote": 1,
+                    "party": "PPS"
+                },
+                {
+                    "deputyID": 625,
+                    "vote": 1,
+                    "party": "PL"
+                },
+                {
+                    "deputyID": 545,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 464,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1130,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 523,
+                    "vote": 1,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 2120,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 293,
+                    "vote": 1,
+                    "party": "PDT"
+                },
+                {
+                    "deputyID": 1149,
+                    "vote": 0,
+                    "party": "PFL"
+                },
+                {
+                    "deputyID": 1717,
+                    "vote": 1,
+                    "party": "PMDB"
+                },
+                {
+                    "deputyID": 2123,
+                    "vote": 0,
+                    "party": "PSDB"
+                },
+                {
+                    "deputyID": 1133,
+                    "vote": 1,
+                    "party": "PT"
+                },
+                {
+                    "deputyID": 1135,
+                    "vote": 1,
+                    "party": "PT"
+                }
+            ]
+        }
+    ]
+}

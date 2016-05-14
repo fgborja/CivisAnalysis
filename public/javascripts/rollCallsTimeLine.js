@@ -185,7 +185,7 @@ d3.chart.timeline = function() {
 			round = d3.time.week.round;
 			
 			chart.x(d3.time.scale()
-				.domain([new Date(1991, 0, 1), new Date(2015, 0, 1)])
+				.domain([new Date(1991, 0, 1), new Date(2017, 0, 1)])
 				.rangeRound([margin.left, width -margin.right]))
 				//.timelineFilter([new Date(2012, 0, 1), new Date()]);
 
@@ -295,7 +295,7 @@ d3.chart.timeline = function() {
 		parties.forEach( function(party){		
 			var partyAtYear = party.value;
 			party.traces = []; 
-			for(var year=1991; year<2015; year+=2){
+			for(var year=1991; year<2017; year+=2){
 				if( (partyAtYear[year] !== undefined) && (partyAtYear[year+2] !== undefined) ){
 					party.traces.push({first:partyAtYear[year],second:partyAtYear[year+2],firstDate:year,secondDate:year+2})
 				}//else{ console.log('no',year,year+2) }
@@ -321,7 +321,7 @@ d3.chart.timeline = function() {
 		// get parties for each period (biennial)
 		periods = {};
 			// for each two years starting from 1991
-			for (var i = 1991; i < 2015; i+=2 ) {
+			for (var i = 1991; i < 2017; i+=2 ) {
 				// for each period create an array of parties
 				periods[i] = { parties:[] };
 				for( party in CONGRESS_DEFINE.partiesTraces.traces){
@@ -384,7 +384,7 @@ d3.chart.timeline = function() {
 		// get parties for each period (biennial)
 		periods = {};
 			// for each two years starting from 1991
-			for (var i = 1991; i < 2015; i+=2 ) {
+			for (var i = 1991; i < 2017; i+=2 ) {
 				// for each period create an array of parties
 				periods[i] = { parties:[] };
 				for( party in CONGRESS_DEFINE.partiesTraces.traces){
@@ -459,7 +459,7 @@ d3.chart.timeline = function() {
 			.attr( popoverAttr(partyPopOver,'top') )
 
 		function partyPopOver( d ){
-			return '<h4>'+d.value.party+'</h4><em>'+CONGRESS_DEFINE.parties[d.value.party].name+'</em>';
+			return '<h4>'+d.value.party+'</h4><em>'+((d.value.party)? CONGRESS_DEFINE.parties[d.value.party].name:'')+'</em>';
 		}
 		$('#timeline .parties .party .steps .step').popover({ trigger: "hover" });
 
@@ -488,7 +488,7 @@ d3.chart.timeline = function() {
 		trace.transition(3000)
  			.attr("d", function(d){ return drawPartyTrace(d,type)} )
 			.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.first.party); } )
-			.attr("opacity", 0.1);
+			.attr("opacity", 0.3);
 
 		function drawPartyTrace(trace,type){
 

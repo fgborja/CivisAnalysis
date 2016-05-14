@@ -457,7 +457,7 @@
             "party": "PTB"
         },
         {
-            "deputyID": 811,
+            "deputyID": 808,
             "scatterplot": [
                 0.5833,
                 -0.7293
@@ -641,7 +641,7 @@
             "party": "PDT"
         },
         {
-            "deputyID": 834,
+            "deputyID": 831,
             "scatterplot": [
                 0.584,
                 -0.7335
@@ -809,7 +809,7 @@
             "party": "PTB"
         },
         {
-            "deputyID": 801,
+            "deputyID": 798,
             "scatterplot": [
                 0.5996,
                 -0.7072
@@ -929,7 +929,7 @@
             "party": "PT"
         },
         {
-            "deputyID": 812,
+            "deputyID": 809,
             "scatterplot": [
                 -0.6114,
                 -0.1717
@@ -1489,7 +1489,7 @@
             "party": "PSDB"
         },
         {
-            "deputyID": 824,
+            "deputyID": 821,
             "scatterplot": [
                 0.4762,
                 -0.6851
@@ -1857,7 +1857,7 @@
             "party": "PMDB"
         },
         {
-            "deputyID": 820,
+            "deputyID": 817,
             "scatterplot": [
                 0.4678,
                 -0.6804
@@ -3377,7 +3377,7 @@
             "party": "PSDB"
         },
         {
-            "deputyID": 832,
+            "deputyID": 829,
             "scatterplot": [
                 -0.3854,
                 -0.2571
@@ -3473,7 +3473,7 @@
             "party": "PFL"
         },
         {
-            "deputyID": 1520,
+            "deputyID": 1521,
             "scatterplot": [
                 -0.2603,
                 -0.1932
@@ -3593,7 +3593,7 @@
             "party": "PMDB"
         },
         {
-            "deputyID": 845,
+            "deputyID": 842,
             "scatterplot": [
                 -0.3441,
                 -0.1861
@@ -3609,7 +3609,7 @@
             "party": "PFL"
         },
         {
-            "deputyID": 1531,
+            "deputyID": 1527,
             "scatterplot": [
                 -0.4882,
                 0.03124
@@ -3881,7 +3881,7 @@
             "party": "PPB"
         },
         {
-            "deputyID": 1806,
+            "deputyID": 1805,
             "scatterplot": [
                 -0.359,
                 -0.09774
