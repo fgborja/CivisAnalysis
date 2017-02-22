@@ -289,17 +289,17 @@ d3.chart.timeline = function() {
 	chart.drawParties  = function(){
 		calcPartiesStepsUncluttered(timelineDim.height,chart.pixelPercentageToParties);
 		calcPartiesStepsCluttered(timelineDim.height,chart.pixelPercentageToParties);
-
+		forceAlgorithmToAproximateTheUnclutteredPositionsToClutteredWithoutOcclusion(timelineDim.height);
+		// CALC TRACES
 		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
-
 		parties.forEach( function(party){		
 			var partyAtYear = party.value;
 			party.traces = []; 
-			for(var year=1991; year<2017; year+=2){
+			d3.range(1991,2017,2).forEach(function(year) {
 				if( (partyAtYear[year] !== undefined) && (partyAtYear[year+2] !== undefined) ){
-					party.traces.push({first:partyAtYear[year],second:partyAtYear[year+2],firstDate:year,secondDate:year+2})
-				}//else{ console.log('no',year,year+2) }
-			}
+					party.traces.push({first:partyAtYear[year],second:partyAtYear[year+2],firstDate:year,secondDate:year+2});
+				}
+			});
 		})
 
 		var partiesG = svg.select('g.parties')
@@ -362,7 +362,7 @@ d3.chart.timeline = function() {
 
 			// remant pixels for the distances between parties
 			var remnantPixels = height - partiesPixels;
-			// calc the factor in wich should be multilied the distances to get the sum of pixels == remnantPixels 
+			// calc the factor in wich should be multiplied the distances to get the sum of pixels == remnantPixels 
 			var distanceFactor = ( remnantPixels / sumDistances ); 
 			// sum(distancesInPixels) == factor*sumDistances == sum(distances[i]*factor)
 			var distancesInPixels = distances.map(function(dist){ return dist*distanceFactor })
@@ -464,7 +464,9 @@ d3.chart.timeline = function() {
 		$('#timeline .parties .party .steps .step').popover({ trigger: "hover" });
 
 		step.transition(3000)
-			.attr('class','step')
+			.attr('class',function(d) {
+				return 'step y'+d.key;	
+			})
 			.attr("x", function (d) { return scaleX_middleOfBiennial(Number.parseInt(d.key)+1) -partyStepWidth/2} )
 			.attr("y", function (d) { return d.value[type].x0 })
 			.attr("height", function (d) { return d.value[type].height })
@@ -505,290 +507,6 @@ d3.chart.timeline = function() {
 			
 			return lineFunction( dataPath ) + "Z";
 		}
-	}
-
-	function drawPartiesSteps1(y){
-		var yearColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
-
-		function scaleX_middleOfBiennial(year) { return x(new Date(year,12)) }
-
-		d3.range(1991,2015).forEach(function(year){ 
-			if((year+1)%2)
-				yearColumms.append('path').attr({
-					d: 'M '+scaleX_middleOfBiennial(year)+' 10 V '+(height),
-					stroke:'grey',
-					'stroke-dasharray':"10,10"
-				})    
-		})
-
-		var scaleYearExtents = {};
-		$.each(CONGRESS_DEFINE.partiesTraces.extents, function(year){
-			scaleYearExtents[year] = d3.scale.linear()
-										.domain(this)
-										.range([(height-y)-margin.bottom,80]);
-										//.range([60, 440]);
-		})
-
-		// PARTIES--------------
-		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
-						.sort( function(a,b){ return b.value[1991].center[1] - a.value[1991].center[1];  });
-		var y1=0; 
-		// parties.forEach( function(d){ d.y0 = y1; y1+=d.value[1991].size; d.y1=y1;  })
-		parties.forEach( function(d){ d.y0 = y1; y1+= 30; d.y1=y1;  }) // constant size
-			
-		var scaleLabels = d3.scale.linear()
-						.domain( [0, parties[parties.length-1].y1 ] )
-						.range([65,(height-y)+15]);
-		//----------------------
-
-		var traces =  svg.append('g').attr({'class':'traces',transform:'translate('+margin.left+','+y+')'})
-							.selectAll('.trace')
-								.data( parties )
-								.enter()
-								.append('g').attr('class','trace')
-
-		// PARTIES LABELS					
-		var labels = traces.selectAll('g.lbl')
-			.data( function(d){ return [d]})
-			.enter()
-			.append("g")
-				.attr('class','lbl')
-				.on('mouseover', function(d){ var c ={}; c[d.key]=true; chart.partiesHovered(c); })
-				.on('mouseout', chart.partiesMouseout );
-
-		labels.selectAll('path')
-			.data( function(d){ return [d]})
-			.enter()
-			.append("path")
-				.attr('class','lbl')
-				.attr("d", drawPartyLabel )
-				.attr("stroke", function(d){ return 'grey'/*CONGRESS_DEFINE.getPartyColor(d.key);*/ } )
-				.attr("stroke-width", 2)
-				.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.key); })
-				//.style("fill", 'transparent')
-				.attr('stroke-dasharray',"5,2")
-				.attr("opacity", 0.3);
-
-		function drawPartyLabel (party) {
-				var lineFunction = d3.svg.line()
-					.x(function (d) { return d.x })
-					.y(function (d) { return d.y })
-					.interpolate("linear");
-				var dataPath = [];
-
-				dataPath.push( {x: scaleX_middleOfBiennial(1990), y: scaleLabels( party.y0 ) });
-				dataPath.push( {x: scaleX_middleOfBiennial(1991), y: scaleLabels( party.y0 ) });
-
-				dataPath.push( {x: scaleX_middleOfBiennial(1992), y: scaleYearExtents[1991](party.value[1991].center[1]) - party.value[1991].size/2 +2.2});
-				dataPath.push( {x: scaleX_middleOfBiennial(1992), y: scaleYearExtents[1991](party.value[1991].center[1]) + party.value[1991].size/2 -2});
-				
-				dataPath.push( {x: scaleX_middleOfBiennial(1991), y: scaleLabels( party.y1 )-8 });
-				dataPath.push( {x: scaleX_middleOfBiennial(1990), y: scaleLabels( party.y1 )-8 });
-
-				return lineFunction( dataPath ) + "Z";
-		}
-
-		labels.selectAll('text')
-			.data( function(d){ return [d]})
-			.enter()
-			.append('text')
-				.attr({
-					'class':'lbl',
-					x:scaleX_middleOfBiennial(1990) + 3, 
-					y: function(d){ return scaleLabels( d.y1 ) - 17} ,
-					'font-size': "12px"
-				})
-				.text(function(d){return d.key})
-
-		// PARTIES TRACES/FLOW
-		traces.selectAll('path.flow')
-			.data( function(d){ return [d]})
-			.enter()
-			.append("path")
-				.attr('class','flow')
-				.attr("d", drawPartyFlow )
-				.attr("stroke", 'white' )
-				.attr("stroke-width", 2)
-				.style("fill", 'lightgrey')
-				.attr("opacity", 0.5)
-
-			function drawPartyFlow (party) {
-				var lineFunction = d3.svg.line()
-					.x(function (d) { return d.x })
-					.y(function (d) { return d.y })
-					.interpolate("cardinal");
-
-				var dataPath = [];
-
-				d3.entries( party.value ).forEach( function (d) {
-					dataPath.push( {
-						x: scaleX_middleOfBiennial (Number.parseInt(d.key)+1), 
-						y: scaleYearExtents[d.key](d.value.center[1]) + d.value.size/2
-					});
-				});
-
-				d3.entries( party.value ).reverse().forEach( function (d) {
-					dataPath.push( {
-						x: scaleX_middleOfBiennial(Number.parseInt(d.key)+1), 
-						y: scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2
-					});
-				});
-				return lineFunction( dataPath ) + "Z";
-			}
-
-		// PARTIES TRACES PARTY-RECT
-		traces.selectAll('.partySteps')
-			.data( function(d){ return [d]})
-			.enter()
-			.append("g")
-				.attr('class','.partySteps')
-				.selectAll('.step')
-					.data( function(d){ var entries = d3.entries(d.value); entries.forEach(function(i){ i.party=d.key }); return entries; })
-					.enter()
-					.append("rect")
-						.attr('class','step')
-						.attr("x", function (d) { return scaleX_middleOfBiennial(Number.parseInt(d.key)+1) -10} )
-						.attr("y", function (d) { return scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2} )
-						.attr("height", function (d) { return d.value.size} )
-						.attr("width", 20 )
-						.attr("stroke", 'white' )
-						.attr("stroke-width", 2)
-						.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.party); } )
-						.attr("opacity", 0.8)
-	
-	}
-
-	function drawPartiesFlows(y){
-		var yearColumms = svg.append('g').attr({transform:'translate('+margin.left+','+y+')'});
-
-		function scaleX_middleOfYear(year) { return (x(new Date(year+1,0)) -  x(new Date(year,0)))/2 + x(new Date(year,0)) }
-
-		d3.range(1991,2015).forEach(function(year){ 
-			if((year+1)%2)
-				yearColumms.append('path').attr({
-					d: 'M '+scaleX_middleOfYear(year)+' 10 V '+(height),
-					stroke:'grey',
-					'stroke-dasharray':"10,10"
-				})    
-		})
-
-		var scaleYearExtents = {};
-		$.each(CONGRESS_DEFINE.partiesTraces.extents, function(year){
-			scaleYearExtents[year] = d3.scale.linear()
-										.domain(this)
-										.range([(height-y)-margin.bottom,80]);
-										//.range([60, 440]);
-		})
-
-		// PARTIES--------------
-		var parties = d3.entries(CONGRESS_DEFINE.partiesTraces.traces)
-						.sort( function(a,b){ return b.value[1991].center[1] - a.value[1991].center[1];  });
-		var y1=0; 
-		// parties.forEach( function(d){ d.y0 = y1; y1+=d.value[1991].size; d.y1=y1;  })
-		parties.forEach( function(d){ d.y0 = y1; y1+= 30; d.y1=y1;  }) // constant size
-			
-		var scaleLabels = d3.scale.linear()
-						.domain( [0, parties[parties.length-1].y1 ] )
-						.range([65,(height-y)+15]);
-		//----------------------
-
-		var traces =  svg.append('g').attr({'class':'traces',transform:'translate('+margin.left+','+y+')'})
-							.selectAll('.trace')
-								.data( parties )
-								.enter()
-								.append('g').attr('class','trace')
-
-		// PARTIES LABELS					
-		traces.selectAll('path.lbl')
-			.data( function(d){ return [d]})
-			.enter()
-			.append("path")
-				.attr('class','lbl')
-				.attr("d", drawPartyLabel )
-				.attr("stroke", function(d){ return 'grey'/*CONGRESS_DEFINE.getPartyColor(d.key);*/ } )
-				.attr("stroke-width", 2)
-				.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.key); })
-				//.style("fill", 'transparent')
-				.attr('stroke-dasharray',"5,2")
-				.attr("opacity", 0.3)
-				.on('mouseover', function(d){ var c ={}; c[d.key]=true; chart.partiesHovered(c); })
-
-		traces.selectAll('text')
-			.data( function(d){ return [d]})
-			.enter()
-			.append('text')
-				.attr({
-					'class':'lbl',
-					x:scaleX_middleOfYear(1990) + 3, 
-					y: function(d){ return scaleLabels( d.y1 ) - 17} ,
-					'font-size': "12px"
-				})
-				.text(function(d){return d.key})
-
-		// PARTIES TRACES/FLOW
-		traces.selectAll('path.flow')
-			.data( function(d){ return [d]})
-			.enter()
-			.append("path")
-				.attr('class','flow')
-				.attr("d", drawPartyFlow )
-				.attr("stroke", 'white' )
-				.attr("stroke-width", 2)
-				.style("fill", function(d){ return CONGRESS_DEFINE.getPartyColor(d.key); })
-				.attr("opacity", 0.6)
-
-			function drawPartyFlow (party) {
-				var lineFunction = d3.svg.line()
-					.x(function (d) { return d.x })
-					.y(function (d) { return d.y })
-					.interpolate("cardinal");
-
-				var dataPath = [];
-
-				d3.entries( party.value ).forEach( function (d) {
-					dataPath.push( {
-						x: scaleX_middleOfYear (Number.parseInt(d.key)+1), 
-						y: scaleYearExtents[d.key](d.value.center[1]) + d.value.size/2
-					});
-				});
-
-				d3.entries( party.value ).reverse().forEach( function (d) {
-					dataPath.push( {
-						x: scaleX_middleOfYear(Number.parseInt(d.key)+1), 
-						y: scaleYearExtents[d.key](d.value.center[1]) - d.value.size/2
-					});
-				});
-				return lineFunction( dataPath ) + "Z";
-			}
-
-			function drawPartyLabel (party) {
-				var lineFunction = d3.svg.line()
-					.x(function (d) { return d.x })
-					.y(function (d) { return d.y })
-					.interpolate("linear");
-				var dataPath = [];
-
-				dataPath.push( {x: scaleX_middleOfYear(1990), y: scaleLabels( party.y0 ) });
-				dataPath.push( {x: scaleX_middleOfYear(1991), y: scaleLabels( party.y0 ) });
-
-				dataPath.push( {x: scaleX_middleOfYear(1992), y: scaleYearExtents[1991](party.value[1991].center[1]) - party.value[1991].size/2 +2.2});
-				dataPath.push( {x: scaleX_middleOfYear(1992), y: scaleYearExtents[1991](party.value[1991].center[1]) + party.value[1991].size/2 -2});
-				
-				dataPath.push( {x: scaleX_middleOfYear(1991), y: scaleLabels( party.y1 )-8 });
-				dataPath.push( {x: scaleX_middleOfYear(1990), y: scaleLabels( party.y1 )-8 });
-
-				return lineFunction( dataPath ) + "Z";
-			}
-		// traces.selectAll('path')
-		// 	.data( function(d){ return [d]})
-		// 	.enter()
-		// 	.append("path")
-		// 		.attr("d", drawPartyLabels )
-		// 		.attr("stroke", function(d){ return CONGRESS_DEFINE.getPartyColor(d.key); })
-		// 		.attr("stroke-width", 2)
-		// 		.attr('stroke-dasharray',"10,10")
-		// 		.style("fill", 'white'})
-		// 		.attr("opacity", 0.6);
 	}
 
 	// sort the traces - the hovered parties to front
@@ -1053,3 +771,41 @@ d3.chart.timeline = function() {
 	//
 }
 
+
+function forceAlgorithmToAproximateTheUnclutteredPositionsToClutteredWithoutOcclusion(timelineHeight) {
+	d3.range(1991,2017,2).forEach(function(year) {
+		var partiesInPeriod = [];
+			for(var party in CONGRESS_DEFINE.partiesTraces.traces){
+				if(CONGRESS_DEFINE.partiesTraces.traces[party][year])
+					partiesInPeriod.push(CONGRESS_DEFINE.partiesTraces.traces[party][year]);
+			}
+			// d3.selectAll("rect.step.y"+year).data();
+			partiesInPeriod.sort(function(a,b) {
+				return a.uncluttered.x0 - b.uncluttered.x0;
+			})
+		var movement;
+		do{ // repeat this loop til no parties' movment
+			movement = false;
+			partiesInPeriod.forEach( (p,i) => {
+				debugger;
+				var idealPoint = p.cluttered.x0,
+					x0 = p.uncluttered.x0,
+					x1 = x0 + p.uncluttered.height,
+					movUp = idealPoint > x0;
+
+				if(x0<1 || x1>timelineHeight || Math.abs(idealPoint-x0)<1) return;
+				var newX0 = Math.max(0,x0 + (movUp? 1 : -1)),
+					newX1 = Math.max(0,x1 + (movUp? 1 : -1)),
+					colision = false;
+
+				if(i!=(partiesInPeriod.length-1) && movUp && newX1 > partiesInPeriod[i+1].uncluttered.x0) colision = true;
+				if(i!=0 && !movUp && newX0 < (partiesInPeriod[i-1].uncluttered.x0+partiesInPeriod[i-1].uncluttered.height)) colision = true;
+				
+				if(!colision) { 
+					p.uncluttered.x0 = newX0;
+					movement = true;
+				}
+			})
+		} while(movement);
+	});
+}

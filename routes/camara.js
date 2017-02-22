@@ -6,7 +6,7 @@
 
 exports.obterDeputados = function(requestify,xml2js,db){
 	return function(req, res){
-		requestify.post('http://www.camara.gov.br/SitCamaraWS/Deputados.asmx/ObterDeputados?').then(function(response) { 
+		requestify.post('http://www.camara.leg.br/SitCamaraWS/Deputados.asmx/ObterDeputados?').then(function(response) { 
             xml2js.parseString(response.body, function(err,json){ 
 
               db.collection('obterDeputados').insert(json, function(err, result){
@@ -24,7 +24,7 @@ exports.listarProposicoesVotadasEmPlenario = function(requestify,xml2js,db){
   return function(req, res){
     var ano = req.params.ano; // get the list of roll calls in the year(==ano)
     // GET from camara the response
-    requestify.get('http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario?ano='+ano+'&tipo=').then(function(response) { 
+    requestify.get('http://www.camara.leg.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario?ano='+ano+'&tipo=').then(function(response) { 
             // parse the recieved xml to JSON
             xml2js.parseString(response.body, function(err,json){ 
               // update/insert the collection: if there is already one list with {ano} then update {json} else insert {ano,json}.  
@@ -40,7 +40,7 @@ exports.listarProposicoesVotadasEmPlenario = function(requestify,xml2js,db){
 
 //
 // INSERT in the new entries => datetime = new Date(year, month, day, hours, minutes, seconds, milliseconds);
-//http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ObterVotacaoProposicao?tipo=PL&numero=1992&ano=2007
+//http://www.camara.leg.br/SitCamaraWS/Proposicoes.asmx/ObterVotacaoProposicao?tipo=PL&numero=1992&ano=2007
 //
 exports.obterVotacaoProposicao = function(requestify,xml2js,db){
   return function(req, res){
@@ -48,7 +48,7 @@ exports.obterVotacaoProposicao = function(requestify,xml2js,db){
     var tipo = req.params.tipo;
     var numero = req.params.numero;
     
-    requestify.get('http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ObterVotacaoProposicao?tipo='+tipo+'&numero='+numero+'&ano='+ano).then(function(response) { 
+    requestify.get('http://www.camara.leg.br/SitCamaraWS/Proposicoes.asmx/ObterVotacaoProposicao?tipo='+tipo+'&numero='+numero+'&ano='+ano).then(function(response) { 
             xml2js.parseString(response.body, function(err,json){ 
 
               // fix and add variables
@@ -82,7 +82,7 @@ exports.obterProposicao = function(requestify,xml2js,db){
     var ano = req.params.ano;
     var tipo = req.params.tipo;
     var numero = req.params.numero;
-    requestify.get('http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ObterProposicao?tipo='+tipo+'&numero='+numero+'&ano='+ano).then(function(response) { 
+    requestify.get('http://www.camara.leg.br/SitCamaraWS/Proposicoes.asmx/ObterProposicao?tipo='+tipo+'&numero='+numero+'&ano='+ano).then(function(response) { 
             xml2js.parseString(response.body, function(err,json){ 
 
               //FIX the proposicao.tipo => sometimes with whitespaces++
@@ -104,7 +104,7 @@ exports.obterProposicao = function(requestify,xml2js,db){
 exports.obterDetalhesDeputado = function(requestify,xml2js,db){
   return function(req, res){
     var ideCadastro = req.params.ideCadastro;
-    requestify.get('http://www.camara.gov.br/SitCamaraWS/Deputados.asmx/ObterDetalhesDeputado?ideCadastro='+ideCadastro+'&numLegislatura=').then(function(response) { 
+    requestify.get('http://www.camara.leg.br/SitCamaraWS/Deputados.asmx/ObterDetalhesDeputado?ideCadastro='+ideCadastro+'&numLegislatura=').then(function(response) { 
             xml2js.parseString(response.body, function(err,json){ 
               json.ideCadastro = ideCadastro;
 

@@ -1,47 +1,115 @@
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
-    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
-    <script src="./javascripts/lib/d3/queue.v1.min.js"></script>
-    <script src="./javascripts/lib/numeric-1.2.6.js"></script>
+    title CivisAnalysis
 
+    link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic")
+    link(rel="stylesheet" href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.0.8/angular-material.css")
+    link(rel="stylesheet" href="https://cdn.materialdesignicons.com/1.7.22/css/materialdesignicons.min.css")
+    style.
+        .mdi {font-size: 24px;}
+  body(ng-app='adminApp', ng-controller="AppCtrl", ng-cloak, layout='column')
+    md-toolbar
+      div(class="md-toolbar-tools")
+        md-button.md-icon-button(hide-gt-sm, aria-label="toggle sidebar", ng-click="toggleLeft()")
+          md-icon(md-svg-icon="menu")
+        h2
+          strong CivisAnalysis ADMIN
+
+    div(layout="row", flex)
+        md-sidenav(class="md-sidenav-left md-whiteframe-z2", md-component-id="left", md-is-locked-open="$mdMedia('gt-sm')")
+          md-toolbar(class="md-theme-indigo", hide-gt-sm, layout='row')
+            h1(class="md-toolbar-tools") Menu
+            span(flex)
+            md-button.md-icon-button(aria-label="close sidenav", ng-click='toggleLeft()')
+              md-icon(md-svg-icon="chevron-double-left")
+          md-content(layout-padding, layout="column", layout-fill layout-align="top center")
+            md-button.md-raised(style='width:100%;', ng-click='selectedView="listByYear"; toggleLeft()') List voted motions by year
+            md-button.md-raised(style='width:100%;', ng-click='selectedView="getByYear";toggleLeft()') update voted motions by year
+            md-button.md-raised(style='width:100%;', ng-click='selectedView="loadALL";toggleLeft()') LOAD ALL DATA
+
+        md-content(flex, layout-padding, ng-show='selectedView=="listByYear"',ng-cloak, layout='row')
+          div
+            div(layout='row')
+              h2 Year of
+              h2(style='margin:-4px 10px')
+                md-select(ng-model="selectedYear", ng-change='queryYear(selectedYear)')
+                  md-option(ng-repeat="year in years", value="{{year.name}}") {{year.name}}
+            md-list(style='width:500px;')
+              md-list-item(class="md-2-line", ng-repeat="(motion,data) in motions")
+                div(class="md-list-item-text",layout="column")
+                  span {{ motion }}
+                  div(layout='row' layout-align='start start')
+                    md-input-container(style='max-width:5em;')
+                      label Type
+                      input(ng-model="data.type")
+                    md-input-container(style='max-width:5em;')
+                      label Number
+                      input(ng-model="data.number")
+                    md-input-container(style='max-width:5em;')
+                      label Year
+                      input(ng-model="data.year")
+                    span.md-button.md-icon-button
+                      md-icon.mdi.mdi-check
+                    md-button.md-icon-button(ng-click='loadMotion(data)', aria-label='loadMotion')
+                      md-icon.mdi.mdi-download
+          div(ng-show='selectedRollCall')
+            h1 CHUSME
+
+        md-content(flex, layout-padding, ng-show='selectedView=="getByYear"',ng-cloak, layout='row')
+          div
+            div(layout='row')
+              h2 Year of
+              h2(style='margin:-4px 10px')
+                md-select(ng-model="selectedYear")
+                  md-option(ng-repeat="year in years", value="{{year.name}}") {{year.name}}
+              md-button.md-primary(flex,ng-click='getByYear(selectedYear,logger,true)') 
+                i.mdi.mdi-play
+                span START
+            div
+              md-input-container(flex)
+                textarea(style='width:500px',ng-model='logger.logs')
+
+        md-content(flex, layout-padding, ng-show='selectedView=="loadALL"',ng-cloak, layout='row')
+          div(flex)
+            h1 LOAD ALL DATA
+            p 1. update motions for each year
+            p 2. LOAD_ALL_STUFF TO MEMORY. 
+              md-button.md-primary.md-raised(ng-click='LOAD_ALL_STUFF(logger)') LOAD_ALL_STUFF
+            p 3. SAVE EACH MOTION TO A FILE (and place in public/data/motions.min)
+              md-button.md-primary.md-raised(ng-click='saveMotionsWithDelay()') saveMotionsWithDelay
+            p 4. SAVE DEPUTIES TO FILE (and place in public/data/)
+              md-button.md-primary.md-raised(ng-click='saveDeputiesToFILE()') saveDeputiesToFILE
+            p 5. SAVE THE ROLL CALL REFERENCES TO FILE (and place in public/data/)
+              md-button.md-primary.md-raised(ng-click='saveRollCallsArray()') saveRollCallsArray
+            p 6. SAVE SVD PRECALC OF YEARS (and place in public/data/precalc)
+              md-button.md-primary.md-raised(ng-click='calcPreSetsHistory("year")') calcPreSetsHistory year
+            p 7. SAVE SVD PRECALC OF LEGISLATURE (and place in public/data/precalc)
+              md-button.md-primary.md-raised(ng-click='calcPreSetsHistory("legislature")') calcPreSetsHistory legislature
+            p 8. SAVE SVD PRECALC OF PRESIDENTS (and place in public/data/precalc)
+              md-button.md-primary.md-raised(ng-click='calcPreSetsHistory("president")') calcPreSetsHistory president
+            p 8. SAVE TIMELINE TRACES
+              md-button.md-primary.md-raised(ng-click='calcTraces') calc traces
+          div(flex=30)
+            md-input-container(flex)
+                textarea(style='width:100%',ng-model='logger.logs')
+
+        
+
+    script(src='./javascripts/lib/jquery.min.js')
+    script(src='https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js')
+    script(src="https://d3js.org/d3.v4.0.0-alpha.41.min.js")
+    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js")
+    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js")
+    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js")
+    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js")
+    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js")
+    script(type="text/javascript", src="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.0.8/angular-material.js")
+
+    <script src='/javascripts/congressDEFINE.js'></script>
     <script src='/javascripts/globalUtils.js'></script>
     <script src='/javascripts/chamberOfDeputiesClient.js'></script>
     <script src='/javascripts/chamberOfDeputiesDataWrapper.js'></script>
-    <script src='/javascripts/listMotions.js'></script>
-
-    h1 Voted Proposition List by Year
-
-    // Wrapper
-    #wrapper
-
-      // PROP INFO
-      #propInfo
-        h2 Prop Info
-        p
-            <span id='jsonProp'></span>
-      // /PROP INFO	
-
-      h2 Proposition List
-      //  LIST PROP BTN
-      #listProp
-        fieldset
-          input#inputYear(type='text', placeholder='Year')
-          button#btnListProp Call List
-      // /LIST PROP BTN
-
-      // Proposition LIST
-      #propList
-        table
-          thead
-            th Cod
-            th Nome
-            th GetRollCall
-          tbody
-      // /Proposition LIST
-
-    // /WRAPPER
+    //- <script src='/javascripts/listMotions.js'></script>
+    <script src='/javascripts/adminUtils.js'></script>
+    script( src='/javascripts/adminApp.js')

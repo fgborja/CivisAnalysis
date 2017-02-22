@@ -24,8 +24,9 @@
 					return data;
 				})
 			},
-			getlistarProposicoesVotadasEmPlenario 	: function (year){
+			getlistarProposicoesVotadasEmPlenario 	: function (year, callback){
 				$.getJSON( './listarProposicoesVotadasEmPlenario/'+year, function( data ) {
+					if (callback) callback(data);
 					return data;
 				})
 			}
@@ -161,33 +162,6 @@
 
 			getOcurrencesOfRollCalls	:   chamberOfDeputiesClient.getOcurrencesOfRollCalls,
 			getMotionRollCallsDate		:   chamberOfDeputiesClient.getMotionRollCallsDate
-		};
-	};
-})(jQuery);
-
-
-(function($) {
-	$.chamberOfDeputiesClientHTTP = function() {
-		var chamberOfDeputiesHTTP = {
-
-			getMotionRollCalls	:	function (tipo,numero,ano,callback){
-				d3.json('./data/motionRollCalls/'+tipo+''+numero+''+ano, function(motionRollCalls) {
-					if(motionRollCalls === null) console.log('Could not load DB getMotionRollCalls/'+tipo+'/'+numero+'/'+ano);
-					callback(motionRollCalls,tipo,numero,ano);
-				})
-			},
-
-			getOcurrencesOfRollCalls	: 	function (callback){
-				d3.json('./data/datetimeRollCall.json', function( ocurrencesOfRollCalls ) {
-					callback(ocurrencesOfRollCalls);
-				})
-			}
-		};
-
-		return {  // INTERFACE
-			getMotionRollCalls			: 	chamberOfDeputiesHTTP.getMotionRollCalls,
-			getOcurrencesOfRollCalls	:   chamberOfDeputiesHTTP.getOcurrencesOfRollCalls,
-		
 		};
 	};
 })(jQuery);

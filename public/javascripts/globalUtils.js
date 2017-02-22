@@ -25,7 +25,7 @@ console.save = function(data, filename){
 	if(!filename) filename = 'console.json'
 
 	if(typeof data === "object"){
-		data = JSON.stringify(data, undefined, 4)
+		data = JSON.stringify(data, undefined, ''); 
 	}
 
 	var blob = new Blob([data], {type: 'text/json'}),

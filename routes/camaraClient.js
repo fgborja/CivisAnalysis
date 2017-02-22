@@ -6,9 +6,9 @@
 
 // PROPOSITION =~> !MOTION! <~= PROPOSAL
 
-// View to check the motions... listMotions.jade + listMotions.js
-exports.listMotions = function(req, res){
-	res.render('listMotions');
+// View to check the motions... admin.jade
+exports.admin = function(req, res){
+	res.render('admin');
 };
 
 exports.getAllMotionsDetails = function(db){
