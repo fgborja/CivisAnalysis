@@ -110,13 +110,20 @@ html
 				// ROLL CALLS infos
 				.col-md-12.no-padding#rollCallInfo(style='padding-right: 10px;')
 
+
+		.col-md-12#timelineInfo
+		// TIMELINE and PARTY FLOW
+		.col-md-12#timeline
+		//	#loading
+		//		img#loadingGIF(src='./images/ajax_loader.gif')
+
 		// PARTIES INFO
 		.col-md-12.panel-group#accordion(role="tablist",aria-multiselectable="true",style='margin-bottom: 10px;')
 			.panel.panel-default
 					.panel-heading#headingOne(role="tab")
 						h4.panel-title
 							a.accordion-toggle(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne") Parties
-					#collapseOne.panel-collapse.collapse(role="tabpanel", aria-labelledby="headingOne")
+					#collapseOne.panel-collapse.collapse.in(role="tabpanel", aria-labelledby="headingOne")
 						.panel-body#partiesInfo
 							.col-md-12.no-padding(style='margin-bottom:10px')
 								.btn-group.col-md-2
@@ -131,13 +138,6 @@ html
 										//		a(href="javascript:partiesInfo.setMilitaryParties()") Military Regime (1964-1885) Heritage
 								#paletteParties.col-md-10
 									text.col-md-3 Parties Color Palette
-
-		.col-md-12#timelineInfo
-		// TIMELINE and PARTY FLOW
-		.col-md-12#timeline
-		//	#loading
-		//		img#loadingGIF(src='./images/ajax_loader.gif')
-
 		// TIMELINE SETTINGS
 		.col-md-12(style='margin-top:10px')
 			.panel.panel-default

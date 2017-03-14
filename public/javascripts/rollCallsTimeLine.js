@@ -266,19 +266,28 @@ d3.chart.timeline = function() {
 		// governemnt X opposition
 			var gg = partyTraces.append('g').style('text-anchor','middle');
 			gg.append('text')
-				.attr({
-					x:scaleX_middleOfBiennial(1990) +scaleX_middleOfBiennial(1991)/2,
-					y: timelineDim.height/4 -5,
-					'class':"partiesLabel"
-				})
-				.text('GOVERNMENT')
-			var opposition = 'OPPOSITION';
-			gg.append('text')
-				.text(opposition)
+				.text('BIENNIAL POLITICAL SPECTRA')
 				.attr({
 					'class':"partiesLabel",
+					x:scaleX_middleOfBiennial(1990) +scaleX_middleOfBiennial(1991)/2 -20,
+					y: timelineDim.height/2 +5,	
+				})
+
+			gg.append('text')
+				.text('PT ANCHOR')
+				.attr({
 					x:scaleX_middleOfBiennial(1990) +scaleX_middleOfBiennial(1991)/2,
-					y: 3*timelineDim.height/4 +5,	
+					y: 5,
+					'text-anchor':'start',
+					'class':"partiesLabel"
+				})
+			gg.append('text')
+				.text('DEM ANCHOR')
+				.attr({
+					'class':"partiesLabel",
+					'text-anchor':'end',
+					x:scaleX_middleOfBiennial(1990) +scaleX_middleOfBiennial(1991)/2,
+					y: timelineDim.height -5,	
 				})
 
 		partyTraces.append('g').attr('class','parties').attr({transform:'translate(0,'+traceMargin+')'});
