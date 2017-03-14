@@ -9,6 +9,7 @@
     "express": "3.4.8",
     "jade": "*",
     "xml2js": "*",
+    "mongodb": "2.2.19",
     "mongoskin": "*",
     "requestify": "*"
   },
